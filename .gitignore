@@ -1,6 +1,11 @@
 ﻿# .gitignore
-[Pp]lugins/android.json
-[Pp]lugins/windows.json
-[Pp]lugins/wp8.json
-[Pp]lugins/remote_ios.json
+[Pp]lugins/
 [Pp]latforms/
+
+# VS
+AppPackages/
+bin/
+bld/
+*.jsproj.user
+.vs
+changelist.json
