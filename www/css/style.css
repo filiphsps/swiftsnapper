@@ -69,6 +69,7 @@ header nav .item .icon::before {
     width: 100%;
     -ms-touch-action: none;
     touch-action: none;
+    transform: translateZ(0px);
 }
 .view {
     overflow: hidden;
@@ -139,6 +140,7 @@ header nav .item .icon::before {
     z-index: 10;
 }
 #CameraView .CameraPreview #CameraPreview {
+    transform: scale(-1, 1);
     position: absolute;
     top: 0; right: 0; bottom: 0; left: 0;
     height: 100%;
@@ -161,4 +163,9 @@ header nav .item .icon::before {
     border: 3px solid #000;
     border-radius: 100%;
     box-sizing: border-box;
+}
+
+/* Stories View */
+#StoriesView header {
+    background: #bf55ec;
 }

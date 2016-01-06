@@ -1,16 +1,9 @@
 var swiftsnapper;
 (function (swiftsnapper) {
     "use strict";
-    var Application;
-    (function (Application) {
+    var CameraManager;
+    (function (CameraManager) {
         function initialize() {
-            document.addEventListener('deviceready', onDeviceReady, false);
-        }
-        Application.initialize = initialize;
-        function onDeviceReady() {
-            // Handle the Cordova pause and resume events
-            document.addEventListener('pause', onPause, false);
-            document.addEventListener('resume', onResume, false);
             navigator['mediaDevices'].getUserMedia({
                 video: {
                     facingMode: "user"
@@ -22,11 +15,25 @@ var swiftsnapper;
                 console.log(error.name + ": " + error.message);
             });
         }
+        CameraManager.initialize = initialize;
+    })(CameraManager = swiftsnapper.CameraManager || (swiftsnapper.CameraManager = {}));
+    var Application;
+    (function (Application) {
+        function initialize() {
+            document.addEventListener('deviceready', onDeviceReady, false);
+        }
+        Application.initialize = initialize;
+        function onDeviceReady() {
+            // Handle the Cordova pause and resume events
+            document.addEventListener('pause', onPause, false);
+            document.addEventListener('resume', onResume, false);
+            CameraManager.initialize();
+        }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
         }
         function onResume() {
-            // TODO: This application has been reactivated. Restore application state here.
+            CameraManager.initialize();
         }
     })(Application = swiftsnapper.Application || (swiftsnapper.Application = {}));
     window.onload = function () {
@@ -38,6 +45,7 @@ var swiftsnapper;
             nav: false,
             dots: false,
             margin: 0,
+            startPosition: 1,
             responsive: {
                 0: {
                     items: 1
@@ -47,7 +55,6 @@ var swiftsnapper;
                 }
             }
         });
-        views.trigger('next.owl.carousel');
     };
 })(swiftsnapper || (swiftsnapper = {}));
 //# sourceMappingURL=app.js.map

@@ -4,17 +4,8 @@ declare var Windows: any;
 module swiftsnapper {
     "use strict";
 
-    export module Application {
+    export module CameraManager {
         export function initialize() {
-            document.addEventListener('deviceready', onDeviceReady, false);
-        }
-
-        function onDeviceReady() {
-            // Handle the Cordova pause and resume events
-            document.addEventListener('pause', onPause, false);
-            document.addEventListener('resume', onResume, false);
-            
-
             navigator['mediaDevices'].getUserMedia({
                 video: {
                     facingMode: "user"
@@ -25,7 +16,20 @@ module swiftsnapper {
             }).catch(function (error) {
                 console.log(error.name + ": " + error.message);
             });
+        }
+    }
 
+    export module Application {
+        export function initialize() {
+            document.addEventListener('deviceready', onDeviceReady, false);
+        }
+
+        function onDeviceReady() {
+            // Handle the Cordova pause and resume events
+            document.addEventListener('pause', onPause, false);
+            document.addEventListener('resume', onResume, false);
+
+            CameraManager.initialize();
         }
 
         function onPause() {
@@ -33,7 +37,7 @@ module swiftsnapper {
         }
 
         function onResume() {
-            // TODO: This application has been reactivated. Restore application state here.
+            CameraManager.initialize();
         }
 
     }
@@ -48,6 +52,7 @@ module swiftsnapper {
             nav: false,
             dots: false,
             margin: 0,
+            startPosition: 1,
             responsive: {
                 0: {
                     items: 1
@@ -57,6 +62,5 @@ module swiftsnapper {
                 }
             }
         });
-        views.trigger('next.owl.carousel');
     }
 }
