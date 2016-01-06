@@ -4,19 +4,42 @@ var swiftsnapper;
     "use strict";
     var CameraManager;
     (function (CameraManager) {
-        function initialize() {
-            navigator['mediaDevices'].getUserMedia({
-                video: {
-                    facingMode: "user"
-                }
-            }).then(function (stream) {
-                var video = document.getElementById('CameraPreview');
-                video['srcObject'] = stream;
-            }).catch(function (error) {
-                console.log(error.name + ": " + error.message);
-            });
+        var video;
+        var mediaStream;
+        function initialize(conf) {
+            video = document.getElementById('CameraPreview');
+            if (mediaStream)
+                mediaStream.stop();
+            if (conf.frontFacing) {
+                video.className = video.className + ' inverted';
+                navigator['mediaDevices'].getUserMedia({
+                    video: {
+                        facingMode: "user"
+                    },
+                    audio: false
+                }).then(function (stream) {
+                    mediaStream = stream;
+                    video['srcObject'] = stream;
+                }).catch(function (error) { });
+            }
+            else {
+                video.className = video.className.replace(' inverted', '');
+                navigator['mediaDevices'].getUserMedia({
+                    video: {
+                        facingMode: "back",
+                    },
+                    audio: false
+                }).then(function (stream) {
+                    mediaStream = stream;
+                    video['srcObject'] = stream;
+                }).catch(function (error) { });
+            }
         }
         CameraManager.initialize = initialize;
+        function takePhoto() {
+            //TODO
+        }
+        CameraManager.takePhoto = takePhoto;
     })(CameraManager = swiftsnapper.CameraManager || (swiftsnapper.CameraManager = {}));
     var Application;
     (function (Application) {
@@ -28,13 +51,17 @@ var swiftsnapper;
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
-            CameraManager.initialize();
+            CameraManager.initialize({
+                'frontFacing': false
+            });
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
         }
         function onResume() {
-            CameraManager.initialize();
+            CameraManager.initialize({
+                'frontFacing': false
+            });
         }
     })(Application = swiftsnapper.Application || (swiftsnapper.Application = {}));
     window.onload = function () {
@@ -65,6 +92,26 @@ var swiftsnapper;
         $('#ViewStoriesBtn').on('click tap', function () {
             views.trigger('next.owl.carousel', [300]);
         });
+        $('#CameraToggleBtn').on('click tap', function () {
+            if ($('#CameraPreview').hasClass('inverted')) {
+                CameraManager.initialize({
+                    'frontFacing': false
+                });
+            }
+            else {
+                CameraManager.initialize({
+                    'frontFacing': true
+                });
+            }
+        });
+        $('#ShutterBtn').on('click tap', function () {
+            CameraManager.takePhoto();
+        });
+        if (Windows.Foundation.Metadata.ApiInformation.isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
+            Windows.Phone.UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
+                $('#ShutterBtn').click();
+            });
+        }
     };
 })(swiftsnapper || (swiftsnapper = {}));
 //# sourceMappingURL=app.js.map

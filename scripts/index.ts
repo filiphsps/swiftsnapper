@@ -6,17 +6,44 @@ module swiftsnapper {
     "use strict";
 
     export module CameraManager {
-        export function initialize() {
-            navigator['mediaDevices'].getUserMedia({
-                video: {
-                    facingMode: "user"
-                }
-            }).then(function (stream) {
-                var video = document.getElementById('CameraPreview');
-                video['srcObject'] = stream;
-            }).catch(function (error) {
-                console.log(error.name + ": " + error.message);
-            });
+        var video;
+        var mediaStream;
+
+        export function initialize(conf) {
+            video = document.getElementById('CameraPreview');
+
+            if (mediaStream)
+                mediaStream.stop();
+
+            if (conf.frontFacing) {
+                video.className = video.className + ' inverted';
+
+                navigator['mediaDevices'].getUserMedia({
+                    video: {
+                        facingMode: "user"
+                    },
+                    audio: false
+                }).then(function (stream) {
+                    mediaStream = stream;
+                    video['srcObject'] = stream;
+                }).catch(function (error) {});
+            } else {
+                video.className = video.className.replace(' inverted', '');
+
+                navigator['mediaDevices'].getUserMedia({
+                    video: {
+                        facingMode: "back",
+                    },
+                    audio: false
+                }).then(function (stream) {
+                    mediaStream = stream;
+                    video['srcObject'] = stream;
+                }).catch(function (error) { });
+            }
+        }
+
+        export function takePhoto() {
+            //TODO
         }
     }
 
@@ -30,7 +57,9 @@ module swiftsnapper {
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
 
-            CameraManager.initialize();
+            CameraManager.initialize({
+                'frontFacing': false
+            });
         }
 
         function onPause() {
@@ -38,7 +67,9 @@ module swiftsnapper {
         }
 
         function onResume() {
-            CameraManager.initialize();
+            CameraManager.initialize({
+                'frontFacing': false
+            });
         }
 
     }
@@ -72,5 +103,26 @@ module swiftsnapper {
         $('#ViewStoriesBtn').on('click tap', function () {
             views.trigger('next.owl.carousel', [300]);
         });
+
+        $('#CameraToggleBtn').on('click tap', function () {
+            if ($('#CameraPreview').hasClass('inverted')) {
+                CameraManager.initialize({
+                    'frontFacing': false
+                });
+            } else {
+                CameraManager.initialize({
+                    'frontFacing': true
+                });
+            }
+            
+        });
+        $('#ShutterBtn').on('click tap', function () {
+            CameraManager.takePhoto();
+        });
+        if (Windows.Foundation.Metadata.ApiInformation.isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
+            Windows.Phone.UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
+                $('#ShutterBtn').click();
+            });
+        }
     }
 }
