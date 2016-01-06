@@ -45,6 +45,7 @@ var swiftsnapper;
             nav: false,
             dots: false,
             margin: 0,
+            fluidSpeed: 0,
             startPosition: 1,
             responsive: {
                 0: {

@@ -146,7 +146,6 @@ header nav .item .icon::before {
     height: 100%;
     width: 100%;
     margin: 0 auto;
-    background: red;
 }
 #CameraView .CameraOverlay {
     z-index: 50;
@@ -159,10 +158,6 @@ header nav .item .icon::before {
     position: absolute;
     bottom: 25px; left: 40%;
     width: 20%;
-    padding: 0 0 calc(20% - 6px) 0; margin: 0 auto;
-    border: 3px solid #000;
-    border-radius: 100%;
-    box-sizing: border-box;
 }
 
 /* Stories View */
