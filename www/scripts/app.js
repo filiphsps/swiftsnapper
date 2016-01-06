@@ -1,7 +1,3 @@
-// For an introduction to the Blank template, see the following documentation:
-// http://go.microsoft.com/fwlink/?LinkID=397705
-// To debug code on page load in Ripple or on Android devices/emulators: launch your app, set breakpoints, 
-// and then run "window.location.reload()" in the JavaScript Console.
 var swiftsnapper;
 (function (swiftsnapper) {
     "use strict";
@@ -15,7 +11,16 @@ var swiftsnapper;
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
-            // TODO: Cordova has been loaded. Perform any initialization that requires Cordova here.
+            navigator['mediaDevices'].getUserMedia({
+                video: {
+                    facingMode: "user"
+                }
+            }).then(function (stream) {
+                var video = document.getElementById('CameraPreview');
+                video['srcObject'] = stream;
+            }).catch(function (error) {
+                console.log(error.name + ": " + error.message);
+            });
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
@@ -26,6 +31,23 @@ var swiftsnapper;
     })(Application = swiftsnapper.Application || (swiftsnapper.Application = {}));
     window.onload = function () {
         Application.initialize();
+        //Init Owl Carousel
+        var views = $('#views');
+        views.owlCarousel({
+            loop: false,
+            nav: false,
+            dots: false,
+            margin: 0,
+            responsive: {
+                0: {
+                    items: 1
+                },
+                1024: {
+                    items: 3
+                }
+            }
+        });
+        views.trigger('next.owl.carousel');
     };
 })(swiftsnapper || (swiftsnapper = {}));
 //# sourceMappingURL=app.js.map

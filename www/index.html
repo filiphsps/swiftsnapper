@@ -1,29 +1,62 @@
 ﻿<!DOCTYPE html>
 <html>
-<head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-    <title>SwiftSnapper</title>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+        <title>SwiftSnapper</title>
 
-    <link href="css/style.css" rel="stylesheet" />
-</head>
-<body>
-    <header>
-        <nav>
+        <link href="css/owl.carousel.css" rel="stylesheet"/>
+        <link href="css/mdl2.css" rel="stylesheet" />
+        <link href="css/style.css" rel="stylesheet" />
+    </head>
+    <body>
+        <main id="views">
+            <!-- Snaps View -->
+            <section id="SnapsView" class="view">
+                <header>
+                    <div class="header">SwiftSnapper</div>
+                    <nav>
+                        <div class="item"><span class="icon mdl2-find-legacy"></span></div>
+                        <div class="item"><span class="icon mdl2-comment-legacy"></span></div>
+                    </nav>
+                </header>
+                content
+            </section>
 
-        </nav>
-    </header>
+            <!-- Camera View -->
+            <section id="CameraView" class="view">
+                <div class="CameraPreview">
+                    <video id="CameraPreview" autoplay=""></video>
+                </div>
 
-    <main>
+                <div class="CameraOverlay">
+                    <header>
+                        <nav>
+                            <div id="FlashBtn" class="item left"><span class="icon mdl2-lightning"></span></div>
+                            <div id="MeBtn" class="item center"><span class="icon mdl2-emoji-2"></span></div>
+                            <div id="CameraToggleBtn" class="item right"><span class="icon mdl2-rotate-camera"></span></div>
+                        </nav>
+                    </header>
+                </div>
+            </section>
 
-    </main>
+            <!-- Stories View -->
+            <section id="StoriesView" class="view">
+                <header>
+                    <div class="header">Stories</div>
+                    <nav>
+                        <div class="item"><span class="icon mdl2-find-legacy"></span></div>
+                        <div class="item"><span class="icon">&#xE8BD;</span></div>
+                    </nav>
+                </header>
+                content
+            </section>
+        </main>
 
-    <footer>
-
-    </footer>
-
-    <script src="cordova.js"></script>
-    <script src="scripts/platformOverrides.js"></script>
-    <script src="scripts/app.js"></script>
-</body>
+        <script src="cordova.js"></script>
+        <script src="scripts/platformOverrides.js"></script>
+        <script src="scripts/jquery-2.1.4.min.js"></script>
+        <script src="scripts/owl.carousel.min.js"></script>
+        <script src="scripts/app.js"></script>
+    </body>
 </html>
