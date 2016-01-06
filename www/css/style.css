@@ -36,24 +36,24 @@ header .header {
 header nav {
     float: right;
 }
-header nav .item {
+header nav .item, footer .item {
     float: left;
     padding: 0 10px;
     cursor: pointer;
 }
-header nav .item.left {
+header nav .item.left, footer .item.left {
     position: absolute;
     top: 0; left: 0;
     float: none;
     text-align: left;
 }
-header nav .item.right {
+header nav .item.right, footer .item.right  {
     position: absolute;
     top: 0; right: 0;
     float: none;
     text-align: right;
 }
-header nav .item.center{
+header nav .item.center, footer .item.center{
     position: absolute;
     top: 0; left: calc(50% - 20px);
     float: none;
@@ -61,6 +61,20 @@ header nav .item.center{
 }
 header nav .item .icon::before {
     font-size: 20px !important;
+}
+
+/* Footer */
+footer .item.left {
+    top: calc(100% - 80px); left: 10%;
+}
+footer .item.right {
+    top: calc(100% - 80px); right: 10%;
+}
+footer .item.center{
+    top: calc(100% - 80px); left: calc(50% - 20px);
+}
+footer .item .icon::before {
+    font-size: 40px !important;
 }
 
 /* Views */

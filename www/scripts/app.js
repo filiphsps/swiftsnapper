@@ -1,3 +1,4 @@
+var views;
 var swiftsnapper;
 (function (swiftsnapper) {
     "use strict";
@@ -39,14 +40,16 @@ var swiftsnapper;
     window.onload = function () {
         Application.initialize();
         //Init Owl Carousel
-        var views = $('#views');
+        views = $('#views');
         views.owlCarousel({
             loop: false,
             nav: false,
             dots: false,
+            video: true,
             margin: 0,
-            fluidSpeed: 0,
             startPosition: 1,
+            pullDrag: false,
+            fallbackEasing: 'easeInOutQuart',
             responsive: {
                 0: {
                     items: 1
@@ -55,6 +58,12 @@ var swiftsnapper;
                     items: 3
                 }
             }
+        });
+        $('#ViewSnapsBtn').on('click tap', function () {
+            views.trigger('prev.owl.carousel', [300]);
+        });
+        $('#ViewStoriesBtn').on('click tap', function () {
+            views.trigger('next.owl.carousel', [300]);
         });
     };
 })(swiftsnapper || (swiftsnapper = {}));
