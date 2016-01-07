@@ -8,6 +8,7 @@
     <preference name="SplashScreen" value="screen" />
     <preference name="windows-target-version" value="10.0" />
     <preference name="Fullscreen" value="True" />
+    <preference name="StatusBarBackgroundColor" value="#FFFC00" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
@@ -36,8 +37,6 @@
             <vs:name>SwiftSnapper</vs:name>
         </vs:platformSpecificWidget>
     </vs:platformSpecificValues>
-    <vs:plugin name="cordova-plugin-camera" version="1.2.0" />
     <plugin name="cordova-plugin-camera" spec="~1.2.0" />
     <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
-    <plugin name="cordova-plugin-statusbar" spec="~2.0.0" />
 </widget>
