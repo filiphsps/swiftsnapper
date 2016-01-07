@@ -81,8 +81,7 @@ footer .item .icon::before {
 #views {
     height: 100%;
     width: 100%;
-    -ms-touch-action: none;
-    touch-action: none;
+    touch-action: pan-y;
     transform: translateZ(0px);
 }
 .view {
@@ -92,10 +91,9 @@ footer .item .icon::before {
     height: 100vh;
     max-width: 100vw;
     max-height: 100vh;
-    padding: 0 0 10px 0;
+    padding: 0;
     background: #fff;
-    -ms-touch-action: none;
-    touch-action: none;
+    touch-action: pan-y;
 }
 
 /* Snaps View */
