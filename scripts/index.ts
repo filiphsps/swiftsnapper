@@ -19,8 +19,6 @@ module swiftsnapper {
             Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
                 .done(function (devices) {
                     if (devices.length > 0) {
-                        //TODO: Support more than two cameras
-
                         if (conf.frontFacing) {
                             video.classList.add('FrontFacing');
 
