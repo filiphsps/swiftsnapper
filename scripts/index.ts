@@ -16,20 +16,29 @@ module swiftsnapper {
             var mediaSettings = new Capture.MediaCaptureInitializationSettings();
             mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
 
-            if (conf.frontFacing) {
-                video.className = video.className + ' frontFacing';
+            Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
+                .done(function (devices) {
+                    if (devices.length > 0) {
+                        //TODO: Support more than two cameras
 
-                //TODO: set videoDeviceId
-            } else {
-                video.className = video.className.replace(' frontFacing', '');
+                        if (conf.frontFacing) {
+                            video.classList.add('FrontFacing');
 
-                //TODO: set videoDeviceId
-            }
+                            mediaSettings.videoDeviceId = devices[1].id;
+                        } else {
+                            video.classList.remove('FrontFacing');
 
-            mediaCapture.initializeAsync(mediaSettings).done(function () {
-                video.src = URL.createObjectURL(mediaCapture);
-                video.play();
-            });
+                            mediaSettings.videoDeviceId = devices[0].id;
+                        }
+
+                        mediaCapture.initializeAsync(mediaSettings).done(function () {
+                            video.src = URL.createObjectURL(mediaCapture);
+                            video.play();
+                        });
+                    } else {
+                        //No camera found
+                    }
+                });
         }
 
         export function takePhoto() {
@@ -95,7 +104,7 @@ module swiftsnapper {
         });
 
         $('#CameraToggleBtn').on('click tap', function () {
-            if ($('#CameraPreview').hasClass('frontFacing')) {
+            if ($('#CameraPreview').hasClass('FrontFacing')) {
                 CameraManager.initialize({
                     'frontFacing': false
                 });
@@ -109,8 +118,8 @@ module swiftsnapper {
         $('#ShutterBtn').on('click tap', function () {
             CameraManager.takePhoto();
         });
-        if (Windows.Foundation.Metadata['ApiInformation'].isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
-            Windows['Phone'].UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
+        if (Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
+            Windows['Phone'].UI.Input.HardwareButtons.addEventListener('camerapressed', function (e) {
                 $('#ShutterBtn').click();
             });
         }

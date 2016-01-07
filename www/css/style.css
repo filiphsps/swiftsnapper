@@ -160,7 +160,7 @@ footer .item .icon::before {
     width: 100%;
     margin: 0 auto;
 }
-#CameraView .CameraPreview #CameraPreview.inverted{
+#CameraView .CameraPreview #CameraPreview.FrontFacing{
     transform: scale(-1, 1);
 }
 #CameraView .CameraOverlay {
