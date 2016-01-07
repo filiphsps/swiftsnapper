@@ -1,8 +1,10 @@
-﻿/*
-    Typescript implementation of https://github.com/mgp25/SC-API
-*/
-/// <reference path="snapchat.agent.ts" />
+﻿/// <reference path="snapchat.agent.ts" />
 
 class Snapchat {
+    private SnapchatAgent: SnapchatAgent;
 
+    constructor() {
+        this.SnapchatAgent = new SnapchatAgent();
+        console.log(this.SnapchatAgent.GetDeviceToken());
+    }
 }

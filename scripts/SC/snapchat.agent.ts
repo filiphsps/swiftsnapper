@@ -1,42 +1,65 @@
-﻿class SnapchatAgent {
-    private API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-    private API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
-    private USER_AGENT = 'Snapchat/9.16.2.0 (HTC One; Android 5.0.2#482424.2#21; gzip)';
+﻿declare var sha256: any;
+
+class SnapchatAgent {
+    private USER_AGENT = 'Snapchat/9.15.1.0 (iPad2,1; iOS 8.1; gzip)';
     private ENDPOINT = 'https://feelinsonice-hrd.appspot.com';
     private HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
+    private APP_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
+    private APP_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
     private BLOB_ENCRYPTION_KEY = 'M02cnQ51Ji97vwT4';
 
+    /*
+        Generates a UNIX timestamp
+    */
     public GenerateTimeStamp() {
         return Math.round((new Date).getTime());
     }
 
-    public DecryptCBC(data, key, iv) {
+    /*
+        Generates req_token
+        based on https://github.com/cuonic/SnapchatDevWiki/wiki/Generating-the-req_token
+    */
+    public GenerateRequestToken(token, timestamp) {
+        let hash1: string = sha256(this.APP_SECRET + token);
+        let hash2: string = sha256(timestamp.toString() + this.APP_SECRET);
 
-    }
-    public DecryptECB(data) {
-
-    }
-    public EncryptECB(data) {
-
-    }
-    public Hash(d1, d2) {
-        d1 = this.API_SECRET + d1;
-        d2 = d2 + this.API_SECRET;
-        
-        //TODO: Find a good PHP-like Cryptography library.
-
-        /*var hash = new sha256();
-        hash.update(hash, d1);
-        var value1 = sha256.final();
-
-        hash = new sha256();
-        hash.update(hash, d2);
-        var value2: string = hash.final();
-
-        var res = '';
+        let res = '';
         for (var n = 0; n < this.HASH_PATTERN.length; n++) {
-            res += this.HASH_PATTERN.substr(n, 1) ? value1.charAt(n) : value2.charAt(n);
+            if (parseInt(this.HASH_PATTERN.substr(n, 1))) {
+                res += hash2[n];
+            } else {
+                res += hash1[n];
+            }
         }
-        return res*/
+        return res;
+    }
+
+    /*
+        TODO: Get this mess to work
+        Currently returns 401 UNAUTHORIZED
+    */
+    public GetDeviceToken() {
+        const TS = this.GenerateTimeStamp();
+
+        let http = new XMLHttpRequest(),
+            URI = this.ENDPOINT + '/loq/device_id';
+
+        http.open('POST', URI, false);
+        
+        http.setRequestHeader('User-Agent', this.USER_AGENT);
+        http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        http.setRequestHeader('Accept-Language', 'en');
+        http.setRequestHeader('Accept-Locale', 'en_US');
+        http.setRequestHeader('Accept-Encoding', 'gzip');
+        http.setRequestHeader('X-Snapchat-Client-Auth-Token', 'Bearer ');
+        http.setRequestHeader('X-Snapchat-Client-Auth', '');
+        http.setRequestHeader('Authorization', 'Bearer ');
+
+        http.send({
+            'timestamp': TS,
+            'req_token': this.GenerateRequestToken(this.APP_STATIC_TOKEN, TS)
+        });
+
+        return http.responseText;
     }
 }

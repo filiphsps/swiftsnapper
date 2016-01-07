@@ -1,3 +1,73 @@
+var SnapchatAgent = (function () {
+    function SnapchatAgent() {
+        this.USER_AGENT = 'Snapchat/9.15.1.0 (iPad2,1; iOS 8.1; gzip)';
+        this.ENDPOINT = 'https://feelinsonice-hrd.appspot.com';
+        this.HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
+        this.APP_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
+        this.APP_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
+        this.BLOB_ENCRYPTION_KEY = 'M02cnQ51Ji97vwT4';
+    }
+    /*
+        Generates a UNIX timestamp
+    */
+    SnapchatAgent.prototype.GenerateTimeStamp = function () {
+        return Math.round((new Date).getTime());
+    };
+    /*
+        Generates req_token
+        based on https://github.com/cuonic/SnapchatDevWiki/wiki/Generating-the-req_token
+    */
+    SnapchatAgent.prototype.GenerateRequestToken = function (token, timestamp) {
+        var hash1 = sha256(this.APP_SECRET + token);
+        var hash2 = sha256(timestamp.toString() + this.APP_SECRET);
+        var res = '';
+        for (var n = 0; n < this.HASH_PATTERN.length; n++) {
+            if (parseInt(this.HASH_PATTERN.substr(n, 1))) {
+                res += hash2[n];
+            }
+            else {
+                res += hash1[n];
+            }
+        }
+        return res;
+    };
+    /*
+        TODO: Get this mess to work
+        Currently returns 401 UNAUTHORIZED
+    */
+    SnapchatAgent.prototype.GetDeviceToken = function () {
+        var TS = this.GenerateTimeStamp();
+        var http = new XMLHttpRequest(), URI = this.ENDPOINT + '/loq/device_id';
+        http.open('POST', URI, false);
+        http.setRequestHeader('User-Agent', this.USER_AGENT);
+        http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+        http.setRequestHeader('Accept-Language', 'en');
+        http.setRequestHeader('Accept-Locale', 'en_US');
+        http.setRequestHeader('Accept-Encoding', 'gzip');
+        http.setRequestHeader('X-Snapchat-Client-Auth-Token', 'Bearer ');
+        http.setRequestHeader('X-Snapchat-Client-Auth', '');
+        http.setRequestHeader('Authorization', 'Bearer ');
+        var self = this;
+        window.navigator['__defineGetter__']('userAgent', function () {
+            return self.USER_AGENT;
+        });
+        http.send({
+            'timestamp': TS,
+            'req_token': this.GenerateRequestToken(this.APP_STATIC_TOKEN, TS)
+        });
+        return http.responseText;
+    };
+    return SnapchatAgent;
+})();
+/// <reference path="snapchat.agent.ts" />
+var Snapchat = (function () {
+    function Snapchat() {
+        this.SnapchatAgent = new SnapchatAgent();
+        console.log(this.SnapchatAgent.GetDeviceToken());
+    }
+    return Snapchat;
+})();
+/// <reference path="SC/snapchat.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 var views;
@@ -44,7 +114,7 @@ var swiftsnapper;
     (function (Application) {
         function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            if (typeof Windows !== 'undefined') {
+            if (Windows !== null && typeof Windows !== 'undefined') {
                 //Set the status bar to the correct theme colour
                 var theme = {
                     a: 255,
@@ -62,6 +132,7 @@ var swiftsnapper;
                 v.titleBar.foregroundColor = Windows.UI.Colors.white;
                 v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
             }
+            var SC = new Snapchat();
         }
         Application.initialize = initialize;
         function onDeviceReady() {
@@ -149,51 +220,4 @@ var swiftsnapper;
         }
     };
 })(swiftsnapper || (swiftsnapper = {}));
-var SnapchatAgent = (function () {
-    function SnapchatAgent() {
-        this.API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-        this.API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
-        this.USER_AGENT = 'Snapchat/9.16.2.0 (HTC One; Android 5.0.2#482424.2#21; gzip)';
-        this.ENDPOINT = 'https://feelinsonice-hrd.appspot.com';
-        this.HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
-        this.BLOB_ENCRYPTION_KEY = 'M02cnQ51Ji97vwT4';
-    }
-    SnapchatAgent.prototype.GenerateTimeStamp = function () {
-        return Math.round((new Date).getTime());
-    };
-    SnapchatAgent.prototype.DecryptCBC = function (data, key, iv) {
-    };
-    SnapchatAgent.prototype.DecryptECB = function (data) {
-    };
-    SnapchatAgent.prototype.EncryptECB = function (data) {
-    };
-    SnapchatAgent.prototype.Hash = function (d1, d2) {
-        d1 = this.API_SECRET + d1;
-        d2 = d2 + this.API_SECRET;
-        //TODO: Find a good PHP-like Cryptography library.
-        /*var hash = new sha256();
-        hash.update(hash, d1);
-        var value1 = sha256.final();
-
-        hash = new sha256();
-        hash.update(hash, d2);
-        var value2: string = hash.final();
-
-        var res = '';
-        for (var n = 0; n < this.HASH_PATTERN.length; n++) {
-            res += this.HASH_PATTERN.substr(n, 1) ? value1.charAt(n) : value2.charAt(n);
-        }
-        return res*/
-    };
-    return SnapchatAgent;
-})();
-/*
-    Typescript implementation of https://github.com/mgp25/SC-API
-*/
-/// <reference path="snapchat.agent.ts" />
-var Snapchat = (function () {
-    function Snapchat() {
-    }
-    return Snapchat;
-})();
 //# sourceMappingURL=app.js.map

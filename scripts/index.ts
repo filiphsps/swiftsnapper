@@ -1,4 +1,5 @@
-﻿/// <reference path="typings/winrt/winrt.d.ts" />
+﻿/// <reference path="SC/snapchat.ts" />
+/// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 var views
 declare var Handlebars: any;
@@ -49,7 +50,7 @@ module swiftsnapper {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
 
-            if (typeof Windows !== 'undefined') {
+            if (Windows !== null && typeof Windows !== 'undefined') {
                 //Set the status bar to the correct theme colour
                 var theme = {
                     a: 255,
@@ -69,6 +70,8 @@ module swiftsnapper {
                 v.titleBar.foregroundColor = Windows.UI.Colors.white;
                 v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
             }
+
+            var SC = new Snapchat();
         }
 
         function onDeviceReady() {
