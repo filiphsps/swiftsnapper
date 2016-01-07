@@ -50,27 +50,6 @@ module swiftsnapper {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
 
-            if (Windows !== null && typeof Windows !== 'undefined') {
-                //Set the status bar to the correct theme colour
-                var theme = {
-                    a: 255,
-                    r: 255,
-                    g: 252,
-                    b: 0
-                },
-
-                v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-                v.titleBar.inactiveBackgroundColor = theme;
-                v.titleBar.buttonInactiveBackgroundColor = theme;
-                v.titleBar.backgroundColor = theme;
-                v.titleBar.buttonBackgroundColor = theme;
-                v.titleBar.inactiveForegroundColor = Windows.UI.Colors.white;
-                v.titleBar['inactiveButtonForegroundColor'] = Windows.UI.Colors.white;
-                v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
-                v.titleBar.foregroundColor = Windows.UI.Colors.white;
-                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-            }
-
             var SC = new Snapchat();
         }
 
@@ -159,7 +138,9 @@ module swiftsnapper {
         $('#ShutterBtn').on('click tap', function () {
             CameraManager.takePhoto();
         });
-        if (Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
+
+
+        if (typeof Windows !== 'undefined' && Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
             Windows['Phone'].UI.Input.HardwareButtons.addEventListener('camerapressed', function (e) {
                 $('#ShutterBtn').click();
             });
