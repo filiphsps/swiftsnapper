@@ -11,35 +11,25 @@ module swiftsnapper {
 
         export function initialize(conf) {
             video = document.getElementById('CameraPreview');
-
-            if (mediaStream)
-                mediaStream.stop();
+            var Capture = Windows.Media.Capture;
+            var mediaCapture = new Capture.MediaCapture();
+            var mediaSettings = Capture.MediaCaptureInitializationSettings();
+            mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
 
             if (conf.frontFacing) {
-                video.className = video.className + ' inverted';
+                video.className = video.className + ' frontFacing';
 
-                navigator['mediaDevices'].getUserMedia({
-                    video: {
-                        facingMode: "user"
-                    },
-                    audio: false
-                }).then(function (stream) {
-                    mediaStream = stream;
-                    video['srcObject'] = stream;
-                }).catch(function (error) {});
+                //TODO: set videoDeviceId
             } else {
-                video.className = video.className.replace(' inverted', '');
+                video.className = video.className.replace(' frontFacing', '');
 
-                navigator['mediaDevices'].getUserMedia({
-                    video: {
-                        facingMode: "back",
-                    },
-                    audio: false
-                }).then(function (stream) {
-                    mediaStream = stream;
-                    video['srcObject'] = stream;
-                }).catch(function (error) { });
+                //TODO: set videoDeviceId
             }
+
+            mediaCapture.initializeAsync(mediaSettings).done(function (stream) {
+                video.src = URL.createObjectURL(mediaCapture);
+                video.play();
+            });
         }
 
         export function takePhoto() {
@@ -105,7 +95,7 @@ module swiftsnapper {
         });
 
         $('#CameraToggleBtn').on('click tap', function () {
-            if ($('#CameraPreview').hasClass('inverted')) {
+            if ($('#CameraPreview').hasClass('frontFacing')) {
                 CameraManager.initialize({
                     'frontFacing': false
                 });

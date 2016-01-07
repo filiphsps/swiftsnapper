@@ -8,32 +8,20 @@ var swiftsnapper;
         var mediaStream;
         function initialize(conf) {
             video = document.getElementById('CameraPreview');
-            if (mediaStream)
-                mediaStream.stop();
+            var Capture = Windows.Media.Capture;
+            var mediaCapture = new Capture.MediaCapture();
+            var mediaSettings = Capture.MediaCaptureInitializationSettings();
+            mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
             if (conf.frontFacing) {
-                video.className = video.className + ' inverted';
-                navigator['mediaDevices'].getUserMedia({
-                    video: {
-                        facingMode: "user"
-                    },
-                    audio: false
-                }).then(function (stream) {
-                    mediaStream = stream;
-                    video['srcObject'] = stream;
-                }).catch(function (error) { });
+                video.className = video.className + ' frontFacing';
             }
             else {
-                video.className = video.className.replace(' inverted', '');
-                navigator['mediaDevices'].getUserMedia({
-                    video: {
-                        facingMode: "back",
-                    },
-                    audio: false
-                }).then(function (stream) {
-                    mediaStream = stream;
-                    video['srcObject'] = stream;
-                }).catch(function (error) { });
+                video.className = video.className.replace(' frontFacing', '');
             }
+            mediaCapture.initializeAsync(mediaSettings).done(function (stream) {
+                video.src = URL.createObjectURL(mediaCapture);
+                video.play();
+            });
         }
         CameraManager.initialize = initialize;
         function takePhoto() {
@@ -93,7 +81,7 @@ var swiftsnapper;
             views.trigger('next.owl.carousel', [300]);
         });
         $('#CameraToggleBtn').on('click tap', function () {
-            if ($('#CameraPreview').hasClass('inverted')) {
+            if ($('#CameraPreview').hasClass('frontFacing')) {
                 CameraManager.initialize({
                     'frontFacing': false
                 });
