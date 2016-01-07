@@ -44,7 +44,7 @@ class SnapchatAgent {
         const TS = this.GenerateTimeStamp();
 
         let http = new XMLHttpRequest(),
-            URI = this.ENDPOINT + '/loq/device_id';
+            URI = this.BASE_ENDPOINT + '/loq/device_id';
 
         http.open('POST', URI, false);
         

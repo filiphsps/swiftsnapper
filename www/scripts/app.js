@@ -1,7 +1,9 @@
 var SnapchatAgent = (function () {
     function SnapchatAgent() {
-        this.USER_AGENT = 'Snapchat/9.15.1.0 (iPad2,1; iOS 8.1; gzip)';
-        this.ENDPOINT = 'https://feelinsonice-hrd.appspot.com';
+        this.USER_AGENT = 'Snapchat/9.21.0.1 (iPhone8,1; iOS 9.0.2; gzip)';
+        this.BASE_ENDPOINT = 'https://app.snapchat.com';
+        this.EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
+        this.ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
         this.HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
         this.APP_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
         this.APP_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
@@ -37,8 +39,8 @@ var SnapchatAgent = (function () {
     */
     SnapchatAgent.prototype.GetDeviceToken = function () {
         var TS = this.GenerateTimeStamp();
-        var http = new XMLHttpRequest(), URI = this.ENDPOINT + '/loq/device_id';
-        http.open('GET', URI, false);
+        var http = new XMLHttpRequest(), URI = this.BASE_ENDPOINT + '/loq/device_id';
+        http.open('POST', URI, false);
         http.setRequestHeader('User-Agent', this.USER_AGENT);
         http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         http.setRequestHeader('Accept-Language', 'en');
@@ -59,7 +61,6 @@ var SnapchatAgent = (function () {
 var Snapchat = (function () {
     function Snapchat() {
         this.SnapchatAgent = new SnapchatAgent();
-        console.log(this.SnapchatAgent.GetDeviceToken());
     }
     return Snapchat;
 })();

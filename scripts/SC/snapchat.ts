@@ -5,6 +5,5 @@ class Snapchat {
 
     constructor() {
         this.SnapchatAgent = new SnapchatAgent();
-        console.log(this.SnapchatAgent.GetDeviceToken());
     }
 }
