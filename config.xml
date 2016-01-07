@@ -1,41 +1,43 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<widget xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps" id="com.filfat.swiftsnapper" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" defaultlocale="en-US">
-  <name>SwiftSnapper</name>
-  <description>
-  </description>
-  <author href="http://filiphsandstrom.com" email="filiph.sandstrom@filfatstudios.com">Filiph Sandström &amp; Contributors</author>
-  <content src="index.html" />
-  <preference name="SplashScreen" value="screen" />
-  <preference name="windows-target-version" value="10.0" />
-  <preference name="Fullscreen" value="True" />
-  <plugin name="cordova-plugin-whitelist" version="1" />
-  <allow-intent href="http://*/*" />
-  <allow-intent href="https://*/*" />
-  <allow-intent href="tel:*" />
-  <allow-intent href="sms:*" />
-  <allow-intent href="mailto:*" />
-  <allow-intent href="geo:*" />
-  <access origin="*" />
-  <platform name="windows">
-    <icon src="res/icons/windows/Square150x150Logo.scale-100.png" width="150" height="150" />
-    <icon src="res/icons/windows/Square150x150Logo.scale-240.png" width="360" height="360" />
-    <icon src="res/icons/windows/Square30x30Logo.scale-100.png" width="30" height="30" />
-    <icon src="res/icons/windows/Square310x310Logo.scale-100.png" width="310" height="310" />
-    <icon src="res/icons/windows/Square44x44Logo.scale-240.png" width="106" height="106" />
-    <icon src="res/icons/windows/Square70x70Logo.scale-100.png" width="70" height="70" />
-    <icon src="res/icons/windows/Square71x71Logo.scale-240.png" width="170" height="170" />
-    <icon src="res/icons/windows/StoreLogo.scale-100.png" width="50" height="50" />
-    <icon src="res/icons/windows/StoreLogo.scale-240.png" width="120" height="120" />
-    <icon src="res/icons/windows/Wide310x150Logo.scale-100.png" width="310" height="150" />
-    <icon src="res/icons/windows/Wide310x150Logo.scale-240.png" width="744" height="360" />
-    <splash src="res/screens/windows/SplashScreen.scale-100.png" width="620" height="300" />
-    <splash src="res/screens/windows/SplashScreen.scale-240.png" width="1152" height="1920" />
-    <splash src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" height="1920" />
-  </platform>
-  <vs:platformSpecificValues>
-    <vs:platformSpecificWidget platformName="windows" id="com.filfat.swiftsnapper">
-      <vs:name>SwiftSnapper</vs:name>
-    </vs:platformSpecificWidget>
-  </vs:platformSpecificValues>
-  <vs:plugin name="cordova-plugin-camera" version="1.2.0" />
+<?xml version='1.0' encoding='utf-8'?>
+<widget defaultlocale="en-US" id="com.filfat.swiftsnapper" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps">
+    <name>SwiftSnapper</name>
+    <description>
+    </description>
+    <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström &amp; Contributors</author>
+    <content src="index.html" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="windows-target-version" value="10.0" />
+    <preference name="Fullscreen" value="True" />
+    <allow-intent href="http://*/*" />
+    <allow-intent href="https://*/*" />
+    <allow-intent href="tel:*" />
+    <allow-intent href="sms:*" />
+    <allow-intent href="mailto:*" />
+    <allow-intent href="geo:*" />
+    <access origin="*" />
+    <platform name="windows">
+        <icon height="150" src="res/icons/windows/Square150x150Logo.scale-100.png" width="150" />
+        <icon height="360" src="res/icons/windows/Square150x150Logo.scale-240.png" width="360" />
+        <icon height="30" src="res/icons/windows/Square30x30Logo.scale-100.png" width="30" />
+        <icon height="310" src="res/icons/windows/Square310x310Logo.scale-100.png" width="310" />
+        <icon height="106" src="res/icons/windows/Square44x44Logo.scale-240.png" width="106" />
+        <icon height="70" src="res/icons/windows/Square70x70Logo.scale-100.png" width="70" />
+        <icon height="170" src="res/icons/windows/Square71x71Logo.scale-240.png" width="170" />
+        <icon height="50" src="res/icons/windows/StoreLogo.scale-100.png" width="50" />
+        <icon height="120" src="res/icons/windows/StoreLogo.scale-240.png" width="120" />
+        <icon height="150" src="res/icons/windows/Wide310x150Logo.scale-100.png" width="310" />
+        <icon height="360" src="res/icons/windows/Wide310x150Logo.scale-240.png" width="744" />
+        <splash height="300" src="res/screens/windows/SplashScreen.scale-100.png" width="620" />
+        <splash height="1920" src="res/screens/windows/SplashScreen.scale-240.png" width="1152" />
+        <splash height="1920" src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" />
+    </platform>
+    <vs:platformSpecificValues>
+        <vs:platformSpecificWidget id="com.filfat.swiftsnapper" platformName="windows">
+            <vs:name>SwiftSnapper</vs:name>
+        </vs:platformSpecificWidget>
+    </vs:platformSpecificValues>
+    <vs:plugin name="cordova-plugin-camera" version="1.2.0" />
+    <plugin name="cordova-plugin-camera" spec="~1.2.0" />
+    <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
+    <plugin name="cordova-plugin-statusbar" spec="~2.0.0" />
 </widget>
