@@ -1,5 +1,5 @@
-﻿declare var $: any;
-declare var Windows: any;
+﻿/// <reference path="typings/winrt/winrt.d.ts" />
+/// <reference path="typings/jquery/jquery.d.ts" />
 var views
 
 module swiftsnapper {
@@ -13,7 +13,7 @@ module swiftsnapper {
             video = document.getElementById('CameraPreview');
             var Capture = Windows.Media.Capture;
             var mediaCapture = new Capture.MediaCapture();
-            var mediaSettings = Capture.MediaCaptureInitializationSettings();
+            var mediaSettings = new Capture.MediaCaptureInitializationSettings();
             mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
 
             if (conf.frontFacing) {
@@ -26,7 +26,7 @@ module swiftsnapper {
                 //TODO: set videoDeviceId
             }
 
-            mediaCapture.initializeAsync(mediaSettings).done(function (stream) {
+            mediaCapture.initializeAsync(mediaSettings).done(function () {
                 video.src = URL.createObjectURL(mediaCapture);
                 video.play();
             });
@@ -109,8 +109,8 @@ module swiftsnapper {
         $('#ShutterBtn').on('click tap', function () {
             CameraManager.takePhoto();
         });
-        if (Windows.Foundation.Metadata.ApiInformation.isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
-            Windows.Phone.UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
+        if (Windows.Foundation.Metadata['ApiInformation'].isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
+            Windows['Phone'].UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
                 $('#ShutterBtn').click();
             });
         }

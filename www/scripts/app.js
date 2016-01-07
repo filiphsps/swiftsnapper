@@ -1,3 +1,5 @@
+/// <reference path="typings/winrt/winrt.d.ts" />
+/// <reference path="typings/jquery/jquery.d.ts" />
 var views;
 var swiftsnapper;
 (function (swiftsnapper) {
@@ -10,7 +12,7 @@ var swiftsnapper;
             video = document.getElementById('CameraPreview');
             var Capture = Windows.Media.Capture;
             var mediaCapture = new Capture.MediaCapture();
-            var mediaSettings = Capture.MediaCaptureInitializationSettings();
+            var mediaSettings = new Capture.MediaCaptureInitializationSettings();
             mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
             if (conf.frontFacing) {
                 video.className = video.className + ' frontFacing';
@@ -18,7 +20,7 @@ var swiftsnapper;
             else {
                 video.className = video.className.replace(' frontFacing', '');
             }
-            mediaCapture.initializeAsync(mediaSettings).done(function (stream) {
+            mediaCapture.initializeAsync(mediaSettings).done(function () {
                 video.src = URL.createObjectURL(mediaCapture);
                 video.play();
             });
@@ -95,8 +97,8 @@ var swiftsnapper;
         $('#ShutterBtn').on('click tap', function () {
             CameraManager.takePhoto();
         });
-        if (Windows.Foundation.Metadata.ApiInformation.isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
-            Windows.Phone.UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
+        if (Windows.Foundation.Metadata['ApiInformation'].isTypePresent("Windows.Phone.UI.Input.HardwareButtons")) {
+            Windows['Phone'].UI.Input.HardwareButtons.addEventListener("camerapressed", function (e) {
                 $('#ShutterBtn').click();
             });
         }
