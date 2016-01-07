@@ -1,6 +1,7 @@
 ﻿/// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 var views
+declare var Handlebars: any;
 
 module swiftsnapper {
     "use strict";
@@ -93,6 +94,24 @@ module swiftsnapper {
     }
 
     window.onload = function () {
+        //TODO: Provide data from file
+        var lang = {
+            app: {
+                name: 'SwiftSnapper'
+            },
+            snaps: {
+                double_tap_to_reply: 'Double tap to reply',
+                day_ago: 'day ago',
+                days_ago: 'days ago',
+                just_now: 'just now',
+            },
+            stories: {
+                title: 'Stories',
+                discover: 'Discover',
+            }
+        };
+        var template = Handlebars.compile($("#template").html());
+        $('#PageContent').html(template(lang));
         Application.initialize();
 
         //Init Owl Carousel
