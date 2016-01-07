@@ -38,7 +38,7 @@ var SnapchatAgent = (function () {
     SnapchatAgent.prototype.GetDeviceToken = function () {
         var TS = this.GenerateTimeStamp();
         var http = new XMLHttpRequest(), URI = this.ENDPOINT + '/loq/device_id';
-        http.open('POST', URI, false);
+        http.open('GET', URI, false);
         http.setRequestHeader('User-Agent', this.USER_AGENT);
         http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
         http.setRequestHeader('Accept-Language', 'en');
@@ -47,10 +47,6 @@ var SnapchatAgent = (function () {
         http.setRequestHeader('X-Snapchat-Client-Auth-Token', 'Bearer ');
         http.setRequestHeader('X-Snapchat-Client-Auth', '');
         http.setRequestHeader('Authorization', 'Bearer ');
-        var self = this;
-        window.navigator['__defineGetter__']('userAgent', function () {
-            return self.USER_AGENT;
-        });
         http.send({
             'timestamp': TS,
             'req_token': this.GenerateRequestToken(this.APP_STATIC_TOKEN, TS)

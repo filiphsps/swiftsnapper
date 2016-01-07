@@ -1,8 +1,10 @@
 ﻿declare var sha256: any;
 
 class SnapchatAgent {
-    private USER_AGENT = 'Snapchat/9.15.1.0 (iPad2,1; iOS 8.1; gzip)';
-    private ENDPOINT = 'https://feelinsonice-hrd.appspot.com';
+    private USER_AGENT = 'Snapchat/9.21.0.1 (iPhone8,1; iOS 9.0.2; gzip)';
+    private BASE_ENDPOINT = 'https://app.snapchat.com';
+    private EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
+    private ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
     private HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
     private APP_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
     private APP_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
