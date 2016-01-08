@@ -16,7 +16,7 @@ namespace Snapchat {
         public CASPER_USER_AGENT = 'Casper/1.5.2.3 (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip; SwiftSnapper)';
         public CASPER_ENDPOINT = 'https://api.casper.io';
         public CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
-        public CASPER_API_TOKEN = 'TODO: Figure this one out';
+        public CASPER_API_TOKEN = '9UpsYwhthWspIoHonKjniOMu09UBkS9w';
         public CASPER_API_SECRET = 'fuckinginsecuresecretkey'; //API secret taken from io.casper.android.n.a.a
         public CASPER_SIGNATURE = 'v1:3d603604ff4a56d8a6821e9edfd8bb1257af436faf88c1a9bbb9dcefe8a56849';
         public CASPER_VERSION = '1.5.2.3';

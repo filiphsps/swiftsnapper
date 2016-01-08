@@ -15,7 +15,7 @@ var Snapchat;
             this.CASPER_USER_AGENT = 'Casper/1.5.2.3 (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip; SwiftSnapper)';
             this.CASPER_ENDPOINT = 'https://api.casper.io';
             this.CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
-            this.CASPER_API_TOKEN = 'TODO: Figure this one out';
+            this.CASPER_API_TOKEN = '9UpsYwhthWspIoHonKjniOMu09UBkS9w';
             this.CASPER_API_SECRET = 'fuckinginsecuresecretkey'; //API secret taken from io.casper.android.n.a.a
             this.CASPER_SIGNATURE = 'v1:3d603604ff4a56d8a6821e9edfd8bb1257af436faf88c1a9bbb9dcefe8a56849';
             this.CASPER_VERSION = '1.5.2.3';
@@ -58,7 +58,6 @@ var Snapchat;
         SnapchatAgent.prototype.InitializeCasper = function () {
             this.CASPER_DEVICE_ID = this.GenerateCasperDeviceId();
             var timestamp = this.GenerateTimeStamp();
-            console.log(this.GenerateRequestToken(this.SNAPCHAT_API_STATIC_TOKEN, 1440465889080));
             //TODO: Request config values from "/config"
             var self = this;
             var configCallback = function (config) {
@@ -68,7 +67,6 @@ var Snapchat;
                 self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
                 self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
                 self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-                console.log(config);
             };
             this.PostCasper(configCallback, '/config', [
                 ['casper_version', this.CASPER_VERSION],
@@ -107,7 +105,6 @@ var Snapchat;
             else
                 HEAD.cacheControl.clear();
             HEAD.userAgent.parseAdd(this.CASPER_USER_AGENT);
-            //HEAD.connection.parseAdd('Keep-Alive');
             HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
             HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
             var promise = HTTP.postAsync(URI, REQ).done(function (res) {
@@ -183,32 +180,8 @@ var Snapchat;
         function Client() {
             this.SnapchatAgent = new Snapchat.SnapchatAgent();
         }
-        Client.prototype.Login = function (data) {
-            /*const timestamp = this.SnapchatAgent.GenerateTimeStamp(),
-                req =
-                    'casper_version=' + this.SnapchatAgent.CASPER_VERSION +
-                    '&google_email=' + data.gmail.user +
-                    '&google_password_encrypted=' + 'TODO' +
-                    '&snapchat_version=' + this.SnapchatAgent.SNAPCHAT_VERSION +
-                    '&snapchat_user_agent' + encodeURI(this.SnapchatAgent.SNAPCHAT_ANDROID_USER_AGENT) +
-                    '&username' + data.snapchat.user +
-                    '&password' + data.snapchat.pass +
-                    '&timestamp' + timestamp;
-
-            let URI = new Windows.Foundation.Uri(this.SnapchatAgent.CASPER_ENDPOINT + '/snapchat/auth'),
-                REQ = Windows.Web['Http'].HttpStringContent(req, Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
-                HTTP = new Windows.Web['Http'].HttpClient(),
-                HEADERS = HTTP.defaultRequestHeaders;
-
-            HEADERS.userAgent.parseAdd(this.SnapchatAgent.CASPER_USER_AGENT);
-            HEADERS.connection.parseAdd('Keep-Alive');
-            HEADERS.acceptEncoding.parseAdd('gzip');
-            HEADERS.append('X-Casper-API-Key', this.SnapchatAgent.CASPER_API_TOKEN);
-            HEADERS.append('X-Casper-Signature', this.SnapchatAgent.CASPER_SIGNATURE);
-
-            let httpPromise = HTTP.postAsync(URI, REQ).then(function (res) {
-                console.log(res);
-            });*/
+        Client.prototype.Login = function (username, password) {
+            //TODO
         };
         return Client;
     })();
