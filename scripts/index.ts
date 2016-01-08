@@ -50,7 +50,7 @@ module swiftsnapper {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
 
-            var SC = new Snapchat();
+            var SC = new Snapchat.Client();
         }
 
         function onDeviceReady() {
