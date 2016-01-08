@@ -184,8 +184,8 @@ namespace Snapchat {
             for (var n = 0; n < data.length; n++) {
                 if (res != '') {
                     res += '&';
-                    res += data[n][0] + '=' + data[n][1];
                 }
+                res += data[n][0] + '=' + data[n][1];
             }
             return res;
         }

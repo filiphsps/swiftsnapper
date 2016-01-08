@@ -99,7 +99,8 @@ var Snapchat;
             if (URI == null || parameters == null)
                 return -1;
             URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
-            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+            var par = this.ArrayToURIParameters(parameters);
+            var REQ = Windows.Web['Http'].HttpStringContent(par.toString(), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
             //TODO: Custom headers?
             if (typeof headers.AcceptEncoding !== 'undefined') {
                 HEAD.acceptEncoding.clear();
@@ -161,8 +162,8 @@ var Snapchat;
             for (var n = 0; n < data.length; n++) {
                 if (res != '') {
                     res += '&';
-                    res += data[n][0] + '=' + data[n][1];
                 }
+                res += data[n][0] + '=' + data[n][1];
             }
             return res;
         };
