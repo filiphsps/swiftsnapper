@@ -57,7 +57,8 @@
                 items: 1,
             });
             $('#LogInBtn').on('click tap', function () {
-                views.trigger('next.owl.carousel', [300]);
+                //views.trigger('next.owl.carousel', [300]);
+                window.location.href = '../overview/index.html'; //Temp
             });
             $('#SignUpBtn').on('click tap', function () {
                 views.trigger('prev.owl.carousel', [300]);
@@ -82,6 +83,11 @@
                 v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
                 v.titleBar.foregroundColor = Windows.UI.Colors.white;
                 v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
+
+                v.setPreferredMinSize({
+                    height: 1024,
+                    width: 325
+                });
             }
         </script>
     </body>
