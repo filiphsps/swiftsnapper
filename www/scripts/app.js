@@ -20,9 +20,15 @@ var Snapchat;
             this.CASPER_SIGNATURE = 'v1:3d603604ff4a56d8a6821e9edfd8bb1257af436faf88c1a9bbb9dcefe8a56849';
             this.CASPER_VERSION = '1.5.2.3';
             this.CASPER_DEVICE_ID = null;
-            if (!this.InitializeCasper())
-                console.log('Initialization of Casper failed!'); //TODO: Show error dialog through custom message class
         }
+        SnapchatAgent.prototype.Initialize = function () {
+            var _this = this;
+            return new Promise(function (resolve) {
+                _this.InitializeCasper().then(function () {
+                    resolve(this);
+                });
+            });
+        };
         /*
             Generates a UNIX timestamp
         */
@@ -56,31 +62,32 @@ var Snapchat;
             Initialize Casper for use
         */
         SnapchatAgent.prototype.InitializeCasper = function () {
+            var _this = this;
             this.CASPER_DEVICE_ID = this.GenerateCasperDeviceId();
             var timestamp = this.GenerateTimeStamp();
-            //TODO: Request config values from "/config"
             var self = this;
-            var configCallback = function (config) {
-                if (config.code !== 200)
-                    console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
-                var sc_ver = self.SNAPCHAT_VERSION;
-                self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
-                self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-                self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-            };
-            this.PostCasper(configCallback, '/config', [
-                ['casper_version', this.CASPER_VERSION],
-                ['device_id', this.CASPER_DEVICE_ID],
-                ['snapchat_version', this.SNAPCHAT_VERSION],
-                ['timestamp', timestamp.toString()],
-                ['token', this.CASPER_API_TOKEN],
-                ['token_hash', this.GenerateCasperTokenHash()]
-            ], {
-                'Connection': 'Keep-Alive',
-                'AcceptEncoding': 'gzip'
+            return new Promise(function (resolve) {
+                var configCallback = function (config) {
+                    if (config.code !== 200)
+                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
+                    var sc_ver = self.SNAPCHAT_VERSION;
+                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
+                    self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
+                    self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
+                    resolve(this);
+                };
+                _this.PostCasper(configCallback, '/config', [
+                    ['casper_version', _this.CASPER_VERSION],
+                    ['device_id', _this.CASPER_DEVICE_ID],
+                    ['snapchat_version', _this.SNAPCHAT_VERSION],
+                    ['timestamp', timestamp.toString()],
+                    ['token', _this.CASPER_API_TOKEN],
+                    ['token_hash', _this.GenerateCasperTokenHash()]
+                ], {
+                    'Connection': 'Keep-Alive',
+                    'AcceptEncoding': 'gzip'
+                });
             });
-            //TODO: Make async?
-            return 1;
         };
         /*
             Post request to Casper.io's API
@@ -178,8 +185,16 @@ var Snapchat;
 (function (Snapchat) {
     var Client = (function () {
         function Client() {
-            this.SnapchatAgent = new Snapchat.SnapchatAgent();
         }
+        Client.prototype.Initialize = function () {
+            var _this = this;
+            this.SnapchatAgent = new Snapchat.SnapchatAgent();
+            return new Promise(function (resolve) {
+                _this.SnapchatAgent.Initialize().then(function () {
+                    resolve(this);
+                });
+            });
+        };
         Client.prototype.Login = function (username, password) {
             //TODO
         };
@@ -190,6 +205,7 @@ var Snapchat;
 /// <reference path="SC/snapchat.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/es6-promise/es6-promise.d.ts" />
 var views;
 var swiftsnapper;
 (function (swiftsnapper) {
@@ -235,6 +251,9 @@ var swiftsnapper;
         function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
             var SC = new Snapchat.Client();
+            SC.Initialize().then(function () {
+                SC.Login('user', 'pass');
+            });
         }
         Application.initialize = initialize;
         function onDeviceReady() {

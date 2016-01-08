@@ -2,7 +2,7 @@
 var sha256 = new Hashes.SHA256
 
 namespace Snapchat {
-    export class SnapchatAgent {
+    export class SnapchatAgent{
         public SNAPCHAT_IOS_USER_AGENT = 'Snapchat/{sc_ver} (iPhone5,1; iOS 8.4; gzip)'
         public SNAPCHAT_ANDROID_USER_AGENT = 'Snapchat/{sc_ver} (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip)'
         public SNAPCHAT_BASE_ENDPOINT = 'https://app.snapchat.com';
@@ -22,9 +22,12 @@ namespace Snapchat {
         public CASPER_VERSION = '1.5.2.3';
         public CASPER_DEVICE_ID = null;
 
-        constructor() {
-            if (!this.InitializeCasper())
-                console.log('Initialization of Casper failed!'); //TODO: Show error dialog through custom message class
+        public Initialize() {
+            return new Promise((resolve) => {
+                this.InitializeCasper().then(function () {
+                    resolve(this);
+                });
+            });
         }
 
         /*
@@ -67,33 +70,33 @@ namespace Snapchat {
             this.CASPER_DEVICE_ID = this.GenerateCasperDeviceId();
             var timestamp = this.GenerateTimeStamp();
 
-            //TODO: Request config values from "/config"
             var self = this;
-            let configCallback = function (config) {
-                if (config.code !== 200)
-                    console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
+            return new Promise((resolve) => {
+                let configCallback = function (config) {
+                    if (config.code !== 200)
+                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
 
-                var sc_ver = self.SNAPCHAT_VERSION;
-                self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
-                self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-                self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-            };
+                    var sc_ver = self.SNAPCHAT_VERSION;
+                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
+                    self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
+                    self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
 
-            this.PostCasper(configCallback, '/config', [
-                ['casper_version', this.CASPER_VERSION],
-                ['device_id', this.CASPER_DEVICE_ID],
-                ['snapchat_version', this.SNAPCHAT_VERSION],
-                ['timestamp', timestamp.toString()],
-                ['token', this.CASPER_API_TOKEN],
-                ['token_hash', this.GenerateCasperTokenHash()]
-            ],
-                {
-                    'Connection': 'Keep-Alive',
-                    'AcceptEncoding': 'gzip'
-                });
+                    resolve(this);
+                };
 
-            //TODO: Make async?
-            return 1;
+                this.PostCasper(configCallback, '/config', [
+                    ['casper_version', this.CASPER_VERSION],
+                    ['device_id', this.CASPER_DEVICE_ID],
+                    ['snapchat_version', this.SNAPCHAT_VERSION],
+                    ['timestamp', timestamp.toString()],
+                    ['token', this.CASPER_API_TOKEN],
+                    ['token_hash', this.GenerateCasperTokenHash()]
+                ],
+                    {
+                        'Connection': 'Keep-Alive',
+                        'AcceptEncoding': 'gzip'
+                    });
+            });
         }
 
         /*

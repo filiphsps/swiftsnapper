@@ -1,6 +1,7 @@
 ﻿/// <reference path="SC/snapchat.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/es6-promise/es6-promise.d.ts" />
 var views
 declare var Handlebars: any;
 
@@ -51,6 +52,9 @@ module swiftsnapper {
             document.addEventListener('deviceready', onDeviceReady, false);
 
             var SC = new Snapchat.Client();
+            SC.Initialize().then(function () {
+                SC.Login('user', 'pass');
+            });
         }
 
         function onDeviceReady() {
