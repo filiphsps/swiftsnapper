@@ -11,7 +11,7 @@ var Snapchat;
             this.SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
             this.SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
             this.SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-            this.SNAPCHAT_VERSION = null;
+            this.SNAPCHAT_VERSION = 'WILLCHANGE';
             this.CASPER_USER_AGENT = 'Casper/1.5.2.3 (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip; SwiftSnapper)';
             this.CASPER_ENDPOINT = 'https://api.casper.io';
             this.CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
@@ -99,8 +99,7 @@ var Snapchat;
             if (URI == null || parameters == null)
                 return -1;
             URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
-            var par = this.ArrayToURIParameters(parameters);
-            var REQ = Windows.Web['Http'].HttpStringContent(par.toString(), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
             //TODO: Custom headers?
             if (typeof headers.AcceptEncoding !== 'undefined') {
                 HEAD.acceptEncoding.clear();

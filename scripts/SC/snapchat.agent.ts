@@ -11,7 +11,7 @@ namespace Snapchat {
         public SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
         public SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
         public SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-        public SNAPCHAT_VERSION = null;
+        public SNAPCHAT_VERSION = 'WILLCHANGE';
 
         public CASPER_USER_AGENT = 'Casper/1.5.2.3 (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip; SwiftSnapper)';
         public CASPER_ENDPOINT = 'https://api.casper.io';
