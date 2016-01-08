@@ -3,18 +3,21 @@ var sha256 = new Hashes.SHA256
 
 namespace Snapchat {
     export class SnapchatAgent{
-        public SNAPCHAT_IOS_USER_AGENT = 'Snapchat/{sc_ver} (iPhone5,1; iOS 8.4; gzip)'
-        public SNAPCHAT_ANDROID_USER_AGENT = 'Snapchat/{sc_ver} (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip)'
         public SNAPCHAT_BASE_ENDPOINT = 'https://app.snapchat.com';
         public SNAPCHAT_EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
         public SNAPCHAT_ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
         public SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
         public SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
         public SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-        public SNAPCHAT_VERSION = 'WILLCHANGE';
+        public SNAPCHAT_CLIENT_AUTH_TOKEN = null;
+        public SNAPCHAT_CLIENT_TOKEN = null;
+        public SNAPCHAT_UUID = null;
+        public SNAPCHAT_USER_AGENT = null;
+        public SNAPCHAT_VERSION = 'x.x.x.x';
 
-        public CASPER_USER_AGENT = 'Casper/1.5.2.3 (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip; SwiftSnapper)';
+        public CASPER_USER_AGENT = 'Casper/1.5.2.3 (SwiftSnapper; Windows 10; gzip)';
         public CASPER_ENDPOINT = 'https://api.casper.io';
+        public CASPER_HASH_PATTERN = '0100011111110000101111101001101011110010100110011101110010101000';
         public CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
         public CASPER_API_TOKEN = '9UpsYwhthWspIoHonKjniOMu09UBkS9w';
         public CASPER_API_SECRET = 'fuckinginsecuresecretkey'; //API secret taken from io.casper.android.n.a.a
@@ -72,70 +75,78 @@ namespace Snapchat {
 
             var self = this;
             return new Promise((resolve) => {
-                let configCallback = function (config) {
-                    if (config.code !== 200)
-                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
-
-                    var sc_ver = self.SNAPCHAT_VERSION;
-                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
-                    self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-                    self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-
-                    resolve(this);
+                let headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': this.CASPER_USER_AGENT,
                 };
 
-                this.PostCasper(configCallback, '/config', [
+                this.PostCasper('/config', [
                     ['casper_version', this.CASPER_VERSION],
                     ['device_id', this.CASPER_DEVICE_ID],
                     ['snapchat_version', this.SNAPCHAT_VERSION],
                     ['timestamp', timestamp.toString()],
                     ['token', this.CASPER_API_TOKEN],
-                    ['token_hash', this.GenerateCasperTokenHash()]
-                ],
-                    {
-                        'Connection': 'Keep-Alive',
-                        'AcceptEncoding': 'gzip'
-                    });
+                    ['token_hash', this.GenerateCasperTokenHash(timestamp)]
+                ], headers).then(function (conf) {
+                    let config = JSON.parse(conf);
+
+                    if (config.code !== 200)
+                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
+
+                    var sc_ver = self.SNAPCHAT_VERSION;
+                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
+
+                    resolve(this);
+                });
             });
         }
 
         /*
 	        Post request to Casper.io's API
         */
-        public PostCasper(callback, URI, parameters, headers?) {
+        public PostCasper(URI, parameters, headers?): Promise<string> {
             if (headers == null) {
                 headers = {};
             }
 
             if (URI == null || parameters == null)
-                return -1;
+                return null;
             URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
 
             let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
                 HTTP = new Windows.Web['Http'].HttpClient(),
                 HEAD = HTTP.defaultRequestHeaders;
-	
-            //TODO: Custom headers?
-            if (typeof headers.AcceptEncoding !== 'undefined') {
-                HEAD.acceptEncoding.clear();
-                HEAD.acceptEncoding.parseAdd(headers.AcceptEncoding);
-            }
-            if (typeof headers.Connection !== 'undefined')
-                HEAD.connection.parseAdd(headers.Connection);
-            if (typeof headers.CacheControl !== 'undefined')
-                HEAD.cacheControl.parseAdd(headers.CacheControl);
-            else
-                HEAD.cacheControl.clear();
 
-            HEAD.userAgent.parseAdd(this.CASPER_USER_AGENT);
+            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
             HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
             HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
 
-            let promise = HTTP.postAsync(URI, REQ).done(function (res) {
-                res.content.readAsStringAsync().done(function (e) {
-                    callback(JSON.parse(e));
+            return new Promise((resolve) => {
+                let promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e)
+                    });
                 });
             });
+        }
+
+        /*
+	        Generates Token hash to be used with Casper's API
+        */
+        public GenerateCasperTokenHash(timestamp) {
+            let s1: string = sha256.hex(this.CASPER_DEVICE_ID + this.CASPER_API_TOKEN),
+                s2: string = sha256.hex(this.CASPER_API_TOKEN + timestamp.toString());
+
+            let res = '';
+            for (var n = 0; n < this.CASPER_HASH_PATTERN.length; n++) {
+                if (this.CASPER_HASH_PATTERN.charAt(n) === '0') {
+                    res += s1[n];
+                } else {
+                    res += s2[n];
+                }
+            }
+            return res;
         }
 
         /*
@@ -152,14 +163,6 @@ namespace Snapchat {
             }
 
             return 'v1:' + sha256.hex_hmac(this.CASPER_API_SECRET, req);
-        }
-
-        /*
-	        Generates Token hash to be used with Casper's API
-        */
-        private GenerateCasperTokenHash() {
-            //TODO
-            return 'todo';
         }
 
         //TODO: Investigate how Android's device id is generated
@@ -188,6 +191,32 @@ namespace Snapchat {
                 res += data[n][0] + '=' + data[n][1];
             }
             return res;
+        }
+    }
+
+    module SnapchatHttp {
+        export function ConfigureHeaders(HEAD, headers) {
+            //TODO: Custom headers?
+            if (typeof headers['Accept-Encoding'] !== 'undefined') {
+                HEAD.acceptEncoding.clear();
+                HEAD.acceptEncoding.parseAdd(headers['Accept-Encoding']);
+            }
+            if (typeof headers.Accept !== 'undefined')
+                HEAD.accept.parseAdd(headers.Accept);
+            if (typeof headers['Accept-Language'] !== 'undefined')
+                HEAD.acceptLanguage.parseAdd(headers['Accept_Language']);
+            if (typeof headers['Accept-Locale'] !== 'undefined')
+                HEAD.acceptLocale.parseAdd(headers['Accept_Locale']);
+            if (typeof headers.Connection !== 'undefined')
+                HEAD.connection.parseAdd(headers.Connection);
+            if (typeof headers['Cache-Control'] !== 'undefined')
+                HEAD.cacheControl.parseAdd(headers.CacheControl);
+            else
+                HEAD.cacheControl.clear();
+            if (typeof headers['User-Agent'] !== 'undefined')
+                HEAD.userAgent.parseAdd(headers['User-Agent']);
+
+            return HEAD;
         }
     }
 }

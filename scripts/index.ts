@@ -53,7 +53,12 @@ module swiftsnapper {
 
             var SC = new Snapchat.Client();
             SC.Initialize().then(function () {
-                SC.Login('user', 'pass');
+                SC.Login({
+                    username: 'user',
+                    password: 'pass',
+                    google_username: 'user@gmail.com',
+                    google_password: 'pass',
+                });
             });
         }
 

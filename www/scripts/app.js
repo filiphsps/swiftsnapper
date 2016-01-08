@@ -3,17 +3,20 @@ var Snapchat;
 (function (Snapchat) {
     var SnapchatAgent = (function () {
         function SnapchatAgent() {
-            this.SNAPCHAT_IOS_USER_AGENT = 'Snapchat/{sc_ver} (iPhone5,1; iOS 8.4; gzip)';
-            this.SNAPCHAT_ANDROID_USER_AGENT = 'Snapchat/{sc_ver} (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip)';
             this.SNAPCHAT_BASE_ENDPOINT = 'https://app.snapchat.com';
             this.SNAPCHAT_EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
             this.SNAPCHAT_ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
             this.SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
             this.SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
             this.SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-            this.SNAPCHAT_VERSION = 'WILLCHANGE';
-            this.CASPER_USER_AGENT = 'Casper/1.5.2.3 (SM-G900F; Android 6.0.1#a5175b00e7#23; gzip; SwiftSnapper)';
+            this.SNAPCHAT_CLIENT_AUTH_TOKEN = null;
+            this.SNAPCHAT_CLIENT_TOKEN = null;
+            this.SNAPCHAT_UUID = null;
+            this.SNAPCHAT_USER_AGENT = null;
+            this.SNAPCHAT_VERSION = 'x.x.x.x';
+            this.CASPER_USER_AGENT = 'Casper/1.5.2.3 (SwiftSnapper; Windows 10; gzip)';
             this.CASPER_ENDPOINT = 'https://api.casper.io';
+            this.CASPER_HASH_PATTERN = '0100011111110000101111101001101011110010100110011101110010101000';
             this.CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
             this.CASPER_API_TOKEN = '9UpsYwhthWspIoHonKjniOMu09UBkS9w';
             this.CASPER_API_SECRET = 'fuckinginsecuresecretkey'; //API secret taken from io.casper.android.n.a.a
@@ -67,58 +70,66 @@ var Snapchat;
             var timestamp = this.GenerateTimeStamp();
             var self = this;
             return new Promise(function (resolve) {
-                var configCallback = function (config) {
-                    if (config.code !== 200)
-                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
-                    var sc_ver = self.SNAPCHAT_VERSION;
-                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
-                    self.SNAPCHAT_IOS_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-                    self.SNAPCHAT_ANDROID_USER_AGENT = self.SNAPCHAT_IOS_USER_AGENT.replace('{sc_ver}', self.SNAPCHAT_VERSION);
-                    resolve(this);
+                var headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': _this.CASPER_USER_AGENT,
                 };
-                _this.PostCasper(configCallback, '/config', [
+                _this.PostCasper('/config', [
                     ['casper_version', _this.CASPER_VERSION],
                     ['device_id', _this.CASPER_DEVICE_ID],
                     ['snapchat_version', _this.SNAPCHAT_VERSION],
                     ['timestamp', timestamp.toString()],
                     ['token', _this.CASPER_API_TOKEN],
-                    ['token_hash', _this.GenerateCasperTokenHash()]
-                ], {
-                    'Connection': 'Keep-Alive',
-                    'AcceptEncoding': 'gzip'
+                    ['token_hash', _this.GenerateCasperTokenHash(timestamp)]
+                ], headers).then(function (conf) {
+                    var config = JSON.parse(conf);
+                    if (config.code !== 200)
+                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
+                    var sc_ver = self.SNAPCHAT_VERSION;
+                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
+                    resolve(this);
                 });
             });
         };
         /*
             Post request to Casper.io's API
         */
-        SnapchatAgent.prototype.PostCasper = function (callback, URI, parameters, headers) {
+        SnapchatAgent.prototype.PostCasper = function (URI, parameters, headers) {
             if (headers == null) {
                 headers = {};
             }
             if (URI == null || parameters == null)
-                return -1;
+                return null;
             URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
             var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
-            //TODO: Custom headers?
-            if (typeof headers.AcceptEncoding !== 'undefined') {
-                HEAD.acceptEncoding.clear();
-                HEAD.acceptEncoding.parseAdd(headers.AcceptEncoding);
-            }
-            if (typeof headers.Connection !== 'undefined')
-                HEAD.connection.parseAdd(headers.Connection);
-            if (typeof headers.CacheControl !== 'undefined')
-                HEAD.cacheControl.parseAdd(headers.CacheControl);
-            else
-                HEAD.cacheControl.clear();
-            HEAD.userAgent.parseAdd(this.CASPER_USER_AGENT);
+            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
             HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
             HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
-            var promise = HTTP.postAsync(URI, REQ).done(function (res) {
-                res.content.readAsStringAsync().done(function (e) {
-                    callback(JSON.parse(e));
+            HEAD.append('X-Message-To-Casper', 'Contact me!');
+            return new Promise(function (resolve) {
+                var promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e);
+                    });
                 });
             });
+        };
+        /*
+            Generates Token hash to be used with Casper's API
+        */
+        SnapchatAgent.prototype.GenerateCasperTokenHash = function (timestamp) {
+            var s1 = sha256.hex(this.CASPER_DEVICE_ID + this.CASPER_API_TOKEN), s2 = sha256.hex(this.CASPER_API_TOKEN + timestamp.toString());
+            var res = '';
+            for (var n = 0; n < this.CASPER_HASH_PATTERN.length; n++) {
+                if (this.CASPER_HASH_PATTERN.charAt(n) === '0') {
+                    res += s1[n];
+                }
+                else {
+                    res += s2[n];
+                }
+            }
+            return res;
         };
         /*
             Generates Signature to be used with Casper's API
@@ -133,13 +144,6 @@ var Snapchat;
                 req += parameters[n][0] + parameters[n][1];
             }
             return 'v1:' + sha256.hex_hmac(this.CASPER_API_SECRET, req);
-        };
-        /*
-            Generates Token hash to be used with Casper's API
-        */
-        SnapchatAgent.prototype.GenerateCasperTokenHash = function () {
-            //TODO
-            return 'todo';
         };
         //TODO: Investigate how Android's device id is generated
         SnapchatAgent.prototype.GenerateCasperDeviceId = function () {
@@ -169,6 +173,32 @@ var Snapchat;
         return SnapchatAgent;
     })();
     Snapchat.SnapchatAgent = SnapchatAgent;
+    var SnapchatHttp;
+    (function (SnapchatHttp) {
+        function ConfigureHeaders(HEAD, headers) {
+            //TODO: Custom headers?
+            if (typeof headers['Accept-Encoding'] !== 'undefined') {
+                HEAD.acceptEncoding.clear();
+                HEAD.acceptEncoding.parseAdd(headers['Accept-Encoding']);
+            }
+            if (typeof headers.Accept !== 'undefined')
+                HEAD.accept.parseAdd(headers.Accept);
+            if (typeof headers['Accept-Language'] !== 'undefined')
+                HEAD.acceptLanguage.parseAdd(headers['Accept_Language']);
+            if (typeof headers['Accept-Locale'] !== 'undefined')
+                HEAD.acceptLocale.parseAdd(headers['Accept_Locale']);
+            if (typeof headers.Connection !== 'undefined')
+                HEAD.connection.parseAdd(headers.Connection);
+            if (typeof headers['Cache-Control'] !== 'undefined')
+                HEAD.cacheControl.parseAdd(headers.CacheControl);
+            else
+                HEAD.cacheControl.clear();
+            if (typeof headers['User-Agent'] !== 'undefined')
+                HEAD.userAgent.parseAdd(headers['User-Agent']);
+            return HEAD;
+        }
+        SnapchatHttp.ConfigureHeaders = ConfigureHeaders;
+    })(SnapchatHttp || (SnapchatHttp = {}));
 })(Snapchat || (Snapchat = {}));
 var Snapchat;
 (function (Snapchat) {
@@ -195,8 +225,29 @@ var Snapchat;
                 });
             });
         };
-        Client.prototype.Login = function (username, password) {
+        Client.prototype.Login = function (details) {
             //TODO
+            var headers = {
+                'Connection': 'Keep-Alive',
+                'Accept-Encoding': 'gzip',
+                'User-Agent': this.SnapchatAgent.CASPER_USER_AGENT,
+            };
+            var timestamp = this.SnapchatAgent.GenerateTimeStamp(), self = this;
+            this.SnapchatAgent.PostCasper('/snapchat/auth', [
+                ['username', details.username],
+                ['password', details.password],
+                ['snapchat_version', this.SnapchatAgent.SNAPCHAT_VERSION],
+                ['timestamp', timestamp.toString()],
+                ['token', this.SnapchatAgent.CASPER_API_TOKEN],
+                ['token_hash', this.SnapchatAgent.GenerateCasperTokenHash(timestamp)]
+            ], headers).then(function (snapchatData) {
+                var data = JSON.parse(snapchatData);
+                self.SnapchatAgent.SNAPCHAT_CLIENT_AUTH_TOKEN = data.headers['X-Snapchat-Client-Auth-Token'];
+                self.SnapchatAgent.SNAPCHAT_CLIENT_TOKEN = data.headers['X-Snapchat-Client-Token'];
+                self.SnapchatAgent.SNAPCHAT_UUID = data.headers['X-Snapchat-UUID'];
+                headers = data.headers;
+                //TODO: Post to snapchat
+            });
         };
         return Client;
     })();
@@ -252,7 +303,12 @@ var swiftsnapper;
             document.addEventListener('deviceready', onDeviceReady, false);
             var SC = new Snapchat.Client();
             SC.Initialize().then(function () {
-                SC.Login('user', 'pass');
+                SC.Login({
+                    username: 'user',
+                    password: 'pass',
+                    google_username: 'user@gmail.com',
+                    google_password: 'pass',
+                });
             });
         }
         Application.initialize = initialize;
