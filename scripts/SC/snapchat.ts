@@ -80,7 +80,7 @@ namespace Snapchat {
         */
         public Login(details: Snapchat.LoginDetails) {
             return new Promise((resolve) => {
-                if (details.username.length < 1 || details.username.length < 1) {
+                if (details.username.length < 1 || details.password.length < 1) {
                     resolve({ 'code': -1, 'message': 'You must provide both username AND password!' });
                     return;
                 }
