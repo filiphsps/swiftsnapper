@@ -1,0 +1,65 @@
+﻿<link href="views/overview/style.css" rel="stylesheet" />
+
+<div id="PageContent"></div>
+<script id="template" type="text/x-handlebars-template">
+    <main id="views">
+        <!-- Snaps View -->
+        <section id="SnapsView" class="view">
+            <header>
+                <div class="header">{{app.name}}</div>
+                <nav>
+                    <div class="item"><span class="icon mdl2-find-legacy"></span></div>
+                    <div class="item"><span class="icon mdl2-comment-legacy"></span></div>
+                </nav>
+            </header>
+
+            <!-- Snaps list -->
+            <div class="SnapsList">
+                
+            </div>
+        </section>
+
+        <!-- Camera View -->
+        <section id="CameraView" class="view">
+            <div class="CameraPreview">
+                <video id="CameraPreview" class="static-motion" autoplay=""></video>
+            </div>
+
+            <div class="CameraOverlay">
+                <header>
+                    <nav>
+                        <div id="FlashBtn" class="item left"><span class="icon mdl2-lightning"></span></div>
+                        <div id="MeBtn" class="item center"><span class="icon mdl2-emoji-2"></span></div>
+                        <div id="CameraToggleBtn" class="item right"><span class="icon mdl2-rotate-camera"></span></div>
+                    </nav>
+                </header>
+                <footer>
+                    <div id="ViewSnapsBtn" class="item left"><span class="icon mdl2-checkbox"></span></div>
+                    <div id="ShutterBtn"><img src="img/shutter.png" /></div>
+                    <div id="ViewStoriesBtn" class="item right"><span class="icon mdl2-bulleted-list"></span></div>
+                </footer>
+            </div>
+        </section>
+
+        <!-- Stories View -->
+        <section id="StoriesView" class="view">
+            <header>
+                <div class="header">{{stories.title}}</div>
+                <nav>
+                    <div class="item"><span class="icon mdl2-find-legacy"></span></div>
+                    <div class="item"><span class="icon mdl2-settings"></span></div>
+                </nav>
+            </header>
+        </section>
+
+        <!-- Discover View -->
+        <!--section id="DiscoverView" class="view">
+            <header>
+                <div class="header">Discover</div>
+            </header>
+        </section-->
+    </main>
+</script>
+<script>
+    swiftsnapper.onOverviewView();
+</script>

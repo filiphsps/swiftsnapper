@@ -1,9 +1,326 @@
+var sha256 = new Hashes.SHA256;
+var Snapchat;
+(function (Snapchat) {
+    var SnapchatAgent = (function () {
+        function SnapchatAgent() {
+            this.SNAPCHAT_BASE_ENDPOINT = 'https://app.snapchat.com';
+            this.SNAPCHAT_EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
+            this.SNAPCHAT_ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
+            this.SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
+            this.SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
+            this.SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
+            this.SNAPCHAT_CLIENT_AUTH_TOKEN = null;
+            this.SNAPCHAT_CLIENT_TOKEN = null;
+            this.SNAPCHAT_UUID = null;
+            this.SNAPCHAT_USER_AGENT = null;
+            this.SNAPCHAT_VERSION = '9.18.2.0';
+            this.CASPER_USER_AGENT = 'Casper/1.5.2.3 (SwiftSnapper; Windows 10; gzip)';
+            this.CASPER_ENDPOINT = 'https://api.casper.io';
+            this.CASPER_HASH_PATTERN = '0100011111110000101111101001101011110010100110011101110010101000';
+            this.CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
+            this.CASPER_API_TOKEN = '9UpsYwhthWspIoHonKjniOMu09UBkS9w';
+            this.CASPER_API_SECRET = 'fuckinginsecuresecretkey'; //API secret taken from io.casper.android.n.a.a
+            this.CASPER_SIGNATURE = 'v1:3d603604ff4a56d8a6821e9edfd8bb1257af436faf88c1a9bbb9dcefe8a56849';
+            this.CASPER_VERSION = '1.5.2.3';
+            this.CASPER_DEVICE_ID = null;
+        }
+        SnapchatAgent.prototype.Initialize = function () {
+            var _this = this;
+            return new Promise(function (resolve) {
+                _this.InitializeCasper().then(function () {
+                    resolve(this);
+                });
+            });
+        };
+        /*
+            Generates a UNIX timestamp
+        */
+        SnapchatAgent.prototype.GenerateTimeStamp = function () {
+            return Math.round((new Date).getTime());
+        };
+        /*
+            Generates req_token
+            based on https://github.com/cuonic/SnapchatDevWiki/wiki/Generating-the-req_token
+        */
+        SnapchatAgent.prototype.GenerateRequestToken = function (token, timestamp) {
+            var hash1 = sha256.hex(this.SNAPCHAT_API_SECRET + token);
+            var hash2 = sha256.hex(timestamp.toString() + this.SNAPCHAT_API_SECRET);
+            var res = '';
+            for (var n = 0; n < this.SNAPCHAT_HASH_PATTERN.length; n++) {
+                if (parseInt(this.SNAPCHAT_HASH_PATTERN.substr(n, 1))) {
+                    res += hash2[n];
+                }
+                else {
+                    res += hash1[n];
+                }
+            }
+            return res;
+        };
+        /*
+            Post request to Snapchat's API
+        */
+        SnapchatAgent.prototype.PostSnapchat = function (URI, parameters, headers) {
+            if (headers == null) {
+                headers = {};
+            }
+            if (URI == null || parameters == null)
+                return null;
+            URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + URI);
+            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
+            HEAD.append('X-Snapchat-Client-Auth-Token', this.SNAPCHAT_CLIENT_AUTH_TOKEN);
+            HEAD.append('X-Snapchat-Client-Token', this.SNAPCHAT_CLIENT_TOKEN);
+            HEAD.append('X-Snapchat-UUID', this.SNAPCHAT_UUID);
+            return new Promise(function (resolve) {
+                var promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e);
+                    });
+                });
+            });
+        };
+        /*
+            Casper Related functions.
+            TODO: move to snapchat.casper.agent.ts
+            ==================================================
+        */
+        /*
+            Initialize Casper for use
+        */
+        SnapchatAgent.prototype.InitializeCasper = function () {
+            var _this = this;
+            this.CASPER_DEVICE_ID = this.GenerateCasperDeviceId();
+            var timestamp = this.GenerateTimeStamp();
+            var self = this;
+            return new Promise(function (resolve) {
+                var headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': _this.CASPER_USER_AGENT,
+                };
+                _this.PostCasper('/config', [
+                    ['casper_version', _this.CASPER_VERSION],
+                    ['device_id', _this.CASPER_DEVICE_ID],
+                    ['timestamp', timestamp.toString()],
+                    ['token', _this.CASPER_API_TOKEN],
+                    ['token_hash', _this.GenerateCasperTokenHash(timestamp)]
+                ], headers).then(function (conf) {
+                    var config = JSON.parse(conf);
+                    if (config.code !== 200)
+                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
+                    var sc_ver = self.SNAPCHAT_VERSION;
+                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
+                    resolve(this);
+                });
+            });
+        };
+        /*
+            Post request to Casper.io's API
+        */
+        SnapchatAgent.prototype.PostCasper = function (URI, parameters, headers) {
+            if (headers == null) {
+                headers = {};
+            }
+            if (URI == null || parameters == null)
+                return null;
+            URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
+            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
+            HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
+            HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
+            return new Promise(function (resolve) {
+                var promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e);
+                    });
+                });
+            });
+        };
+        /*
+            Generates Token hash to be used with Casper's API
+        */
+        SnapchatAgent.prototype.GenerateCasperTokenHash = function (timestamp) {
+            var s1 = sha256.hex(this.CASPER_DEVICE_ID + this.CASPER_API_TOKEN), s2 = sha256.hex(this.CASPER_API_TOKEN + timestamp.toString());
+            var res = '';
+            for (var n = 0; n < this.CASPER_HASH_PATTERN.length; n++) {
+                if (this.CASPER_HASH_PATTERN.charAt(n) === '0') {
+                    res += s1[n];
+                }
+                else {
+                    res += s2[n];
+                }
+            }
+            return res;
+        };
+        /*
+            Generates Signature to be used with Casper's API
+            P.S Casper expects the parameters to be in alphabetical order.
+        */
+        SnapchatAgent.prototype.GenerateCasperRequestSignature = function (parameters) {
+            var req = '';
+            parameters = parameters.sort(function (a, b) {
+                return a[0].localeCompare(b[0]);
+            });
+            for (var n = 0; n < parameters.length; n++) {
+                req += parameters[n][0] + parameters[n][1];
+            }
+            return 'v1:' + sha256.hex_hmac(this.CASPER_API_SECRET, req);
+        };
+        //TODO: Investigate how Android's device id is generated
+        SnapchatAgent.prototype.GenerateCasperDeviceId = function () {
+            var id = '';
+            var charset = "abcdefghijklmnopqrstuvwxyz0123456789";
+            for (var i = 0; i <= 16; i++)
+                id += charset.charAt(Math.floor(Math.random() * charset.length));
+            return id;
+        };
+        /*
+            Converts an Array of Arrys to uri parameters
+            Ex. input [['para1', 'val1'], ['para2', 'val2'], ['para3', 'val3']].
+        */
+        SnapchatAgent.prototype.ArrayToURIParameters = function (data) {
+            data = data.sort(function (a, b) {
+                return a[0] > b[0] ? 1 : -1;
+            });
+            var res = '';
+            for (var n = 0; n < data.length; n++) {
+                if (res != '') {
+                    res += '&';
+                }
+                res += data[n][0] + '=' + data[n][1];
+            }
+            return res;
+        };
+        return SnapchatAgent;
+    })();
+    Snapchat.SnapchatAgent = SnapchatAgent;
+    var SnapchatHttp;
+    (function (SnapchatHttp) {
+        function ConfigureHeaders(HEAD, headers) {
+            //TODO: Custom headers?
+            if (typeof headers['Accept-Encoding'] !== 'undefined') {
+                HEAD.acceptEncoding.clear();
+                HEAD.acceptEncoding.parseAdd(headers['Accept-Encoding']);
+            }
+            if (typeof headers.Accept !== 'undefined')
+                HEAD.accept.parseAdd(headers.Accept);
+            if (typeof headers['Accept-Language'] !== 'undefined')
+                HEAD.acceptLanguage.parseAdd(headers['Accept-Language']);
+            if (typeof headers['Accept-Locale'] !== 'undefined')
+                HEAD.append('Accept-Locale', headers['Accept-Locale']);
+            if (typeof headers.Connection !== 'undefined')
+                HEAD.connection.parseAdd(headers.Connection);
+            if (typeof headers['Cache-Control'] !== 'undefined')
+                HEAD.cacheControl.parseAdd(headers.CacheControl);
+            else
+                HEAD.cacheControl.clear();
+            if (typeof headers['User-Agent'] !== 'undefined')
+                HEAD.userAgent.parseAdd(headers['User-Agent']);
+            return HEAD;
+        }
+        SnapchatHttp.ConfigureHeaders = ConfigureHeaders;
+    })(SnapchatHttp || (SnapchatHttp = {}));
+})(Snapchat || (Snapchat = {}));
+var Snapchat;
+(function (Snapchat) {
+    var User = (function () {
+        function User() {
+        }
+        return User;
+    })();
+    Snapchat.User = User;
+    var Snap = (function () {
+        function Snap() {
+            this.timer = 0;
+        }
+        return Snap;
+    })();
+    Snapchat.Snap = Snap;
+})(Snapchat || (Snapchat = {}));
+/// <reference path="snapchat.agent.ts" />
+/// <reference path="snapchat.models.ts" />
+var Snapchat;
+(function (Snapchat) {
+    var Client = (function () {
+        function Client() {
+        }
+        Client.prototype.Initialize = function () {
+            var _this = this;
+            this.SnapchatAgent = new Snapchat.SnapchatAgent();
+            return new Promise(function (resolve) {
+                _this.SnapchatAgent.Initialize().then(function () {
+                    resolve(this);
+                });
+            });
+        };
+        //Temp
+        Client.prototype.GetPendingFeed = function () {
+            var Snaps = [], snaps = this.TempData.conversations_response[0].pending_received_snaps;
+            for (var n = 0; n < snaps.length; n++) {
+                var snap = snaps[n], sn = new Snapchat.Snap();
+                sn.sender = snap.sn;
+                sn.timer = snap.timer;
+                Snaps.push(sn);
+            }
+            return Snaps;
+        };
+        Client.prototype.Login = function (details) {
+            var _this = this;
+            return new Promise(function (resolve) {
+                var headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': _this.SnapchatAgent.CASPER_USER_AGENT,
+                };
+                var timestamp = _this.SnapchatAgent.GenerateTimeStamp(), self = _this;
+                _this.SnapchatAgent.PostCasper('/snapchat/auth', [
+                    ['username', details.username],
+                    ['password', details.password],
+                    ['snapchat_version', _this.SnapchatAgent.SNAPCHAT_VERSION],
+                    ['timestamp', timestamp.toString()],
+                    ['token', _this.SnapchatAgent.CASPER_API_TOKEN],
+                    ['token_hash', _this.SnapchatAgent.GenerateCasperTokenHash(timestamp)]
+                ], headers).then(function (snapchatData) {
+                    var data = JSON.parse(snapchatData);
+                    self.SnapchatAgent.SNAPCHAT_CLIENT_AUTH_TOKEN = data.headers['X-Snapchat-Client-Auth-Token'];
+                    self.SnapchatAgent.SNAPCHAT_CLIENT_TOKEN = data.headers['X-Snapchat-Client-Token'];
+                    self.SnapchatAgent.SNAPCHAT_UUID = data.headers['X-Snapchat-UUID'];
+                    headers = data.headers;
+                    self.SnapchatAgent.PostSnapchat('/loq/login', [
+                        ['height', data.params.height],
+                        ['ny', data.params.nt],
+                        ['password', data.params.password],
+                        ['remember_device', data.params.remember_device],
+                        ['req_token', data.params.req_token],
+                        ['screen_height_in', data.params.height_width_px],
+                        ['screen_height_px', data.params.height_width_px],
+                        ['screen_width_in', data.params.screen_width_in],
+                        ['screen_width_px', data.params.screen_width_px],
+                        ['timestamp', data.params.timestamp],
+                        ['user_ad_id', data.params.user_ad_id],
+                        ['username', data.params.username],
+                        ['width', data.params.width],
+                    ], headers).then(function (data) {
+                        //TODO: Handle data
+                        self.TempData = JSON.parse(data);
+                        resolve(JSON.parse(data));
+                    });
+                });
+            });
+        };
+        return Client;
+    })();
+    Snapchat.Client = Client;
+})(Snapchat || (Snapchat = {}));
+/// <reference path="SC/snapchat.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
+/// <reference path="typings/es6-promise/es6-promise.d.ts" />
 var views;
 var swiftsnapper;
 (function (swiftsnapper) {
     "use strict";
+    var SnapchatClient;
     var CameraManager;
     (function (CameraManager) {
         var video;
@@ -44,44 +361,90 @@ var swiftsnapper;
     (function (Application) {
         function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            if (typeof Windows !== 'undefined') {
-                //Set the status bar to the correct theme colour
-                var theme = {
-                    a: 255,
-                    r: 255,
-                    g: 252,
-                    b: 0
-                }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-                v.titleBar.inactiveBackgroundColor = theme;
-                v.titleBar.buttonInactiveBackgroundColor = theme;
-                v.titleBar.backgroundColor = theme;
-                v.titleBar.buttonBackgroundColor = theme;
-                v.titleBar.inactiveForegroundColor = Windows.UI.Colors.white;
-                v.titleBar['inactiveButtonForegroundColor'] = Windows.UI.Colors.white;
-                v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
-                v.titleBar.foregroundColor = Windows.UI.Colors.white;
-                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-            }
         }
         Application.initialize = initialize;
         function onDeviceReady() {
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
-            CameraManager.initialize({
-                'frontFacing': false
-            });
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
         }
         function onResume() {
-            CameraManager.initialize({
-                'frontFacing': false
-            });
         }
     })(Application = swiftsnapper.Application || (swiftsnapper.Application = {}));
     window.onload = function () {
+        Application.initialize();
+        //Init Snapchat
+        SnapchatClient = new Snapchat.Client();
+        SnapchatClient.Initialize().then(function () {
+            $(document).ready(function () {
+                $('body').load('views/account/index.html');
+            });
+        });
+        if (typeof Windows !== 'undefined') {
+            //Set the status bar to the correct theme colour
+            var theme = {
+                a: 255,
+                r: 255,
+                g: 214,
+                b: 47
+            }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+            v.titleBar.inactiveBackgroundColor = theme;
+            v.titleBar.buttonInactiveBackgroundColor = theme;
+            v.titleBar.backgroundColor = theme;
+            v.titleBar.buttonBackgroundColor = theme;
+            v.titleBar.inactiveForegroundColor = Windows.UI.Colors.white;
+            v.titleBar['inactiveButtonForegroundColor'] = Windows.UI.Colors.white;
+            v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
+            v.titleBar.foregroundColor = Windows.UI.Colors.white;
+            v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
+            v['setPreferredMinSize']({
+                height: 1024,
+                width: 325
+            });
+        }
+    };
+    function onAccountView() {
+        //Init Owl Carousel
+        views = $('#views');
+        views.owlCarousel({
+            loop: false,
+            nav: false,
+            dots: false,
+            video: true,
+            margin: 0,
+            startPosition: 1,
+            mouseDrag: false,
+            touchDrag: false,
+            pullDrag: false,
+            fallbackEasing: 'easeInOutQuart',
+            items: 1,
+        });
+        $('#LogInBtn').on('click tap', function () {
+            views.trigger('next.owl.carousel', [300]);
+        });
+        $('#SignUpBtn').on('click tap', function () {
+            views.trigger('prev.owl.carousel', [300]);
+        });
+        $('#LogInForm').submit(function (e) {
+            $('#LogInView form .username').prop("disabled", true);
+            $('#LogInView form .password').prop("disabled", true);
+            SnapchatClient.Login({
+                username: $('#LogInView form .username').val(),
+                password: $('#LogInView form .password').val(),
+            }).then(function (data) {
+                console.log(data);
+                $(document).ready(function () {
+                    $('body').load('views/overview/index.html');
+                });
+            });
+            e.preventDefault();
+        });
+    }
+    swiftsnapper.onAccountView = onAccountView;
+    function onOverviewView() {
         //TODO: Provide data from file
         var lang = {
             app: {
@@ -100,7 +463,6 @@ var swiftsnapper;
         };
         var template = Handlebars.compile($("#template").html());
         $('#PageContent').html(template(lang));
-        Application.initialize();
         //Init Owl Carousel
         views = $('#views');
         views.owlCarousel({
@@ -120,6 +482,18 @@ var swiftsnapper;
                     items: 3
                 }
             }
+        });
+        //temp: view unread snaps
+        var snaps = SnapchatClient.GetPendingFeed();
+        for (var n = 0; n < snaps.length; n++) {
+            var snap = snaps[n], output = '<article class="item"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                '<div class="header">' + snap.sender + '</div>' +
+                '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
+                '</div></article>';
+            $('#SnapsView .SnapsList').append(output);
+        }
+        CameraManager.initialize({
+            'frontFacing': false
         });
         $('#ViewSnapsBtn').on('click tap', function () {
             views.trigger('prev.owl.carousel', [300]);
@@ -142,58 +516,12 @@ var swiftsnapper;
         $('#ShutterBtn').on('click tap', function () {
             CameraManager.takePhoto();
         });
-        if (Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
+        if (typeof Windows !== 'undefined' && Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
             Windows['Phone'].UI.Input.HardwareButtons.addEventListener('camerapressed', function (e) {
                 $('#ShutterBtn').click();
             });
         }
-    };
+    }
+    swiftsnapper.onOverviewView = onOverviewView;
 })(swiftsnapper || (swiftsnapper = {}));
-var SnapchatAgent = (function () {
-    function SnapchatAgent() {
-        this.API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-        this.API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
-        this.USER_AGENT = 'Snapchat/9.16.2.0 (HTC One; Android 5.0.2#482424.2#21; gzip)';
-        this.ENDPOINT = 'https://feelinsonice-hrd.appspot.com';
-        this.HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
-        this.BLOB_ENCRYPTION_KEY = 'M02cnQ51Ji97vwT4';
-    }
-    SnapchatAgent.prototype.GenerateTimeStamp = function () {
-        return Math.round((new Date).getTime());
-    };
-    SnapchatAgent.prototype.DecryptCBC = function (data, key, iv) {
-    };
-    SnapchatAgent.prototype.DecryptECB = function (data) {
-    };
-    SnapchatAgent.prototype.EncryptECB = function (data) {
-    };
-    SnapchatAgent.prototype.Hash = function (d1, d2) {
-        d1 = this.API_SECRET + d1;
-        d2 = d2 + this.API_SECRET;
-        //TODO: Find a good PHP-like Cryptography library.
-        /*var hash = new sha256();
-        hash.update(hash, d1);
-        var value1 = sha256.final();
-
-        hash = new sha256();
-        hash.update(hash, d2);
-        var value2: string = hash.final();
-
-        var res = '';
-        for (var n = 0; n < this.HASH_PATTERN.length; n++) {
-            res += this.HASH_PATTERN.substr(n, 1) ? value1.charAt(n) : value2.charAt(n);
-        }
-        return res*/
-    };
-    return SnapchatAgent;
-})();
-/*
-    Typescript implementation of https://github.com/mgp25/SC-API
-*/
-/// <reference path="snapchat.agent.ts" />
-var Snapchat = (function () {
-    function Snapchat() {
-    }
-    return Snapchat;
-})();
 //# sourceMappingURL=app.js.map
