@@ -58,10 +58,6 @@ module swiftsnapper {
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
-
-            CameraManager.initialize({
-                'frontFacing': false
-            });
         }
 
         function onPause() {
@@ -69,9 +65,7 @@ module swiftsnapper {
         }
 
         function onResume() {
-            CameraManager.initialize({
-                'frontFacing': false
-            });
+
         }
 
     }
@@ -203,7 +197,6 @@ module swiftsnapper {
         var snaps = SnapchatClient.GetPendingFeed()
         for (var n = 0; n < snaps.length; n++) {
             let snap = snaps[n],
-
                 output =
                     '<article class="item"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
                     '<div class="header">' + snap.sender + '</div>' +
@@ -212,6 +205,10 @@ module swiftsnapper {
 
             $('#SnapsView .SnapsList').append(output);
         }
+
+        CameraManager.initialize({
+            'frontFacing': false
+        });
 
         $('#ViewSnapsBtn').on('click tap', function () {
             views.trigger('prev.owl.carousel', [300]);

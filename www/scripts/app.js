@@ -367,17 +367,11 @@ var swiftsnapper;
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
-            CameraManager.initialize({
-                'frontFacing': false
-            });
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
         }
         function onResume() {
-            CameraManager.initialize({
-                'frontFacing': false
-            });
         }
     })(Application = swiftsnapper.Application || (swiftsnapper.Application = {}));
     window.onload = function () {
@@ -498,6 +492,9 @@ var swiftsnapper;
                 '</div></article>';
             $('#SnapsView .SnapsList').append(output);
         }
+        CameraManager.initialize({
+            'frontFacing': false
+        });
         $('#ViewSnapsBtn').on('click tap', function () {
             views.trigger('prev.owl.carousel', [300]);
         });
