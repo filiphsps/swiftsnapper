@@ -2,8 +2,8 @@
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
-var views
 declare var Handlebars: any;
+let views;
 
 module swiftsnapper {
     "use strict";
@@ -139,13 +139,20 @@ module swiftsnapper {
             SnapchatClient.Login({
                 username: $('#LogInView form .username').val(),
                 password: $('#LogInView form .password').val(),
-            }).then(function (data) {
-                console.log(data);
+            }).then(
+                function (data) {
+                    if (typeof data['code'] !== 'undefined' && data['code'] !== 200) {
 
-                $(document).ready(function () {
-                    $('body').load('views/overview/index.html');
+                        //TODO
+                        $('#LogInView form .username').prop("disabled", false);
+                        $('#LogInView form .password').prop("disabled", false);
+                        return -1;
+                    }
+
+                    $(document).ready(function () {
+                        $('body').load('views/overview/index.html');
+                    });
                 });
-            });
 
             e.preventDefault();
         });

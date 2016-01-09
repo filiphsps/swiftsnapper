@@ -2,7 +2,7 @@
 var sha256 = new Hashes.SHA256
 
 namespace Snapchat {
-    export class SnapchatAgent{
+    export class Agent{
         public SNAPCHAT_BASE_ENDPOINT = 'https://app.snapchat.com';
         public SNAPCHAT_EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
         public SNAPCHAT_ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
@@ -75,9 +75,8 @@ namespace Snapchat {
                 HTTP = new Windows.Web['Http'].HttpClient(),
                 HEAD = HTTP.defaultRequestHeaders;
 
-            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
+            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
             HEAD.append('X-Snapchat-Client-Auth-Token', this.SNAPCHAT_CLIENT_AUTH_TOKEN);
-            HEAD.append('X-Snapchat-Client-Token', this.SNAPCHAT_CLIENT_TOKEN);
             HEAD.append('X-Snapchat-UUID', this.SNAPCHAT_UUID);
 
             return new Promise((resolve) => {
@@ -146,7 +145,7 @@ namespace Snapchat {
                 HTTP = new Windows.Web['Http'].HttpClient(),
                 HEAD = HTTP.defaultRequestHeaders;
 
-            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
+            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
             HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
             HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
 
@@ -222,7 +221,7 @@ namespace Snapchat {
         }
     }
 
-    module SnapchatHttp {
+    export module Http {
         export function ConfigureHeaders(HEAD, headers) {
             //TODO: Custom headers?
             if (typeof headers['Accept-Encoding'] !== 'undefined') {
@@ -249,6 +248,9 @@ namespace Snapchat {
 
             if (typeof headers['User-Agent'] !== 'undefined')
                 HEAD.userAgent.parseAdd(headers['User-Agent']);
+
+            if (typeof headers['X-Snapchat-Client-Token'] !== 'undefined')
+                HEAD.append('X-Snapchat-Client-Token', headers['X-Snapchat-Client-Token']);
 
             return HEAD;
         }
