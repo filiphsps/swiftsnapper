@@ -13,7 +13,7 @@ namespace Snapchat {
         public SNAPCHAT_CLIENT_TOKEN = null;
         public SNAPCHAT_UUID = null;
         public SNAPCHAT_USER_AGENT = null;
-        public SNAPCHAT_VERSION = 'x.x.x.x';
+        public SNAPCHAT_VERSION = '9.18.2.0';
 
         public CASPER_USER_AGENT = 'Casper/1.5.2.3 (SwiftSnapper; Windows 10; gzip)';
         public CASPER_ENDPOINT = 'https://api.casper.io';
@@ -59,6 +59,35 @@ namespace Snapchat {
             return res;
         }
 
+        /*
+	        Post request to Snapchat's API
+        */
+        public PostSnapchat(URI, parameters, headers?): Promise<string> {
+            if (headers == null) {
+                headers = {};
+            }
+
+            if (URI == null || parameters == null)
+                return null;
+            URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + URI);
+
+            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
+                HTTP = new Windows.Web['Http'].HttpClient(),
+                HEAD = HTTP.defaultRequestHeaders;
+
+            HEAD = SnapchatHttp.ConfigureHeaders(HEAD, headers);
+            HEAD.append('X-Snapchat-Client-Auth-Token', this.SNAPCHAT_CLIENT_AUTH_TOKEN);
+            HEAD.append('X-Snapchat-Client-Token', this.SNAPCHAT_CLIENT_TOKEN);
+            HEAD.append('X-Snapchat-UUID', this.SNAPCHAT_UUID);
+
+            return new Promise((resolve) => {
+                let promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e)
+                    });
+                });
+            });
+        }
 
         /*
             Casper Related functions.
@@ -84,7 +113,6 @@ namespace Snapchat {
                 this.PostCasper('/config', [
                     ['casper_version', this.CASPER_VERSION],
                     ['device_id', this.CASPER_DEVICE_ID],
-                    ['snapchat_version', this.SNAPCHAT_VERSION],
                     ['timestamp', timestamp.toString()],
                     ['token', this.CASPER_API_TOKEN],
                     ['token_hash', this.GenerateCasperTokenHash(timestamp)]
@@ -201,18 +229,24 @@ namespace Snapchat {
                 HEAD.acceptEncoding.clear();
                 HEAD.acceptEncoding.parseAdd(headers['Accept-Encoding']);
             }
+
             if (typeof headers.Accept !== 'undefined')
                 HEAD.accept.parseAdd(headers.Accept);
+
             if (typeof headers['Accept-Language'] !== 'undefined')
-                HEAD.acceptLanguage.parseAdd(headers['Accept_Language']);
+                HEAD.acceptLanguage.parseAdd(headers['Accept-Language']);
+
             if (typeof headers['Accept-Locale'] !== 'undefined')
-                HEAD.acceptLocale.parseAdd(headers['Accept_Locale']);
+                HEAD.append('Accept-Locale', headers['Accept-Locale']);
+
             if (typeof headers.Connection !== 'undefined')
                 HEAD.connection.parseAdd(headers.Connection);
+
             if (typeof headers['Cache-Control'] !== 'undefined')
                 HEAD.cacheControl.parseAdd(headers.CacheControl);
             else
                 HEAD.cacheControl.clear();
+
             if (typeof headers['User-Agent'] !== 'undefined')
                 HEAD.userAgent.parseAdd(headers['User-Agent']);
 

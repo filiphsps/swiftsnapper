@@ -1,94 +1,37 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <meta http-equiv="Content-Security-Policy" content="default-src * 'self' blob: 'unsafe-eval' 'unsafe-inline'; style-src * 'self' 'unsafe-inline'; script-src * 'self' 'unsafe-inline' 'unsafe-eval'; font-src *; media-src * 'self' blob:; img-src * 'self' data: blob:" />
-        <title>Account | SwiftSnapper</title>
+﻿<link href="views/account/style.css" rel="stylesheet" />
 
-        <link href="../../css/mdl2.css" rel="stylesheet" />
-        <link href="../../css/owl.carousel.css" rel="stylesheet" />
-        <link href="../../css/style.css" rel="stylesheet" />
-        <link href="style.css" rel="stylesheet" />
-    </head>
-    <body>
-        <main id="views">
-            <!-- Register View -->
-            <section id="SingUpView" class="view">
-                <header>
-                    <div class="header">Register</div>
-                </header>
-            </section>
+<main id="views">
+    <!-- Sign Up View -->
+    <section id="SingUpView" class="view">
+        <header>
+            <div class="header">Sing Up</div>
+        </header>
+    </section>
 
-            <!-- Select View -->
-            <section id="SelectView" class="view">
-                <div class="logo"><img src="../../img/logo.png"/></div>
-                <div class="header">SwiftSnapper</div>
+    <!-- Select View -->
+    <section id="SelectView" class="view">
+        <div class="logo"><img src="img/logo.png"/></div>
+        <div class="header">SwiftSnapper</div>
 
-                <nav>
-                    <div id="LogInBtn" class="button">Log In</div>
-                    <div id="SignUpBtn" class="button">Sign Up</div>
-                </nav>
-            </section>
+        <nav>
+            <div id="LogInBtn" class="button">Log In</div>
+            <div id="SignUpBtn" class="button">Sign Up</div>
+        </nav>
+    </section>
 
-            <!-- Select View -->
-            <section id="LogInView" class="view">
-                <header>
-                    <div class="header">Log In</div>
-                </header>
-            </section>
-        </main>
+    <!-- Log In View -->
+    <section id="LogInView" class="view">
+        <header>
+            <div class="header">Log In</div>
+        </header>
+        <form id="LogInForm">
+            <input class="username" type="text" placeholder="username"/>
+            <input class="password" type="password" placeholder="password">
+            <input type="submit" value="Log In"/>
+        </form>
+    </section>
+</main>
 
-        <script src="../../cordova.js"></script>
-        <script src="../../scripts/jquery-2.1.4.min.js"></script>
-        <script src="../../scripts/owl.carousel.min.js"></script>
-        <script>
-            //Init Owl Carousel
-            views = $('#views');
-            views.owlCarousel({
-                loop: false,
-                nav: false,
-                dots: false,
-                video: true,
-                margin: 0,
-                startPosition: 1,
-                pullDrag: false,
-                fallbackEasing: 'easeInOutQuart',
-                items: 1,
-            });
-            $('#LogInBtn').on('click tap', function () {
-                //views.trigger('next.owl.carousel', [300]);
-                window.location.href = '../overview/index.html'; //Temp
-            });
-            $('#SignUpBtn').on('click tap', function () {
-                views.trigger('prev.owl.carousel', [300]);
-            });
-
-            if (typeof Windows !== 'undefined') {
-                //Set the status bar to the correct theme colour
-                var theme = {
-                    a: 255,
-                    r: 255,
-                    g: 214,
-                    b: 47
-                },
-
-                v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-                v.titleBar.inactiveBackgroundColor = theme;
-                v.titleBar.buttonInactiveBackgroundColor = theme;
-                v.titleBar.backgroundColor = theme;
-                v.titleBar.buttonBackgroundColor = theme;
-                v.titleBar.inactiveForegroundColor = Windows.UI.Colors.white;
-                v.titleBar['inactiveButtonForegroundColor'] = Windows.UI.Colors.white;
-                v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
-                v.titleBar.foregroundColor = Windows.UI.Colors.white;
-                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-
-                v.setPreferredMinSize({
-                    height: 1024,
-                    width: 325
-                });
-            }
-        </script>
-    </body>
-</html>
+<script>
+    swiftsnapper.onAccountView();
+</script>

@@ -1,115 +1,65 @@
-﻿<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <meta http-equiv="Content-Security-Policy" content="default-src * 'self' blob: 'unsafe-eval' 'unsafe-inline'; style-src * 'self' 'unsafe-inline'; script-src * 'self' 'unsafe-inline' 'unsafe-eval'; font-src *; media-src * 'self' blob:; img-src * 'self' data: blob:" />
-        <title>Overview | SwiftSnapper</title>
+﻿<link href="views/overview/style.css" rel="stylesheet" />
 
-        <link href="../../css/owl.carousel.css" rel="stylesheet"/>
-        <link href="../../css/mdl2.css" rel="stylesheet" />
-        <link href="../../css/noise.css" rel="stylesheet" />
-        <link href="../../css/style.css" rel="stylesheet" />
-        <link href="style.css" rel="stylesheet" />
-    </head>
-    <body>
-        <div id="PageContent"></div>
-        <script id="template" type="text/x-handlebars-template">
-            <main id="views">
-                <!-- Snaps View -->
-                <section id="SnapsView" class="view">
-                    <header>
-                        <div class="header">{{app.name}}</div>
-                        <nav>
-                            <div class="item"><span class="icon mdl2-find-legacy"></span></div>
-                            <div class="item"><span class="icon mdl2-comment-legacy"></span></div>
-                        </nav>
-                    </header>
+<div id="PageContent"></div>
+<script id="template" type="text/x-handlebars-template">
+    <main id="views">
+        <!-- Snaps View -->
+        <section id="SnapsView" class="view">
+            <header>
+                <div class="header">{{app.name}}</div>
+                <nav>
+                    <div class="item"><span class="icon mdl2-find-legacy"></span></div>
+                    <div class="item"><span class="icon mdl2-comment-legacy"></span></div>
+                </nav>
+            </header>
 
-                    <!-- Snaps list -->
-                    <div class="SnapsList">
-                        <article class="item">
-                            <div class="notify snap">
-                                <span class="icon mdl2-checkbox-fill"></span>
-                            </div>
+            <!-- Snaps list -->
+            <div class="SnapsList">
+                
+            </div>
+        </section>
 
-                            <div class="details">
-                                <div class="header">filiphsandstrom</div>
-                                <div class="details">{{snaps.just_now}} - {{snaps.double_tap_to_reply}}</div>
-                            </div>
-                        </article>
+        <!-- Camera View -->
+        <section id="CameraView" class="view">
+            <div class="CameraPreview">
+                <video id="CameraPreview" class="static-motion" autoplay=""></video>
+            </div>
 
-                        <article class="item">
-                            <div class="notify snap">
-                                <span class="icon mdl2-checkbox"></span>
-                            </div>
+            <div class="CameraOverlay">
+                <header>
+                    <nav>
+                        <div id="FlashBtn" class="item left"><span class="icon mdl2-lightning"></span></div>
+                        <div id="MeBtn" class="item center"><span class="icon mdl2-emoji-2"></span></div>
+                        <div id="CameraToggleBtn" class="item right"><span class="icon mdl2-rotate-camera"></span></div>
+                    </nav>
+                </header>
+                <footer>
+                    <div id="ViewSnapsBtn" class="item left"><span class="icon mdl2-checkbox"></span></div>
+                    <div id="ShutterBtn"><img src="img/shutter.png" /></div>
+                    <div id="ViewStoriesBtn" class="item right"><span class="icon mdl2-bulleted-list"></span></div>
+                </footer>
+            </div>
+        </section>
 
-                            <div class="details">
-                                <div class="header">filiphsandstrom</div>
-                                <div class="details">1 {{snaps.day_ago}} - {{snaps.double_tap_to_reply}}</div>
-                            </div>
-                        </article>
+        <!-- Stories View -->
+        <section id="StoriesView" class="view">
+            <header>
+                <div class="header">{{stories.title}}</div>
+                <nav>
+                    <div class="item"><span class="icon mdl2-find-legacy"></span></div>
+                    <div class="item"><span class="icon mdl2-settings"></span></div>
+                </nav>
+            </header>
+        </section>
 
-                        <article class="item">
-                            <div class="notify video">
-                                <span class="icon mdl2-scroll-chevron-right-legacy"></span>
-                            </div>
-
-                            <div class="details">
-                                <div class="header">TeamSnapchat</div>
-                                <div class="details">25 {{snaps.days_ago}} - {{snaps.double_tap_to_reply}}</div>
-                            </div>
-                        </article>
-                    </div>
-                </section>
-
-                <!-- Camera View -->
-                <section id="CameraView" class="view">
-                    <div class="CameraPreview">
-                        <video id="CameraPreview" class="static-motion" autoplay=""></video>
-                    </div>
-
-                    <div class="CameraOverlay">
-                        <header>
-                            <nav>
-                                <div id="FlashBtn" class="item left"><span class="icon mdl2-lightning"></span></div>
-                                <div id="MeBtn" class="item center"><span class="icon mdl2-emoji-2"></span></div>
-                                <div id="CameraToggleBtn" class="item right"><span class="icon mdl2-rotate-camera"></span></div>
-                            </nav>
-                        </header>
-                        <footer>
-                            <div id="ViewSnapsBtn" class="item left"><span class="icon mdl2-checkbox"></span></div>
-                            <div id="ShutterBtn"><img src="../../img/shutter.png" /></div>
-                            <div id="ViewStoriesBtn" class="item right"><span class="icon mdl2-bulleted-list"></span></div>
-                        </footer>
-                    </div>
-                </section>
-
-                <!-- Stories View -->
-                <section id="StoriesView" class="view">
-                    <header>
-                        <div class="header">{{stories.title}}</div>
-                        <nav>
-                            <div class="item"><span class="icon mdl2-find-legacy"></span></div>
-                            <div class="item"><span class="icon mdl2-settings"></span></div>
-                        </nav>
-                    </header>
-                </section>
-
-                <!-- Discover View -->
-                <!--section id="DiscoverView" class="view">
-                    <header>
-                        <div class="header">Discover</div>
-                    </header>
-                </section-->
-            </main>
-        </script>
-
-        <script src="../../cordova.js"></script>
-        <script src="../../scripts/jquery-2.1.4.min.js"></script>
-        <script src="../../scripts/js-sha256.min.js"></script>
-        <script src="../../scripts/handlebars-v4.0.5.js"></script>
-        <script src="../../scripts/owl.carousel.min.js"></script>
-        <script src="../../scripts/app.js"></script>
-    </body>
-</html>
+        <!-- Discover View -->
+        <!--section id="DiscoverView" class="view">
+            <header>
+                <div class="header">Discover</div>
+            </header>
+        </section-->
+    </main>
+</script>
+<script>
+    swiftsnapper.onOverviewView();
+</script>

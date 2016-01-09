@@ -4,7 +4,7 @@
   <description>
   </description>
   <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström &amp; Contributors</author>
-  <content src="views/splash/index.html" />
+  <content src="index.html" />
   <preference name="SplashScreen" value="screen" />
   <preference name="windows-target-version" value="10.0" />
   <preference name="Fullscreen" value="True" />
