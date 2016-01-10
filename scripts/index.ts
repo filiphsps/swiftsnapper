@@ -52,6 +52,40 @@ module swiftsnapper {
     export module Application {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
+            initializeStatusBar();
+        }
+
+        export function initializeStatusBar() {
+            if (typeof Windows !== 'undefined') {
+                let theme = {
+                    a: 255,
+                    r: 52,
+                    g: 152,
+                    b: 219
+                }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+
+                v.titleBar.inactiveBackgroundColor = theme;
+                v.titleBar.buttonInactiveBackgroundColor = theme;
+                v.titleBar.backgroundColor = theme;
+                v.titleBar.buttonBackgroundColor = theme;
+                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
+                v['setPreferredMinSize']({
+                    height: 1024,
+                    width: 325
+                });
+            }
+
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                $('body').addClass('mobile');
+                let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+                statusBar.backgroundOpacity = 1;
+                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
+                statusBar.foregroundColor = Windows.UI.Colors.white;
+
+                //Lock portrait
+                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait
+            }
         }
 
         function onDeviceReady() {
@@ -80,36 +114,6 @@ module swiftsnapper {
                 $('body').load('views/account/index.html');
             });
         });
-
-        if (typeof Windows !== 'undefined') {
-            //Set the status bar to the correct theme colour
-            let theme = {
-                a: 255,
-                r: 52,
-                g: 152,
-                b: 219
-            },
-                v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-
-            v.titleBar.inactiveBackgroundColor = theme;
-            v.titleBar.buttonInactiveBackgroundColor = theme;
-            v.titleBar.backgroundColor = theme;
-            v.titleBar.buttonBackgroundColor = theme;
-            v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-            v['setPreferredMinSize']({
-                height: 1024,
-                width: 325
-            });
-
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                $('body').addClass('mobile');
-                let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.showAsync();
-                statusBar.backgroundOpacity = 1;
-                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
-                statusBar.foregroundColor = Windows.UI.Colors.white;
-            }
-        }
     }
 
     export function onAccountView() {

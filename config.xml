@@ -42,5 +42,5 @@
   </vs:platformSpecificValues>
   <plugin name="cordova-plugin-camera" spec="~1.2.0" />
   <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
-  <preference name="Orientation" value="portrait" />
+  <preference name="Orientation" value="default" />
 </widget>
