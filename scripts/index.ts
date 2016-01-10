@@ -83,24 +83,32 @@ module swiftsnapper {
 
         if (typeof Windows !== 'undefined') {
             //Set the status bar to the correct theme colour
-            var theme = {
+            let theme = {
                 a: 255,
                 r: 52,
                 g: 152,
                 b: 219
             },
-
                 v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+
             v.titleBar.inactiveBackgroundColor = theme;
             v.titleBar.buttonInactiveBackgroundColor = theme;
             v.titleBar.backgroundColor = theme;
             v.titleBar.buttonBackgroundColor = theme;
             v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-
             v['setPreferredMinSize']({
                 height: 1024,
                 width: 325
             });
+
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                $('body').addClass('mobile');
+                let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+                statusBar.backgroundOpacity = 1;
+                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
+                statusBar.foregroundColor = Windows.UI.Colors.white;
+            }
         }
     }
 
@@ -121,6 +129,9 @@ module swiftsnapper {
             items: 1,
         });
 
+        $('header').on('click tap', function () {
+            views.trigger('to.owl.carousel', [1, 300, true]);
+        });
         $('#LogInBtn').on('click tap', function () {
             views.trigger('next.owl.carousel', [300]);
         });

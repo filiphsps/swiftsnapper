@@ -37,6 +37,9 @@
     background: #3498db;
 }
 
+#LogInView header .header{
+    padding: 0 0 0 32px;
+}
 #LogInView input{
     width: calc(100% - 33px);
     margin: 5px 10px;

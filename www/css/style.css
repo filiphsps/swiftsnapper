@@ -13,6 +13,9 @@ body {
     user-select: none;
     font-family: 'Segoe UI';
 }
+body.mobile {
+    margin: 20px 0 -20px 0;
+}
 .icon {
     color: #fff;
     font-size: 20px;
@@ -26,14 +29,14 @@ label {
 }
 input[type=text], input[type=password]{
     height: 20px;
-    padding: 2px 5px;
+    padding: 4px 5px;
     color: #000;
     border: 2px solid #7A7A7A;
     font-size: 14px;
     line-height: 18px;
 }
 input[type=submit], input[type=button] {
-    padding: 2px 8px;
+    padding: 4px 15px;
     background: #CCC;
     color: #000;
     border: 2px solid #CCC;
@@ -118,4 +121,7 @@ footer .item .icon::before {
     padding: 0;
     background: #fff;
     touch-action: pan-y;
+}
+body.mobile .view {
+    height: calc(100vh - 20px);
 }

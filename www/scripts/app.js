@@ -452,6 +452,14 @@ var swiftsnapper;
                 height: 1024,
                 width: 325
             });
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                $('body').addClass('mobile');
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+                statusBar.backgroundOpacity = 1;
+                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
+                statusBar.foregroundColor = Windows.UI.Colors.white;
+            }
         }
     };
     function onAccountView() {
@@ -469,6 +477,9 @@ var swiftsnapper;
             pullDrag: false,
             fallbackEasing: 'easeInOutQuart',
             items: 1,
+        });
+        $('header').on('click tap', function () {
+            views.trigger('to.owl.carousel', [1, 300, true]);
         });
         $('#LogInBtn').on('click tap', function () {
             views.trigger('next.owl.carousel', [300]);

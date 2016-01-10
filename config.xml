@@ -7,7 +7,7 @@
   <content src="index.html" />
   <preference name="SplashScreen" value="screen" />
   <preference name="windows-target-version" value="10.0" />
-  <preference name="Fullscreen" value="True" />
+  <preference name="Fullscreen" value="False" />
   <preference name="StatusBarBackgroundColor" value="#FFFC00" />
   <preference name="BackgroundColor" value="0xff3498DB" />
   <allow-intent href="http://*/*" />
@@ -42,4 +42,5 @@
   </vs:platformSpecificValues>
   <plugin name="cordova-plugin-camera" spec="~1.2.0" />
   <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
+  <preference name="Orientation" value="portrait" />
 </widget>
