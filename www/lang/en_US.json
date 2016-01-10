@@ -8,7 +8,7 @@
 
     "account": {
       "logIn": "Log In",
-      "singUp": "Sing Up",
+      "signUp": "Sign Up",
 
       "logInView": {
         "username": "Username",
