@@ -1,6 +1,6 @@
 ﻿#SelectView {
     overflow: hidden;
-    background: #FFD62F;
+    background: #3498DB;
 }
 #SelectView .logo {
     width: 50%;
@@ -31,8 +31,19 @@
     font-weight: 600;
 }
 #SelectView #LogInBtn {
-    background: #F22613;
+    background: #2980b9;
 }
 #SelectView #SignUpBtn {
-    background: #3498DB;
+    background: #3498db;
+}
+
+#LogInView input{
+    width: calc(100% - 33px);
+    margin: 5px 10px;
+}
+#LogInView label {
+    margin: 5px 10px 0 10px;
+}
+#LogInView input[type=submit] {
+    width: auto;
 }

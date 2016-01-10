@@ -306,7 +306,7 @@ var Snapchat;
         Client.prototype.Login = function (details) {
             var _this = this;
             return new Promise(function (resolve) {
-                if (details.username.length < 1 || details.username.length < 1) {
+                if (details.username.length < 1 || details.password.length < 1) {
                     resolve({ 'code': -1, 'message': 'You must provide both username AND password!' });
                     return;
                 }
@@ -439,18 +439,14 @@ var swiftsnapper;
             //Set the status bar to the correct theme colour
             var theme = {
                 a: 255,
-                r: 255,
-                g: 214,
-                b: 47
+                r: 52,
+                g: 152,
+                b: 219
             }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
             v.titleBar.inactiveBackgroundColor = theme;
             v.titleBar.buttonInactiveBackgroundColor = theme;
             v.titleBar.backgroundColor = theme;
             v.titleBar.buttonBackgroundColor = theme;
-            v.titleBar.inactiveForegroundColor = Windows.UI.Colors.white;
-            v.titleBar['inactiveButtonForegroundColor'] = Windows.UI.Colors.white;
-            v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
-            v.titleBar.foregroundColor = Windows.UI.Colors.white;
             v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
             v['setPreferredMinSize']({
                 height: 1024,
@@ -502,7 +498,7 @@ var swiftsnapper;
     }
     swiftsnapper.onAccountView = onAccountView;
     function onOverviewView() {
-        //TODO: Provide data from file
+        //TODO: use data from
         var lang = {
             app: {
                 name: 'SwiftSnapper'

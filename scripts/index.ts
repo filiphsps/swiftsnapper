@@ -85,9 +85,9 @@ module swiftsnapper {
             //Set the status bar to the correct theme colour
             var theme = {
                 a: 255,
-                r: 255,
-                g: 214,
-                b: 47
+                r: 52,
+                g: 152,
+                b: 219
             },
 
                 v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
@@ -95,10 +95,6 @@ module swiftsnapper {
             v.titleBar.buttonInactiveBackgroundColor = theme;
             v.titleBar.backgroundColor = theme;
             v.titleBar.buttonBackgroundColor = theme;
-            v.titleBar.inactiveForegroundColor = Windows.UI.Colors.white;
-            v.titleBar['inactiveButtonForegroundColor'] = Windows.UI.Colors.white;
-            v.titleBar.buttonForegroundColor = Windows.UI.Colors.white;
-            v.titleBar.foregroundColor = Windows.UI.Colors.white;
             v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
 
             v['setPreferredMinSize']({
@@ -159,7 +155,7 @@ module swiftsnapper {
     }
 
     export function onOverviewView() {
-        //TODO: Provide data from file
+        //TODO: use data from
         var lang = {
             app: {
                 name: 'SwiftSnapper'
