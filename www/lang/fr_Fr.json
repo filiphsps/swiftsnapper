@@ -11,10 +11,10 @@
       "signUp": "S'inscrire",
 
       "logInView": {
-        "username": "Nom d'utilisateurs",
+        "username": "Nom d'utilisateur",
         "password": "Mot de passe",
         "wrongUsernameOrPassword": "Nom d'utilisateur ou mot de passe incorrect!",
-        "userNotValid": "Nom d'utilisateurs invalide!"
+        "userNotValid": "Nom d'utilisateur invalide!"
       }
     },
 
