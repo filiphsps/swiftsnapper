@@ -1,66 +1,67 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget defaultlocale="en-US" id="com.filfat.swiftsnapper" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps">
-    <name>SwiftSnapper</name>
-    <description>
-    </description>
-    <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström and Contributors</author>
-    <content src="index.html" />
-    <preference name="SplashScreen" value="screen" />
-    <preference name="windows-target-version" value="10.0" />
-    <preference name="Fullscreen" value="False" />
-    <preference name="StatusBarBackgroundColor" value="#FFFC00" />
-    <preference name="BackgroundColor" value="0xff3498DB" />
-    <preference name="DisallowOverscroll" value="true" />
-    <allow-intent href="http://*/*" />
-    <allow-intent href="https://*/*" />
-    <allow-intent href="tel:*" />
-    <allow-intent href="sms:*" />
-    <allow-intent href="mailto:*" />
-    <allow-intent href="geo:*" />
-    <access origin="*" />
-    <platform name="windows">
-        <icon height="44" src="res/icons/windows/Square44x44Logo.scale-100.png" width="44" />
-        <icon height="55" src="res/icons/windows/Square44x44Logo.scale-125.png" width="55" />
-        <icon height="66" src="res/icons/windows/Square44x44Logo.scale-150.png" width="66" />
-        <icon height="88" src="res/icons/windows/Square44x44Logo.scale-200.png" width="88" />
-        <icon height="176" src="res/icons/windows/Square44x44Logo.scale-400.png" width="176" />
+  <name>SwiftSnapper</name>
+  <description>
+    An open source snapchat client for Windows 10.
+  </description>
+  <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström and Contributors</author>
+  <content src="index.html" />
+  <preference name="SplashScreen" value="screen" />
+  <preference name="windows-target-version" value="10.0" />
+  <preference name="Fullscreen" value="False" />
+  <preference name="StatusBarBackgroundColor" value="#FFFC00" />
+  <preference name="BackgroundColor" value="0xff3498DB" />
+  <preference name="DisallowOverscroll" value="true" />
+  <preference name="Orientation" value="default" />
+  <allow-intent href="http://*/*" />
+  <allow-intent href="https://*/*" />
+  <allow-intent href="tel:*" />
+  <allow-intent href="sms:*" />
+  <allow-intent href="mailto:*" />
+  <allow-intent href="geo:*" />
+  <access origin="*" />
+  <platform name="windows">
+    <icon height="44" src="res/icons/windows/Square44x44Logo.scale-100.png" width="44" />
+    <icon height="55" src="res/icons/windows/Square44x44Logo.scale-125.png" width="55" />
+    <icon height="66" src="res/icons/windows/Square44x44Logo.scale-150.png" width="66" />
+    <icon height="88" src="res/icons/windows/Square44x44Logo.scale-200.png" width="88" />
+    <icon height="176" src="res/icons/windows/Square44x44Logo.scale-400.png" width="176" />
       
-        <icon height="71" src="res/icons/windows/Square71x71Logo.scale-100.png" width="71" />
-        <icon height="89" src="res/icons/windows/Square71x71Logo.scale-125.png" width="89" />
-        <icon height="107" src="res/icons/windows/Square71x71Logo.scale-150.png" width="107" />
-        <icon height="142" src="res/icons/windows/Square71x71Logo.scale-200.png" width="142" />
-        <icon height="284" src="res/icons/windows/Square71x71Logo.scale-400.png" width="284" />
+    <icon height="71" src="res/icons/windows/Square71x71Logo.scale-100.png" width="71" />
+    <icon height="89" src="res/icons/windows/Square71x71Logo.scale-125.png" width="89" />
+    <icon height="107" src="res/icons/windows/Square71x71Logo.scale-150.png" width="107" />
+    <icon height="142" src="res/icons/windows/Square71x71Logo.scale-200.png" width="142" />
+    <icon height="284" src="res/icons/windows/Square71x71Logo.scale-400.png" width="284" />
       
-        <icon height="150" src="res/icons/windows/Square150x150Logo.scale-100.png" width="150" />
-        <icon height="188" src="res/icons/windows/Square150x150Logo.scale-125.png" width="188" />
-        <icon height="255" src="res/icons/windows/Square150x150Logo.scale-150.png" width="255" />
-        <icon height="300" src="res/icons/windows/Square150x150Logo.scale-200.png" width="300" />
-        <icon height="600" src="res/icons/windows/Square150x150Logo.scale-400.png" width="600" />
+    <icon height="150" src="res/icons/windows/Square150x150Logo.scale-100.png" width="150" />
+    <icon height="188" src="res/icons/windows/Square150x150Logo.scale-125.png" width="188" />
+    <icon height="255" src="res/icons/windows/Square150x150Logo.scale-150.png" width="255" />
+    <icon height="300" src="res/icons/windows/Square150x150Logo.scale-200.png" width="300" />
+    <icon height="600" src="res/icons/windows/Square150x150Logo.scale-400.png" width="600" />
       
-        <icon height="150" src="res/icons/windows/Square310x150Logo.scale-100.png" width="310" />
-        <icon height="188" src="res/icons/windows/Square310x150Logo.scale-125.png" width="388" />
-        <icon height="225" src="res/icons/windows/Square310x150Logo.scale-150.png" width="465" />
-        <icon height="300" src="res/icons/windows/Square310x150Logo.scale-200.png" width="620" />
-        <icon height="600" src="res/icons/windows/Square310x150Logo.scale-400.png" width="1240" />
+    <icon height="150" src="res/icons/windows/Square310x150Logo.scale-100.png" width="310" />
+    <icon height="188" src="res/icons/windows/Square310x150Logo.scale-125.png" width="388" />
+    <icon height="225" src="res/icons/windows/Square310x150Logo.scale-150.png" width="465" />
+    <icon height="300" src="res/icons/windows/Square310x150Logo.scale-200.png" width="620" />
+    <icon height="600" src="res/icons/windows/Square310x150Logo.scale-400.png" width="1240" />
       
-        <icon height="310" src="res/icons/windows/Square310x310Logo.scale-100.png" width="310" />
-        <icon height="388" src="res/icons/windows/Square310x310Logo.scale-125.png" width="388" />
-        <icon height="465" src="res/icons/windows/Square310x310Logo.scale-150.png" width="465" />
-        <icon height="620" src="res/icons/windows/Square310x310Logo.scale-200.png" width="620" />
-        <icon height="1240" src="res/icons/windows/Square310x310Logo.scale-400.png" width="1240" />
+    <icon height="310" src="res/icons/windows/Square310x310Logo.scale-100.png" width="310" />
+    <icon height="388" src="res/icons/windows/Square310x310Logo.scale-125.png" width="388" />
+    <icon height="465" src="res/icons/windows/Square310x310Logo.scale-150.png" width="465" />
+    <icon height="620" src="res/icons/windows/Square310x310Logo.scale-200.png" width="620" />
+    <icon height="1240" src="res/icons/windows/Square310x310Logo.scale-400.png" width="1240" />
       
-        <splash height="300" src="res/screens/windows/SplashScreen.scale-100.png" width="620" />
-        <splash height="420" src="res/screens/windows/SplashScreen.scale-140.png" width="868" />
-        <splash height="540" src="res/screens/windows/SplashScreen.scale-180.png" width="1116" />
+    <splash height="300" src="res/screens/windows/SplashScreen.scale-100.png" width="620" />
+    <splash height="420" src="res/screens/windows/SplashScreen.scale-140.png" width="868" />
+    <splash height="540" src="res/screens/windows/SplashScreen.scale-180.png" width="1116" />
       
-        <splash height="1920" src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" />
-    </platform>
-    <vs:platformSpecificValues>
-        <vs:platformSpecificWidget id="com.filfat.swiftsnapper" platformName="windows">
-            <vs:name>SwiftSnapper</vs:name>
-        </vs:platformSpecificWidget>
-    </vs:platformSpecificValues>
-    <plugin name="cordova-plugin-camera" spec="~1.2.0" />
-    <preference name="Orientation" value="default" />
-    <plugin name="cordova-plugin-device" spec="~1.1.0" />
+    <splash height="1920" src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" />
+  </platform>
+  <vs:platformSpecificValues>
+    <vs:platformSpecificWidget id="com.filfat.swiftsnapper" platformName="windows">
+      <vs:name>SwiftSnapper</vs:name>
+    </vs:platformSpecificWidget>
+  </vs:platformSpecificValues>
+  <plugin name="cordova-plugin-camera" spec="~1.2.0" />
+  <plugin name="cordova-plugin-device" spec="~1.1.0" />
 </widget>
