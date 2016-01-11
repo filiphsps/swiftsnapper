@@ -1,4 +1,5 @@
 ﻿/// <reference path="SC/snapchat.ts" />
+/// <reference path="cameraManager.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
@@ -10,44 +11,7 @@ module swiftsnapper {
 
     let SnapchatClient: Snapchat.Client;
 
-    export module CameraManager {
-        var video;
-        var mediaStream;
 
-        export function initialize(conf) {
-            video = document.getElementById('CameraPreview');
-            var Capture = Windows.Media.Capture;
-            var mediaCapture = new Capture.MediaCapture();
-            var mediaSettings = new Capture.MediaCaptureInitializationSettings();
-            mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
-
-            Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
-                .done(function (devices) {
-                    if (devices.length > 0) {
-                        if (conf.frontFacing) {
-                            video.classList.add('FrontFacing');
-
-                            mediaSettings.videoDeviceId = devices[1].id;
-                        } else {
-                            video.classList.remove('FrontFacing');
-
-                            mediaSettings.videoDeviceId = devices[0].id;
-                        }
-
-                        mediaCapture.initializeAsync(mediaSettings).done(function () {
-                            video.src = URL.createObjectURL(mediaCapture);
-                            video.play();
-                        });
-                    } else {
-                        //No camera found
-                    }
-                });
-        }
-
-        export function takePhoto() {
-            //TODO
-        }
-    }
 
     export module Application {
         export function initialize() {
@@ -109,7 +73,7 @@ module swiftsnapper {
 
         //Init Snapchat
         SnapchatClient = new Snapchat.Client();
-        SnapchatClient.Initialize().then(function() {
+        SnapchatClient.Initialize().then(function () {
             $(document).ready(function () {
                 $('body').load('views/account/index.html');
             });
