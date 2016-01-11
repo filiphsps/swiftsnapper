@@ -19,22 +19,29 @@ module swiftsnapper {
             var Capture = Windows.Media.Capture;
             var mediaCapture = new Capture.MediaCapture();
             var mediaSettings = new Capture.MediaCaptureInitializationSettings();
-            mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;
+            var rotationValue = Capture.VideoRotation.none;
+            mediaSettings.audioDeviceId = "";
+            mediaSettings.videoDeviceId = "";
+            mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;;
+            mediaSettings.photoCaptureSource = Capture.PhotoCaptureSource.photo;
 
             Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
                 .done(function (devices) {
                     if (devices.length > 0) {
                         if (conf.frontFacing) {
                             video.classList.add('FrontFacing');
+                            rotationValue = Capture.VideoRotation.clockwise90Degrees;
 
                             mediaSettings.videoDeviceId = devices[1].id;
                         } else {
                             video.classList.remove('FrontFacing');
+                            rotationValue = Capture.VideoRotation.clockwise270Degrees;
 
                             mediaSettings.videoDeviceId = devices[0].id;
                         }
 
                         mediaCapture.initializeAsync(mediaSettings).done(function () {
+                            mediaCapture.setPreviewRotation(rotationValue);
                             video.src = URL.createObjectURL(mediaCapture);
                             video.play();
                         });
@@ -109,7 +116,7 @@ module swiftsnapper {
 
         //Init Snapchat
         SnapchatClient = new Snapchat.Client();
-        SnapchatClient.Initialize().then(function() {
+        SnapchatClient.Initialize().then(function () {
             $(document).ready(function () {
                 $('body').load('views/account/index.html');
             });
