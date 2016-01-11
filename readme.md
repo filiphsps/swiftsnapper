@@ -1,5 +1,6 @@
 ![SwiftSnapper](http://i.imgur.com/DDrYKL9.png)
 [![Build status](https://ci.appveyor.com/api/projects/status/d8ldxvatsq9adp8w/branch/master?svg=true)](https://ci.appveyor.com/project/filfat/swiftsnapper)
+[![Preview builds](https://img.shields.io/badge/download-preview%20build-orange.svg)](https://ci.appveyor.com/project/filfat/swiftsnapper/build/artifacts)
 [![Donate](https://img.shields.io/badge/donate-paypal-brightgreen.svg)](https://www.paypal.me/filiph/25)
 
 
