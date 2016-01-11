@@ -10,6 +10,7 @@
   <preference name="Fullscreen" value="False" />
   <preference name="StatusBarBackgroundColor" value="#FFFC00" />
   <preference name="BackgroundColor" value="0xff3498DB" />
+  <preference name="DisallowOverscroll" value="true" />
   <allow-intent href="http://*/*" />
   <allow-intent href="https://*/*" />
   <allow-intent href="tel:*" />
