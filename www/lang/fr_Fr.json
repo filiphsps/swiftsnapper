@@ -18,8 +18,14 @@
       }
     },
 
-    "overview": {
-
+   "overview": {
+      "views": {
+        "stories": {
+          "title": "Stories",
+          "myStory": "Ma story",
+          "explore":  "Explorer"
+        }
+      }
     },
 
     "settings": {
