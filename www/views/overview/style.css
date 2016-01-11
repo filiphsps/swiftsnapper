@@ -83,3 +83,7 @@
 #StoriesView header {
     background: #bf55ec;
 }
+
+#ShowSnapView {
+    display: none;
+}

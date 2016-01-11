@@ -19,7 +19,13 @@
     },
 
     "overview": {
-
+      "views": {
+        "stories": {
+          "title": "Stories",
+          "myStory": "My Story",
+          "explore":  "Explore"
+        }
+      }
     },
 
     "settings": {

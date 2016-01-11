@@ -1,6 +1,6 @@
 ﻿module CameraManager {
-    var video;
-    var mediaStream;
+    let video,
+        mediaStream;
 
     export function initialize(conf) {
         video = document.getElementById('CameraPreview');

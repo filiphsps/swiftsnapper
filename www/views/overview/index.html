@@ -2,6 +2,11 @@
 
 <div id="PageContent"></div>
 <script id="template" type="text/x-handlebars-template">
+    <section id="ShowSnapView">
+        <img />
+        <div class="Counter">10</div>
+    </section>
+
     <main id="views">
         <!-- Snaps View -->
         <section id="SnapsView" class="view">
@@ -44,7 +49,7 @@
         <!-- Stories View -->
         <section id="StoriesView" class="view">
             <header>
-                <div class="header">{{stories.title}}</div>
+                <div class="header">{{views.overview.views.stories.title}}</div>
                 <nav>
                     <div class="item"><span class="icon mdl2-find-legacy"></span></div>
                     <div class="item"><span class="icon mdl2-settings"></span></div>
