@@ -46,6 +46,7 @@ namespace Snapchat {
 
         /*
             Get a user's SnapTag
+            Doesn't work yet.
         */
         public GetSnapTag(username: string) {
             let self = this,
@@ -131,7 +132,7 @@ namespace Snapchat {
                         self.AllUpdatesData = JSON.parse(data);
 
                         if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                            resolve({ 'code': data['status'], 'message': data['message'] });
+                            resolve({ 'status': data['status'], 'message': data['message'] });
                             return;
                         }
 
