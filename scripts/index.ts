@@ -15,6 +15,10 @@ module swiftsnapper {
         var mediaStream;
 
         export function initialize(conf) {
+            console.log(device.uuid);
+            console.log(device.model); // Win32  // ARM
+            console.log(device.platform); // windows  // windows
+            console.log(device.version); // 10.0.10586.0  // 10.0.10586.36
             video = document.getElementById('CameraPreview');
             var Capture = Windows.Media.Capture;
             var mediaCapture = new Capture.MediaCapture();
@@ -41,7 +45,9 @@ module swiftsnapper {
                         }
 
                         mediaCapture.initializeAsync(mediaSettings).done(function () {
-                            mediaCapture.setPreviewRotation(rotationValue);
+                            if (device.model == "ARM") {
+                                mediaCapture.setPreviewRotation(rotationValue);
+                            }
                             video.src = URL.createObjectURL(mediaCapture);
                             video.play();
                         });
