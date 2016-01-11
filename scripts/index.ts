@@ -1,4 +1,5 @@
 ﻿/// <reference path="SC/snapchat.ts" />
+/// <reference path="cameraManager.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
@@ -10,57 +11,7 @@ module swiftsnapper {
 
     let SnapchatClient: Snapchat.Client;
 
-    export module CameraManager {
-        var video;
-        var mediaStream;
 
-        export function initialize(conf) {
-            console.log(device.uuid);
-            console.log(device.model); // Win32  // ARM
-            console.log(device.platform); // windows  // windows
-            console.log(device.version); // 10.0.10586.0  // 10.0.10586.36
-            video = document.getElementById('CameraPreview');
-            var Capture = Windows.Media.Capture;
-            var mediaCapture = new Capture.MediaCapture();
-            var mediaSettings = new Capture.MediaCaptureInitializationSettings();
-            var rotationValue = Capture.VideoRotation.none;
-            mediaSettings.audioDeviceId = "";
-            mediaSettings.videoDeviceId = "";
-            mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;;
-            mediaSettings.photoCaptureSource = Capture.PhotoCaptureSource.photo;
-
-            Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
-                .done(function (devices) {
-                    if (devices.length > 0) {
-                        if (conf.frontFacing) {
-                            video.classList.add('FrontFacing');
-                            rotationValue = Capture.VideoRotation.clockwise90Degrees;
-
-                            mediaSettings.videoDeviceId = devices[1].id;
-                        } else {
-                            video.classList.remove('FrontFacing');
-                            rotationValue = Capture.VideoRotation.clockwise270Degrees;
-
-                            mediaSettings.videoDeviceId = devices[0].id;
-                        }
-
-                        mediaCapture.initializeAsync(mediaSettings).done(function () {
-                            if (device.model == "ARM") {
-                                mediaCapture.setPreviewRotation(rotationValue);
-                            }
-                            video.src = URL.createObjectURL(mediaCapture);
-                            video.play();
-                        });
-                    } else {
-                        //No camera found
-                    }
-                });
-        }
-
-        export function takePhoto() {
-            //TODO
-        }
-    }
 
     export module Application {
         export function initialize() {
