@@ -32,7 +32,10 @@
         <icon height="120" src="res/icons/windows/StoreLogo.scale-240.png" width="120" />
         <icon height="150" src="res/icons/windows/Wide310x150Logo.scale-100.png" width="310" />
         <icon height="360" src="res/icons/windows/Wide310x150Logo.scale-240.png" width="744" />
+      
         <splash height="300" src="res/screens/windows/SplashScreen.scale-100.png" width="620" />
+        <splash height="420" src="res/screens/windows/SplashScreen.scale-140.png" width="868" />
+        <splash height="540" src="res/screens/windows/SplashScreen.scale-180.png" width="1116" />
         <splash height="1920" src="res/screens/windows/SplashScreen.scale-240.png" width="1152" />
         <splash height="1920" src="res/screens/windows/SplashScreenPhone.scale-240.png" width="1152" />
     </platform>
