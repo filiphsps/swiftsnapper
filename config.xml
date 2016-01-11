@@ -10,6 +10,7 @@
   <preference name="Fullscreen" value="False" />
   <preference name="StatusBarBackgroundColor" value="#FFFC00" />
   <preference name="BackgroundColor" value="0xff3498DB" />
+  <preference name="DisallowOverscroll" value="true" />
   <allow-intent href="http://*/*" />
   <allow-intent href="https://*/*" />
   <allow-intent href="tel:*" />
@@ -41,6 +42,5 @@
     </vs:platformSpecificWidget>
   </vs:platformSpecificValues>
   <plugin name="cordova-plugin-camera" spec="~1.2.0" />
-  <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
   <preference name="Orientation" value="default" />
 </widget>
