@@ -4,8 +4,14 @@
     <!-- Sign Up View -->
     <section id="SingUpView" class="view">
         <header>
-            <div class="header">Sing Up</div>
+            <div class="header">Sign Up</div>
+            <nav>
+                <div class="item right"><span class="icon mdl2-scroll-chevron-right-legacy"></span></div>
+            </nav>
         </header>
+        <article>
+            Coming soon-ish?
+        </article>
     </section>
 
     <!-- Select View -->
@@ -23,10 +29,15 @@
     <section id="LogInView" class="view">
         <header>
             <div class="header">Log In</div>
+            <nav>
+                <div class="item left"><span class="icon mdl2-scroll-chevron-left-legacy"></span></div>
+            </nav>
         </header>
         <form id="LogInForm">
-            <input class="username" type="text" placeholder="username"/>
-            <input class="password" type="password" placeholder="password">
+            <label>Username</label>
+            <input class="username" type="text" required/>
+            <label>Password</label>
+            <input class="password" type="password" required/>
             <input type="submit" value="Log In"/>
         </form>
     </section>

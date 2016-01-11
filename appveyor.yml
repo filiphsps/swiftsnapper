@@ -1,0 +1,22 @@
+version: 0.1.{build}
+os: Visual Studio 2015
+configuration: Release
+platform: ARM
+install:
+- cmd: >-
+    node --version
+
+    npm --version
+
+    npm install -g cordova
+build_script:
+- cmd: >-
+    cordova platforms add windows
+
+    cordova build windows --arch=arm --release
+
+    cordova build windows --arch=x64 --release
+
+    cordova build windows --arch=x86 --release
+artifacts:
+- path: platforms\windows\**\*.appx

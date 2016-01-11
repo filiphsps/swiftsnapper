@@ -3,12 +3,14 @@
   <name>SwiftSnapper</name>
   <description>
   </description>
-  <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström &amp; Contributors</author>
+  <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström and Contributors</author>
   <content src="index.html" />
   <preference name="SplashScreen" value="screen" />
   <preference name="windows-target-version" value="10.0" />
-  <preference name="Fullscreen" value="True" />
+  <preference name="Fullscreen" value="False" />
   <preference name="StatusBarBackgroundColor" value="#FFFC00" />
+  <preference name="BackgroundColor" value="0xff3498DB" />
+  <preference name="DisallowOverscroll" value="true" />
   <allow-intent href="http://*/*" />
   <allow-intent href="https://*/*" />
   <allow-intent href="tel:*" />
@@ -17,6 +19,8 @@
   <allow-intent href="geo:*" />
   <access origin="*" />
   <platform name="windows">
+    <icon height="71" src="res/icons/windows/Square71x71Logo.scale-100.png" width="71" />
+    <icon height="44" src="res/icons/windows/Square44x44Logo.scale-100.png" width="44" />
     <icon height="150" src="res/icons/windows/Square150x150Logo.scale-100.png" width="150" />
     <icon height="360" src="res/icons/windows/Square150x150Logo.scale-240.png" width="360" />
     <icon height="30" src="res/icons/windows/Square30x30Logo.scale-100.png" width="30" />
@@ -38,5 +42,5 @@
     </vs:platformSpecificWidget>
   </vs:platformSpecificValues>
   <plugin name="cordova-plugin-camera" spec="~1.2.0" />
-  <plugin name="cordova-plugin-whitelist" spec="~1.2.0" />
+  <preference name="Orientation" value="default" />
 </widget>
