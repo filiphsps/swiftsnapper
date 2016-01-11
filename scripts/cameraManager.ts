@@ -3,10 +3,6 @@
     var mediaStream;
 
     export function initialize(conf) {
-        console.log(device.uuid);
-        console.log(device.model); // Win32  // ARM
-        console.log(device.platform); // windows  // windows
-        console.log(device.version); // 10.0.10586.0  // 10.0.10586.36
         video = document.getElementById('CameraPreview');
         var Capture = Windows.Media.Capture;
         var mediaCapture = new Capture.MediaCapture();
@@ -15,7 +11,7 @@
         mediaSettings.audioDeviceId = "";
         mediaSettings.videoDeviceId = "";
         mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;;
-        mediaSettings.photoCaptureSource = Capture.PhotoCaptureSource.photo;
+        //mediaSettings.photoCaptureSource = Capture.PhotoCaptureSource.photo;
 
         Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
             .done(function (devices) {
