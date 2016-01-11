@@ -1,0 +1,29 @@
+{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "nl_BE"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Inloggen",
+      "signUp": "Registreren",
+
+      "logInView": {
+        "username": "Gebruikersnaam",
+        "password": "Wachtwoord",
+        "wrongUsernameOrPassword": "Gebruikersnaam of wachtwoord incorrect!",
+        "userNotValid": "Gebruikersnaam bestaat niet!!"
+      }
+    },
+
+    "overview": {
+
+    },
+
+    "settings": {
+
+    }
+  }
+}
