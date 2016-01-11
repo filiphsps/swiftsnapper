@@ -18,9 +18,21 @@
       }
     },
 
-    "overview": {
-
+   "overview": {
+      "views": {
+        "stories": {
+          "title": "Stories",
+          "myStory": "Ma stories",
+          "explore":  "Explorer"
+        }
+      }
     },
+
+    "settings": {
+
+    }
+  }
+}
 
     "settings": {
 
