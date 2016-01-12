@@ -99,7 +99,7 @@ module swiftsnapper {
 
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                windowManager.startLoading('Logging In...');
+                windowManager.startLoading(lang.views.account.logInView.loggingIn); 
                 $('#LogInView form .username').prop("disabled", true);
                 $('#LogInView form .password').prop("disabled", true);
 
@@ -111,6 +111,7 @@ module swiftsnapper {
                         if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
                             messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
 
+                            windowManager.stopLoading();
                             $('#LogInView form .username').prop("disabled", false);
                             $('#LogInView form .password').prop("disabled", false);
                             return -1;
