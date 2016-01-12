@@ -16,6 +16,7 @@
         "wrongUsernameOrPassword": "Nom d'utilisateur ou mot de passe incorrect!",
         "failedToLogIn":  "Échec d'identification", 
         "userNotValid": "Nom d'utilisateur invalide!"
+        "loggingIn": "Connexion en cours..."
       }
     },
 
