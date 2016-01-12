@@ -76,6 +76,10 @@ namespace Snapchat {
             });
         }
 
+        public PostSnap(URI, parameters, headers?) {
+            return this.SnapchatAgent.PostSnapchat(URI, parameters, headers);
+        }
+
         /*
             Log In a user
         */

@@ -207,11 +207,13 @@ module swiftsnapper {
                     CameraManager.initialize({
                         'frontFacing': true
                     });
+                  }
                 }
-
-            });
+            );
             $('#ShutterBtn').on('click tap', function () {
-                CameraManager.takePhoto();
+                var IStream = CameraManager.takePhotoAsync();
+                console.log("Picture Taken");
+                SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
             });
 
 
