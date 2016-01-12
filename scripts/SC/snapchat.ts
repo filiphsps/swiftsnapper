@@ -1,4 +1,4 @@
-﻿/// <reference path="snapchat.agent.ts" />
+/// <reference path="snapchat.agent.ts" />
 /// <reference path="snapchat.models.ts" />
 
 namespace Snapchat {
@@ -121,6 +121,7 @@ namespace Snapchat {
                         ['remember_device', data.params.remember_device],
                         ['req_token', data.params.req_token],
                         ['screen_height_in', data.params.screen_height_in],
+                        ['screen_height_in', data.params.screen_height_px],
                         ['screen_height_px', data.params.screen_height_px],
                         ['screen_width_in', data.params.screen_width_in],
                         ['screen_width_px', data.params.screen_width_px],
