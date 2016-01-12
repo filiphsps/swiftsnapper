@@ -45,7 +45,7 @@
     background: #000;
 }
 body.mobile #CameraView {
-    margin: -20px 0 0 0 !important;
+    padding: 0 !important;
     height: 100vh !important;
 }
 #CameraView header {

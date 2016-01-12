@@ -13,9 +13,6 @@ body {
     user-select: none;
     font-family: 'Segoe UI';
 }
-body.mobile {
-    margin: 20px 0 -20px 0;
-}
 .icon {
     color: #fff;
     font-size: 20px;
@@ -123,5 +120,6 @@ footer .item .icon::before {
     touch-action: pan-y;
 }
 body.mobile .view {
+    padding: 20px 0 0 0;
     height: calc(100vh - 20px);
 }
