@@ -1,6 +1,19 @@
 {
-    "name": "swiftsnapper",
-    "version": "1.0.0",
-    "dependencies": {
-    }
+  "name": "swiftsnapper",
+  "version": "1.0.0",
+  "author": "Filiph Sandström <filiph.sandstrom@filfatstudios.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/filfat/swiftsnapper"
+  },
+  "bugs": {
+    "url": "https://github.com/filfat/swiftsnapper/issues"
+  },
+  "keywords": [
+    "windows",
+    "phone",
+    "snapchat"
+  ],
+  "dependencies": {
+  }
 }
