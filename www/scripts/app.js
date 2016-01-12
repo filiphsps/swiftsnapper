@@ -597,7 +597,9 @@ var swiftsnapper;
                     if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
                         messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
                         $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);
+                        $('#LogInView form .password').prop("disabled", false);                        
+                        windowManager.stopLoading();
+                        windowManager.hideStatusBar();
                         return -1;
                     }
                     windowManager.stopLoading();
