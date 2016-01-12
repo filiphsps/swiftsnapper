@@ -14,7 +14,7 @@
         "username": "Utilizador",
         "password": "Senha",
         "wrongUsernameOrPassword": "Utilizador ou senha errada.",
-        "failedToLogIn":  "Falha no LogIn",
+        "failedToLogIn":  "Erro",
         "userNotValid": "Utilizador Inválido"
       }
     },
