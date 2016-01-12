@@ -15,7 +15,7 @@ var CameraManager;
         Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
             .done(function (devices) {
             if (devices.length > 0) {
-                if (conf.frontFacing) {
+                if (conf.frontFacing && devices.length > 1) {
                     video.classList.add('FrontFacing');
                     rotationValue = Capture.VideoRotation.clockwise90Degrees;
                     mediaSettings.videoDeviceId = devices[1].id;
@@ -386,7 +386,7 @@ var Snapchat;
                         ['password', data.params.password],
                         ['remember_device', data.params.remember_device],
                         ['req_token', data.params.req_token],
-                        ['screen_height_in', data.params.screen_height_px],
+                        ['screen_height_in', data.params.screen_height_in],
                         ['screen_height_px', data.params.screen_height_px],
                         ['screen_width_in', data.params.screen_width_in],
                         ['screen_width_px', data.params.screen_width_px],
@@ -512,6 +512,7 @@ var swiftsnapper;
 (function (swiftsnapper) {
     "use strict";
     var SnapchatClient;
+    var language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
     var Application;
     (function (Application) {
         function initialize() {
@@ -521,14 +522,21 @@ var swiftsnapper;
         }
         Application.initialize = initialize;
         function getLanguageStrings(lang, callback) {
-            $.getJSON('lang/' + lang + '.json', function (lang) {
-                callback(lang);
-            }, function (e) {
-                //Error
-                $.getJSON('lang/en_US.json', function (lang) {
+            $.get('lang/' + lang + '.json').done(function () {
+                $.getJSON('lang/' + lang + '.json', function (lang) {
+                    callback(lang);
+                }, function (e) {
+                    //Error
+                    $.getJSON('lang/en-US.json', function (lang) {
+                        callback(lang);
+                    });
+                });
+            }).fail(function () {
+                $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
                 });
             });
+            ;
         }
         Application.getLanguageStrings = getLanguageStrings;
         function onDeviceReady() {
@@ -553,56 +561,59 @@ var swiftsnapper;
         });
     };
     function onAccountView() {
-        //Init Owl Carousel
-        views = $('#views');
-        views.owlCarousel({
-            loop: false,
-            nav: false,
-            dots: false,
-            video: true,
-            margin: 0,
-            startPosition: 1,
-            mouseDrag: false,
-            touchDrag: false,
-            pullDrag: false,
-            fallbackEasing: 'easeInOutQuart',
-            items: 1,
-        });
-        $('header').on('click tap', function () {
-            views.trigger('to.owl.carousel', [1, 300, true]);
-        });
-        $('#LogInBtn').on('click tap', function () {
-            views.trigger('next.owl.carousel', [300]);
-        });
-        $('#SignUpBtn').on('click tap', function () {
-            views.trigger('prev.owl.carousel', [300]);
-        });
-        $('#LogInForm').submit(function (e) {
-            windowManager.startLoading('Logging In...');
-            $('#LogInView form .username').prop("disabled", true);
-            $('#LogInView form .password').prop("disabled", true);
-            SnapchatClient.Login({
-                username: $('#LogInView form .username').val(),
-                password: $('#LogInView form .password').val(),
-            }).then(function (data) {
-                if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                    messageManager.alert('Wrong username or password!', 'Failed to login', null); //TODO: Lang
-                    $('#LogInView form .username').prop("disabled", false);
-                    $('#LogInView form .password').prop("disabled", false);
-                    return -1;
-                }
-                windowManager.stopLoading();
-                $(document).ready(function () {
-                    $('body').load('views/overview/index.html');
+        Application.getLanguageStrings(language, function (lang) {
+            var template = Handlebars.compile($("#template").html());
+            $('#PageContent').html(template(lang));
+            //Init Owl Carousel
+            views = $('#views');
+            views.owlCarousel({
+                loop: false,
+                nav: false,
+                dots: false,
+                video: true,
+                margin: 0,
+                startPosition: 1,
+                mouseDrag: false,
+                touchDrag: false,
+                pullDrag: false,
+                fallbackEasing: 'easeInOutQuart',
+                items: 1,
+            });
+            $('header').on('click tap', function () {
+                views.trigger('to.owl.carousel', [1, 300, true]);
+            });
+            $('#LogInBtn').on('click tap', function () {
+                views.trigger('next.owl.carousel', [300]);
+            });
+            $('#SignUpBtn').on('click tap', function () {
+                views.trigger('prev.owl.carousel', [300]);
+            });
+            $('#LogInForm').submit(function (e) {
+                windowManager.startLoading('Logging In...');
+                $('#LogInView form .username').prop("disabled", true);
+                $('#LogInView form .password').prop("disabled", true);
+                SnapchatClient.Login({
+                    username: $('#LogInView form .username').val(),
+                    password: $('#LogInView form .password').val(),
+                }).then(function (data) {
+                    if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
+                        messageManager.alert('Wrong username or password!', 'Failed to login', null); //TODO: Lang
+                        $('#LogInView form .username').prop("disabled", false);
+                        $('#LogInView form .password').prop("disabled", false);
+                        return -1;
+                    }
+                    windowManager.stopLoading();
+                    $(document).ready(function () {
+                        $('body').load('views/overview/index.html');
+                    });
+                    e.preventDefault();
                 });
             });
-            e.preventDefault();
         });
     }
     swiftsnapper.onAccountView = onAccountView;
     function onOverviewView() {
-        //TODO: use data from
-        Application.getLanguageStrings('en_US', function (lang) {
+        Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
