@@ -1,0 +1,36 @@
+﻿{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "de-DE"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Einloggen",
+      "signUp": "Anmelden",
+
+      "logInView": {
+        "username": "Benutzername",
+        "password": "Passwort",
+        "wrongUsernameOrPassword": "Falscher Benutzername oder Passwort!",
+        "failedToLogIn":  "Login fehlgeschlagen",
+        "userNotValid": "Der eingegebene Benutzername ist ungültig!"
+      }
+    },
+
+    "overview": {
+      "views": {
+        "stories": {
+          "title": "Stories",
+          "myStory": "My Story",
+          "explore":  "Erkunden"
+        }
+      }
+    },
+
+    "settings": {
+
+    }
+  }
+}
