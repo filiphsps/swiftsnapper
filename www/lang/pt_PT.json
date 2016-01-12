@@ -1,20 +1,20 @@
-﻿{
+{
   "app": {
     "name": "SwiftSnapper",
-    "lang":  "pt_BR"
+    "lang":  "pt_PT"
   },
 
   "views": {
 
     "account": {
       "logIn": "Entrar",
-      "signUp": "Criar Conta",
+      "signUp": "Registar",
 
       "logInView": {
-        "username": "Nome de Usuário",
+        "username": "Utilizador",
         "password": "Senha",
-        "wrongUsernameOrPassword": "Nome de usuário ou senha incorretos!",
-        "userNotValid": "O nome de usuário que você digitou não é válido!"
+        "wrongUsernameOrPassword": "Utilizador ou senha errada.",
+        "userNotValid": "Utilizador Inválido"
       }
     },
 

@@ -4,6 +4,7 @@
 /// <reference path="SC/snapchat.ts" />
 /// <reference path="cameraManager.ts" />
 /// <reference path="messageManager.ts" />
+/// <reference path="windowManager.ts" />
 
 declare var Handlebars: any;
 let views;
@@ -18,41 +19,8 @@ module swiftsnapper {
     export module Application {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            initializeStatusBar();
             messageManager.initialize();
-        }
-
-        export function initializeStatusBar() {
-            if (typeof Windows !== 'undefined') {
-                let theme = {
-                    a: 255,
-                    r: 52,
-                    g: 152,
-                    b: 219
-                }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-
-                v.titleBar.inactiveBackgroundColor = theme;
-                v.titleBar.buttonInactiveBackgroundColor = theme;
-                v.titleBar.backgroundColor = theme;
-                v.titleBar.buttonBackgroundColor = theme;
-                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-                v['setPreferredMinSize']({
-                    height: 1024,
-                    width: 325
-                });
-            }
-
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                $('body').addClass('mobile'); //TODO: Move to initialize()
-                let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.showAsync();
-                statusBar.backgroundOpacity = 1;
-                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
-                statusBar.foregroundColor = Windows.UI.Colors.white;
-
-                //Lock portrait
-                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait
-            }
+            windowManager.initialize();
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
@@ -121,6 +89,7 @@ module swiftsnapper {
         });
 
         $('#LogInForm').submit(function (e) {
+            windowManager.startLoading('Logging In...');
             $('#LogInView form .username').prop("disabled", true);
             $('#LogInView form .password').prop("disabled", true);
 
@@ -138,6 +107,7 @@ module swiftsnapper {
                         return -1;
                     }
 
+                    windowManager.stopLoading();
                     $(document).ready(function () {
                         $('body').load('views/overview/index.html');
                     });
