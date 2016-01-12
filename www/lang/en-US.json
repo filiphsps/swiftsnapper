@@ -15,7 +15,8 @@
         "password": "Password",
         "wrongUsernameOrPassword": "Wrong username or password!",
         "failedToLogIn":  "Failed to Log In",
-        "userNotValid": "The username you entered is not valid!"
+        "userNotValid": "The username you entered is not valid!",
+        "loggingIn": "Logging in..."
       }
     },
 

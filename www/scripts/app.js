@@ -587,7 +587,7 @@ var swiftsnapper;
             });
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                windowManager.startLoading('Logging In...');
+                windowManager.startLoading(lang.views.account.logInView.loggingIn);
                 $('#LogInView form .username').prop("disabled", true);
                 $('#LogInView form .password').prop("disabled", true);
                 SnapchatClient.Login({
