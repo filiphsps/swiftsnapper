@@ -470,6 +470,20 @@ var windowManager;
         }
     }
     windowManager.initialize = initialize;
+    function showStatusBar() {
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+            var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+            statusBar.showAsync();
+        }
+    }
+    windowManager.showStatusBar = showStatusBar;
+    function hideStatusBar() {
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+            var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+            statusBar.hideAsync();
+        }
+    }
+    windowManager.hideStatusBar = hideStatusBar;
     function startLoading(message) {
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
@@ -610,6 +624,15 @@ var swiftsnapper;
                         items: 3
                     }
                 }
+            });
+            views.on('changed.owl.carousel', function (event) {
+                var pos = event.item.index;
+                if (pos == 2) {
+                    windowManager.hideStatusBar();
+                    messageManager.alert('Test', 'test', null);
+                }
+                else
+                    windowManager.showStatusBar();
             });
             //temp: view unread snaps
             var snaps = SnapchatClient.GetPendingFeed();
