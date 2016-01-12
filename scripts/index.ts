@@ -100,6 +100,7 @@ module swiftsnapper {
             });
 
             $('#LogInForm').submit(function (e) {
+                e.preventDefault();
                 windowManager.startLoading('Logging In...');
                 $('#LogInView form .username').prop("disabled", true);
                 $('#LogInView form .password').prop("disabled", true);
@@ -110,20 +111,15 @@ module swiftsnapper {
                 }).then(
                     function (data) {
                         if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-
-                            messageManager.alert('Wrong username or password!', 'Failed to login', null); //TODO: Lang
+                            messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, 'Failed to login', null); //TODO: Lang
 
                             $('#LogInView form .username').prop("disabled", false);
                             $('#LogInView form .password').prop("disabled", false);
                             return -1;
                         }
-
-                    windowManager.stopLoading();
-                    $(document).ready(function () {
+                                                
+                        windowManager.stopLoading();
                         $('body').load('views/overview/index.html');
-                    });
-
-                    e.preventDefault();
                 });
             });
         });
