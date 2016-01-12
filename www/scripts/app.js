@@ -439,12 +439,60 @@ var messageManager;
     }
     messageManager.alertWithOptions = alertWithOptions;
 })(messageManager || (messageManager = {}));
+var windowManager;
+(function (windowManager) {
+    var view = null, pi = null, theme = {
+        a: 255,
+        r: 52,
+        g: 152,
+        b: 219
+    };
+    function initialize() {
+        view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+        view.titleBar.inactiveBackgroundColor = theme;
+        view.titleBar.buttonInactiveBackgroundColor = theme;
+        view.titleBar.backgroundColor = theme;
+        view.titleBar.buttonBackgroundColor = theme;
+        view['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
+        view['setPreferredMinSize']({
+            height: 1024,
+            width: 325
+        });
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+            $('body').addClass('mobile'); //TODO: Move to initialize()
+            var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+            statusBar.showAsync();
+            statusBar.backgroundOpacity = 1;
+            statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
+            statusBar.foregroundColor = Windows.UI.Colors.white;
+            //Lock portrait
+            Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait;
+        }
+    }
+    windowManager.initialize = initialize;
+    function startLoading(message) {
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+            pi = Windows.UI.ViewManagement['StatusBar'].ProgressIndicator;
+            pi.text = message;
+            pi.progressValue = 0.5;
+            pi.showAsync();
+        }
+    }
+    windowManager.startLoading = startLoading;
+    function stopLoading() {
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined' && pi !== null) {
+            pi.hideAsync();
+        }
+    }
+    windowManager.stopLoading = stopLoading;
+})(windowManager || (windowManager = {}));
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="SC/snapchat.ts" />
 /// <reference path="cameraManager.ts" />
 /// <reference path="messageManager.ts" />
+/// <reference path="windowManager.ts" />
 var views;
 var swiftsnapper;
 (function (swiftsnapper) {
@@ -454,40 +502,10 @@ var swiftsnapper;
     (function (Application) {
         function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            initializeStatusBar();
             messageManager.initialize();
+            windowManager.initialize();
         }
         Application.initialize = initialize;
-        function initializeStatusBar() {
-            if (typeof Windows !== 'undefined') {
-                var theme = {
-                    a: 255,
-                    r: 52,
-                    g: 152,
-                    b: 219
-                }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-                v.titleBar.inactiveBackgroundColor = theme;
-                v.titleBar.buttonInactiveBackgroundColor = theme;
-                v.titleBar.backgroundColor = theme;
-                v.titleBar.buttonBackgroundColor = theme;
-                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-                v['setPreferredMinSize']({
-                    height: 1024,
-                    width: 325
-                });
-            }
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                $('body').addClass('mobile'); //TODO: Move to initialize()
-                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.showAsync();
-                statusBar.backgroundOpacity = 1;
-                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
-                statusBar.foregroundColor = Windows.UI.Colors.white;
-                //Lock portrait
-                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait;
-            }
-        }
-        Application.initializeStatusBar = initializeStatusBar;
         function getLanguageStrings(lang, callback) {
             $.getJSON('lang/' + lang + '.json', function (lang) {
                 callback(lang);
@@ -546,6 +564,7 @@ var swiftsnapper;
             views.trigger('prev.owl.carousel', [300]);
         });
         $('#LogInForm').submit(function (e) {
+            windowManager.startLoading('Logging In...');
             $('#LogInView form .username').prop("disabled", true);
             $('#LogInView form .password').prop("disabled", true);
             SnapchatClient.Login({
@@ -558,6 +577,7 @@ var swiftsnapper;
                     $('#LogInView form .password').prop("disabled", false);
                     return -1;
                 }
+                windowManager.stopLoading();
                 $(document).ready(function () {
                     $('body').load('views/overview/index.html');
                 });

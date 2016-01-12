@@ -16,3 +16,11 @@
     font-family: 'Segoe UI';
     font-weight: 100;
 }
+#SplashView .copyright {
+    position: absolute;
+    bottom: 5px; left: 5px;
+    color: #fff;
+    font-size: 18px;
+    font-family: 'Segoe UI';
+    font-weight: 100;
+}
