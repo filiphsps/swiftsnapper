@@ -16,7 +16,7 @@
         Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
             .done(function (devices) {
                 if (devices.length > 0) {
-                    if (conf.frontFacing) {
+                    if (conf.frontFacing && devices.length > 1) {
                         video.classList.add('FrontFacing');
                         rotationValue = Capture.VideoRotation.clockwise90Degrees;
 
