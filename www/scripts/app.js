@@ -627,9 +627,8 @@ var swiftsnapper;
             });
             views.on('changed.owl.carousel', function (event) {
                 var pos = event.item.index;
-                if (pos == 2) {
+                if (pos == 1) {
                     windowManager.hideStatusBar();
-                    messageManager.alert('Test', 'test', null);
                 }
                 else
                     windowManager.showStatusBar();
