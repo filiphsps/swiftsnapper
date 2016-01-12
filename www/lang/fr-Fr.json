@@ -14,7 +14,7 @@
         "username": "Nom d'utilisateur",
         "password": "Mot de passe",
         "wrongUsernameOrPassword": "Nom d'utilisateur ou mot de passe incorrect!",
-        "failedToLogIn":  "Échec de la connexion", 
+        "failedToLogIn":  "Échec d'identification", 
         "userNotValid": "Nom d'utilisateur invalide!"
       }
     },
