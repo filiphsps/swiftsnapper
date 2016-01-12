@@ -1,7 +1,4 @@
 ﻿/* Snaps View */
-#SnapsView header {
-    background: #2ecc71;
-}
 #SnapsView article .icon{
     color: #000;
 }
@@ -50,6 +47,9 @@
 #CameraView header {
     background: none;
 }
+body.mobile #CameraPreview header {
+    padding-top: 0 !important;
+}
 #CameraView header nav {
     float: none;
 }
@@ -80,10 +80,6 @@
 }
 
 /* Stories View */
-#StoriesView header {
-    background: #bf55ec;
-}
-
 #ShowSnapView {
     display: none;
 }

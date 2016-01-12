@@ -4,6 +4,7 @@
 /// <reference path="SC/snapchat.ts" />
 /// <reference path="cameraManager.ts" />
 /// <reference path="messageManager.ts" />
+/// <reference path="windowManager.ts" />
 
 declare var Handlebars: any;
 let views;
@@ -12,47 +13,15 @@ module swiftsnapper {
     "use strict";
 
     let SnapchatClient: Snapchat.Client;
+    let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
 
 
 
     export module Application {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            initializeStatusBar();
             messageManager.initialize();
-        }
-
-        export function initializeStatusBar() {
-            if (typeof Windows !== 'undefined') {
-                let theme = {
-                    a: 255,
-                    r: 52,
-                    g: 152,
-                    b: 219
-                }, v = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-
-                v.titleBar.inactiveBackgroundColor = theme;
-                v.titleBar.buttonInactiveBackgroundColor = theme;
-                v.titleBar.backgroundColor = theme;
-                v.titleBar.buttonBackgroundColor = theme;
-                v['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-                v['setPreferredMinSize']({
-                    height: 1024,
-                    width: 325
-                });
-            }
-
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                $('body').addClass('mobile'); //TODO: Move to initialize()
-                let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.showAsync();
-                statusBar.backgroundOpacity = 1;
-                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
-                statusBar.foregroundColor = Windows.UI.Colors.white;
-
-                //Lock portrait
-                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait
-            }
+            windowManager.initialize();
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
@@ -60,7 +29,11 @@ module swiftsnapper {
                 callback(lang);
             }, function (e) {
                 //Error
-                $.getJSON('lang/en_US.json', function (lang) {
+                $.getJSON('lang/en-US.json', function (lang) {
+                    callback(lang);
+                });
+            }).fail(function () {
+                $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
                 });
             });
@@ -94,62 +67,65 @@ module swiftsnapper {
     }
 
     export function onAccountView() {
-        //Init Owl Carousel
-        views = $('#views');
-        views.owlCarousel({
-            loop: false,
-            nav: false,
-            dots: false,
-            video: true,
-            margin: 0,
-            startPosition: 1,
-            mouseDrag: false,
-            touchDrag: false,
-            pullDrag: false,
-            fallbackEasing: 'easeInOutQuart',
-            items: 1,
-        });
+        Application.getLanguageStrings(language, function (lang) {
+            var template = Handlebars.compile($("#template").html());
+            $('#PageContent').html(template(lang));
 
-        $('header').on('click tap', function () {
-            views.trigger('to.owl.carousel', [1, 300, true]);
-        });
-        $('#LogInBtn').on('click tap', function () {
-            views.trigger('next.owl.carousel', [300]);
-        });
-        $('#SignUpBtn').on('click tap', function () {
-            views.trigger('prev.owl.carousel', [300]);
-        });
+            //Init Owl Carousel
+            views = $('#views');
+            views.owlCarousel({
+                loop: false,
+                nav: false,
+                dots: false,
+                video: true,
+                margin: 0,
+                startPosition: 1,
+                mouseDrag: false,
+                touchDrag: false,
+                pullDrag: false,
+                fallbackEasing: 'easeInOutQuart',
+                items: 1,
+            });
 
-        $('#LogInForm').submit(function (e) {
-            $('#LogInView form .username').prop("disabled", true);
-            $('#LogInView form .password').prop("disabled", true);
+            $('header').on('click tap', function () {
+                views.trigger('to.owl.carousel', [1, 300, true]);
+            });
+            $('#LogInBtn').on('click tap', function () {
+                views.trigger('next.owl.carousel', [300]);
+            });
+            $('#SignUpBtn').on('click tap', function () {
+                views.trigger('prev.owl.carousel', [300]);
+            });
 
-            SnapchatClient.Login({
-                username: $('#LogInView form .username').val(),
-                password: $('#LogInView form .password').val(),
-            }).then(
-                function (data) {
-                    if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
+            $('#LogInForm').submit(function (e) {
+                e.preventDefault();
+                windowManager.startLoading('Logging In...');
+                $('#LogInView form .username').prop("disabled", true);
+                $('#LogInView form .password').prop("disabled", true);
 
-                        messageManager.alert('Wrong username or password!', 'Failed to login', null); //TODO: Lang
+                SnapchatClient.Login({
+                    username: $('#LogInView form .username').val(),
+                    password: $('#LogInView form .password').val(),
+                }).then(
+                    function (data) {
+                        if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
+                            messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
 
-                        $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);
-                        return -1;
-                    }
-
-                    $(document).ready(function () {
+                            $('#LogInView form .username').prop("disabled", false);
+                            $('#LogInView form .password').prop("disabled", false);
+                            return -1;
+                        }
+                                                
+                        windowManager.stopLoading();
+                        windowManager.hideStatusBar();
                         $('body').load('views/overview/index.html');
-                    });
                 });
-
-            e.preventDefault();
+            });
         });
     }
 
     export function onOverviewView() {
-        //TODO: use data from
-        Application.getLanguageStrings('en_US', function (lang) {
+        Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
 
@@ -172,6 +148,13 @@ module swiftsnapper {
                         items: 3
                     }
                 }
+            });
+            views.on('changed.owl.carousel', function (event) {
+                let pos = event.item.index;
+                if (pos == 1) {
+                    windowManager.hideStatusBar();
+                } else
+                    windowManager.showStatusBar();
             });
 
             //temp: view unread snaps

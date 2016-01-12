@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='utf-8'?>
+<?xml version="1.0" encoding="utf-8"?>
 <widget defaultlocale="en-US" id="com.filfat.swiftsnapper" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0" xmlns:vs="http://schemas.microsoft.com/appx/2014/htmlapps">
   <name>SwiftSnapper</name>
   <description>
@@ -39,11 +39,11 @@
     <icon height="300" src="res/icons/windows/Square150x150Logo.scale-200.png" width="300" />
     <icon height="600" src="res/icons/windows/Square150x150Logo.scale-400.png" width="600" />
       
-    <icon height="150" src="res/icons/windows/Square310x150Logo.scale-100.png" width="310" />
-    <icon height="188" src="res/icons/windows/Square310x150Logo.scale-125.png" width="388" />
-    <icon height="225" src="res/icons/windows/Square310x150Logo.scale-150.png" width="465" />
-    <icon height="300" src="res/icons/windows/Square310x150Logo.scale-200.png" width="620" />
-    <icon height="600" src="res/icons/windows/Square310x150Logo.scale-400.png" width="1240" />
+    <icon height="150" src="res/icons/windows/Wide310x150Logo.scale-100.png" width="310" />
+    <icon height="188" src="res/icons/windows/Wide310x150Logo.scale-125.png" width="388" />
+    <icon height="225" src="res/icons/windows/Wide310x150Logo.scale-150.png" width="465" />
+    <icon height="300" src="res/icons/windows/Wide310x150Logo.scale-200.png" width="620" />
+    <icon height="600" src="res/icons/windows/Wide310x150Logo.scale-400.png" width="1240" />
       
     <icon height="310" src="res/icons/windows/Square310x310Logo.scale-100.png" width="310" />
     <icon height="388" src="res/icons/windows/Square310x310Logo.scale-125.png" width="388" />

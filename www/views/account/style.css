@@ -37,6 +37,10 @@
     background: #3498db;
 }
 
+body.mobile header nav .item.right, body.mobile header nav .item.left {
+    top: 20px;
+}
+
 #LogInView header .header{
     padding: 0 0 0 32px;
 }
