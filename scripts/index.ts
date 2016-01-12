@@ -117,6 +117,7 @@ module swiftsnapper {
                         }
                                                 
                         windowManager.stopLoading();
+                        windowManager.hideStatusBar();
                         $('body').load('views/overview/index.html');
                 });
             });

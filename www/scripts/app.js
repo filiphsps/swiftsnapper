@@ -462,7 +462,7 @@ var windowManager;
             $('body').addClass('mobile'); //TODO: Move to initialize()
             var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
             statusBar.showAsync();
-            statusBar.backgroundOpacity = 1;
+            statusBar.backgroundOpacity = 0;
             statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
             statusBar.foregroundColor = Windows.UI.Colors.white;
             //Lock portrait
@@ -601,6 +601,7 @@ var swiftsnapper;
                         return -1;
                     }
                     windowManager.stopLoading();
+                    windowManager.hideStatusBar();
                     $('body').load('views/overview/index.html');
                 });
             });
