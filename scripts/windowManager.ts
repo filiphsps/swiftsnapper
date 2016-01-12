@@ -51,7 +51,7 @@
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
             pi.text = message;
-            pi.progressValue = 0.5;
+            pi.progressValue = null;
             pi.showAsync();
         }
     }
