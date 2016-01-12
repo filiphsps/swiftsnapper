@@ -143,6 +143,13 @@ module swiftsnapper {
                     }
                 }
             });
+            views.on('changed.owl.carousel', function (event) {
+                let pos = event.item.index;
+                if (pos == 1) {
+                    windowManager.hideStatusBar();
+                } else
+                    windowManager.showStatusBar();
+            });
 
             //temp: view unread snaps
             var snaps = SnapchatClient.GetPendingFeed()
