@@ -14,7 +14,9 @@
         "username": "Nombre de usuario",
         "password": "Clave",
         "wrongUsernameOrPassword": "¡Nombre de usuario o contraseña incorrectos!",
-        "userNotValid": "El nombre de usuario que ha introducido no es válido!"
+        "failedToLogIn": "Fallo al iniciar sesión",
+        "userNotValid": "El nombre de usuario que ha introducido no es válido!",
+        "loggingIn": "Iniciando sesión..."
       }
     },
 
