@@ -488,7 +488,7 @@ var windowManager;
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
             pi.text = message;
-            pi.progressValue = 0.5;
+            pi.progressValue = null;
             pi.showAsync();
         }
     }
@@ -587,7 +587,7 @@ var swiftsnapper;
             });
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                windowManager.startLoading(lang.views.account.logInView.loggingIn);
+                windowManager.startLoading('Logging In...');
                 $('#LogInView form .username').prop("disabled", true);
                 $('#LogInView form .password').prop("disabled", true);
                 SnapchatClient.Login({
@@ -597,9 +597,7 @@ var swiftsnapper;
                     if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
                         messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
                         $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);                        
-                        windowManager.stopLoading();
-                        windowManager.hideStatusBar();
+                        $('#LogInView form .password').prop("disabled", false);
                         return -1;
                     }
                     windowManager.stopLoading();
