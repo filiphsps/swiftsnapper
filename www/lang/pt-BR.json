@@ -16,6 +16,7 @@
         "wrongUsernameOrPassword": "Nome de usuário ou senha incorretos!",
         "failedToLogIn": "Falha no login",
         "userNotValid": "O nome de usuário que você digitou não é válido!"
+        "loggingIn": "Efetuando login..."
       }
     },
 
