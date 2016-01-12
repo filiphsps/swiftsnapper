@@ -7,8 +7,8 @@
   "views": {
 
     "account": {
-      "logIn": "Einloggen",
-      "signUp": "Anmelden",
+      "logIn": "Anmelden",
+      "signUp": "Registrieren",
 
       "logInView": {
         "username": "Benutzername",
