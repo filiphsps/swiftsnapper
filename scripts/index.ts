@@ -118,12 +118,12 @@ module swiftsnapper {
                             return -1;
                         }
 
-                        windowManager.stopLoading();
-                        $(document).ready(function () {
-                            $('body').load('views/overview/index.html');
-                        });
+                    windowManager.stopLoading();
+                    $(document).ready(function () {
+                        $('body').load('views/overview/index.html');
+                    });
 
-                        e.preventDefault();
+                    e.preventDefault();
                 });
             });
         });

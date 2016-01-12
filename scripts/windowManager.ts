@@ -33,6 +33,20 @@
         }
     }
 
+    export function showStatusBar() {
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+            let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+            statusBar.showAsync();
+        }
+    }
+
+    export function hideStatusBar() {
+        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+            let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+            statusBar.hideAsync();
+        }
+    }
+
     export function startLoading(message) {
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
