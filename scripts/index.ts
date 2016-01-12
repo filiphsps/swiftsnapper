@@ -25,20 +25,18 @@ module swiftsnapper {
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
-            $.get('lang/' + lang + '.json').done(function () {
-                $.getJSON('lang/' + lang + '.json', function (lang) {
+            $.getJSON('lang/' + lang + '.json', function (lang) {
+                callback(lang);
+            }, function (e) {
+                //Error
+                $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
-                }, function (e) {
-                    //Error
-                    $.getJSON('lang/en-US.json', function (lang) {
-                        callback(lang);
-                    });
                 });
             }).fail(function () {
                 $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
                 });
-            });;
+            });
         }
 
         function onDeviceReady() {
