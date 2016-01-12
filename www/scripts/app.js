@@ -522,21 +522,18 @@ var swiftsnapper;
         }
         Application.initialize = initialize;
         function getLanguageStrings(lang, callback) {
-            $.get('lang/' + lang + '.json').done(function () {
-                $.getJSON('lang/' + lang + '.json', function (lang) {
+            $.getJSON('lang/' + lang + '.json', function (lang) {
+                callback(lang);
+            }, function (e) {
+                //Error
+                $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
-                }, function (e) {
-                    //Error
-                    $.getJSON('lang/en-US.json', function (lang) {
-                        callback(lang);
-                    });
                 });
             }).fail(function () {
                 $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
                 });
             });
-            ;
         }
         Application.getLanguageStrings = getLanguageStrings;
         function onDeviceReady() {
@@ -598,7 +595,7 @@ var swiftsnapper;
                     password: $('#LogInView form .password').val(),
                 }).then(function (data) {
                     if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                        messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, 'Failed to login', null); //TODO: Lang
+                        messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
                         $('#LogInView form .username').prop("disabled", false);
                         $('#LogInView form .password').prop("disabled", false);
                         return -1;

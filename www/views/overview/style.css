@@ -44,12 +44,11 @@
 #CameraView {
     background: #000;
 }
-body.mobile #CameraView {
-    padding: 0 !important;
-    height: 100vh !important;
-}
 #CameraView header {
     background: none;
+}
+body.mobile #CameraPreview header {
+    padding-top: 0 !important;
 }
 #CameraView header nav {
     float: none;

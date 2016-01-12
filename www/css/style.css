@@ -50,6 +50,9 @@ header {
     background: #3498DB;
     line-height: 60px;
 }
+body.mobile header {
+    padding-top: 20px;
+}
 header .header {
     float: left;
     text-align: left;
@@ -118,8 +121,4 @@ footer .item .icon::before {
     padding: 0;
     background: #fff;
     touch-action: pan-y;
-}
-body.mobile .view {
-    padding: 20px 0 0 0;
-    height: calc(100vh - 20px);
 }
