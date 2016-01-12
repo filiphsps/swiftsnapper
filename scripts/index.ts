@@ -12,6 +12,7 @@ module swiftsnapper {
     "use strict";
 
     let SnapchatClient: Snapchat.Client;
+    let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
 
 
 
@@ -56,14 +57,20 @@ module swiftsnapper {
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
-            $.getJSON('lang/' + lang + '.json', function (lang) {
-                callback(lang);
-            }, function (e) {
-                //Error
-                $.getJSON('lang/en_US.json', function (lang) {
+            $.get('lang/' + lang + '.json').done(function () {
+                $.getJSON('lang/' + lang + '.json', function (lang) {
+                    callback(lang);
+                }, function (e) {
+                    //Error
+                    $.getJSON('lang/en-US.json', function (lang) {
+                        callback(lang);
+                    });
+                });
+            }).fail(function () {
+                $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
                 });
-            });
+            });;
         }
 
         function onDeviceReady() {
@@ -94,62 +101,66 @@ module swiftsnapper {
     }
 
     export function onAccountView() {
-        //Init Owl Carousel
-        views = $('#views');
-        views.owlCarousel({
-            loop: false,
-            nav: false,
-            dots: false,
-            video: true,
-            margin: 0,
-            startPosition: 1,
-            mouseDrag: false,
-            touchDrag: false,
-            pullDrag: false,
-            fallbackEasing: 'easeInOutQuart',
-            items: 1,
-        });
+        Application.getLanguageStrings(language, function (lang) {
+            var template = Handlebars.compile($("#template").html());
+            $('#PageContent').html(template(lang));
 
-        $('header').on('click tap', function () {
-            views.trigger('to.owl.carousel', [1, 300, true]);
-        });
-        $('#LogInBtn').on('click tap', function () {
-            views.trigger('next.owl.carousel', [300]);
-        });
-        $('#SignUpBtn').on('click tap', function () {
-            views.trigger('prev.owl.carousel', [300]);
-        });
+            //Init Owl Carousel
+            views = $('#views');
+            views.owlCarousel({
+                loop: false,
+                nav: false,
+                dots: false,
+                video: true,
+                margin: 0,
+                startPosition: 1,
+                mouseDrag: false,
+                touchDrag: false,
+                pullDrag: false,
+                fallbackEasing: 'easeInOutQuart',
+                items: 1,
+            });
 
-        $('#LogInForm').submit(function (e) {
-            $('#LogInView form .username').prop("disabled", true);
-            $('#LogInView form .password').prop("disabled", true);
+            $('header').on('click tap', function () {
+                views.trigger('to.owl.carousel', [1, 300, true]);
+            });
+            $('#LogInBtn').on('click tap', function () {
+                views.trigger('next.owl.carousel', [300]);
+            });
+            $('#SignUpBtn').on('click tap', function () {
+                views.trigger('prev.owl.carousel', [300]);
+            });
 
-            SnapchatClient.Login({
-                username: $('#LogInView form .username').val(),
-                password: $('#LogInView form .password').val(),
-            }).then(
-                function (data) {
-                    if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
+            $('#LogInForm').submit(function (e) {
+                $('#LogInView form .username').prop("disabled", true);
+                $('#LogInView form .password').prop("disabled", true);
 
-                        messageManager.alert('Wrong username or password!', 'Failed to login', null); //TODO: Lang
+                SnapchatClient.Login({
+                    username: $('#LogInView form .username').val(),
+                    password: $('#LogInView form .password').val(),
+                }).then(
+                    function (data) {
+                        if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
 
-                        $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);
-                        return -1;
-                    }
+                            messageManager.alert('Wrong username or password!', 'Failed to login', null); //TODO: Lang
 
-                    $(document).ready(function () {
-                        $('body').load('views/overview/index.html');
+                            $('#LogInView form .username').prop("disabled", false);
+                            $('#LogInView form .password').prop("disabled", false);
+                            return -1;
+                        }
+
+                        $(document).ready(function () {
+                            $('body').load('views/overview/index.html');
+                        });
                     });
-                });
 
-            e.preventDefault();
+                e.preventDefault();
+            });
         });
     }
 
     export function onOverviewView() {
-        //TODO: use data from
-        Application.getLanguageStrings('en_US', function (lang) {
+        Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
 
