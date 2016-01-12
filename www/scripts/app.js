@@ -471,8 +471,8 @@ var windowManager;
     }
     windowManager.initialize = initialize;
     function startLoading(message) {
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-            pi = Windows.UI.ViewManagement['StatusBar'].ProgressIndicator;
+        if (typeof Windows.UI.ViewManagement['StatusBarProgressIndicator'] !== 'undefined') {
+            pi = Windows.UI.ViewManagement['StatusBarProgressIndicator'];
             pi.text = message;
             pi.progressValue = 0.5;
             pi.showAsync();
@@ -480,7 +480,7 @@ var windowManager;
     }
     windowManager.startLoading = startLoading;
     function stopLoading() {
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined' && pi !== null) {
+        if (typeof Windows.UI.ViewManagement['StatusBarProgressIndicator'] !== 'undefined' && pi !== null) {
             pi.hideAsync();
         }
     }
