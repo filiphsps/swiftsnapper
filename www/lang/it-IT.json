@@ -13,13 +13,21 @@
       "logInView": {
         "username": "Username",
         "password": "Password",
-        "wrongUsernameOrPassword": "L'username o la password non è corretto!",
-        "userNotValid": "L'username che hai inserito non è valido!"
+        "wrongUsernameOrPassword": "Username o password errati!",
+        "failedToLogIn":  "Login fallito",
+        "userNotValid": "L'username inserito non è valido",
+        "loggingIn": "Sto entrando..."
       }
     },
 
     "overview": {
-
+      "views": {
+        "stories": {
+          "title": "Storie",
+          "myStory": "La mia storia",
+          "explore":  "Esplora"
+        }
+      }
     },
 
     "settings": {

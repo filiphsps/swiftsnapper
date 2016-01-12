@@ -587,7 +587,7 @@ var swiftsnapper;
             });
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                windowManager.startLoading('Logging In...');
+                windowManager.startLoading(lang.views.account.logInView.loggingIn);
                 $('#LogInView form .username').prop("disabled", true);
                 $('#LogInView form .password').prop("disabled", true);
                 SnapchatClient.Login({
@@ -597,7 +597,9 @@ var swiftsnapper;
                     if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
                         messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
                         $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);
+                        $('#LogInView form .password').prop("disabled", false);                        
+                        windowManager.stopLoading();
+                        windowManager.hideStatusBar();
                         return -1;
                     }
                     windowManager.stopLoading();
