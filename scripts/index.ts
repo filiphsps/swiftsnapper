@@ -13,7 +13,7 @@ module swiftsnapper {
     "use strict";
 
     let SnapchatClient: Snapchat.Client;
-    let language = Windows.System.UserProfile.GlobalizationPreferences.languages[1];
+    let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
 
 
 
