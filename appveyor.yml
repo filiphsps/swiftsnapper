@@ -7,7 +7,6 @@ install:
     node --version
     npm --version
     npm install -g cordova
-    npm install
 build_script:
 - cmd: >-
     cordova platforms add windows
