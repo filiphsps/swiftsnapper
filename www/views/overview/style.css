@@ -1,7 +1,4 @@
 ﻿/* Snaps View */
-#SnapsView header {
-    background: #2ecc71;
-}
 #SnapsView article .icon{
     color: #000;
 }
@@ -80,10 +77,6 @@
 }
 
 /* Stories View */
-#StoriesView header {
-    background: #bf55ec;
-}
-
 #ShowSnapView {
     display: none;
 }

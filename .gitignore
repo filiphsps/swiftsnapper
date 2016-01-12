@@ -9,5 +9,3 @@ bld/
 *.jsproj.user
 .vs
 changelist.json
-www/scripts/app.js
-www/scripts/app.js.map
