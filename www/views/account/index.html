@@ -1,48 +1,50 @@
 ﻿<link href="views/account/style.css" rel="stylesheet" />
 
-<main id="views">
-    <!-- Sign Up View -->
-    <section id="SingUpView" class="view">
-        <header>
-            <div class="header">Sign Up</div>
+<div id="PageContent"></div>
+<script id="template" type="text/x-handlebars-template">
+    <main id="views">
+        <!-- Sign Up View -->
+        <section id="SingUpView" class="view">
+            <header>
+                <div class="header">{{views.account.signUp}}</div>
+                <nav>
+                    <div class="item right"><span class="icon mdl2-scroll-chevron-right-legacy"></span></div>
+                </nav>
+            </header>
+            <article>
+                Coming soon-ish?
+            </article>
+        </section>
+
+        <!-- Select View -->
+        <section id="SelectView" class="view">
+            <div class="logo"><img src="img/logo.png" /></div>
+            <div class="header">SwiftSnapper</div>
+
             <nav>
-                <div class="item right"><span class="icon mdl2-scroll-chevron-right-legacy"></span></div>
+                <div id="LogInBtn" class="button">{{views.account.logIn}}</div>
+                <div id="SignUpBtn" class="button">{{views.account.signUp}}</div>
             </nav>
-        </header>
-        <article>
-            Coming soon-ish?
-        </article>
-    </section>
+        </section>
 
-    <!-- Select View -->
-    <section id="SelectView" class="view">
-        <div class="logo"><img src="img/logo.png"/></div>
-        <div class="header">SwiftSnapper</div>
-
-        <nav>
-            <div id="LogInBtn" class="button">Log In</div>
-            <div id="SignUpBtn" class="button">Sign Up</div>
-        </nav>
-    </section>
-
-    <!-- Log In View -->
-    <section id="LogInView" class="view">
-        <header>
-            <div class="header">Log In</div>
-            <nav>
-                <div class="item left"><span class="icon mdl2-scroll-chevron-left-legacy"></span></div>
-            </nav>
-        </header>
-        <form id="LogInForm">
-            <label>Username</label>
-            <input class="username" type="text" required/>
-            <label>Password</label>
-            <input class="password" type="password" required/>
-            <input type="submit" value="Log In"/>
-        </form>
-    </section>
-</main>
-
+        <!-- Log In View -->
+        <section id="LogInView" class="view">
+            <header>
+                <div class="header">{{views.account.logIn}}</div>
+                <nav>
+                    <div class="item left"><span class="icon mdl2-scroll-chevron-left-legacy"></span></div>
+                </nav>
+            </header>
+            <form id="LogInForm">
+                <label>{{views.account.logInView.username}}</label>
+                <input class="username" type="text" required />
+                <label>{{views.account.logInView.password}}</label>
+                <input class="password" type="password" required />
+                <input type="submit" value="{{views.account.logIn}}" />
+            </form>
+        </section>
+    </main>
+</script>
 <script>
     swiftsnapper.onAccountView();
 </script>
