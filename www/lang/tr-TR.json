@@ -14,7 +14,7 @@
         "username": "Kullanıcı adı",
         "password": "Şifre",
         "wrongUsernameOrPassword": "Yanlış kullanıcı adı veya şifre!",
-        "failedToLogIn":  "Girişte hata",
+        "failedToLogIn":  "Giriş başarısız.",
         "userNotValid": "Girdiğiniz kullanıcı adı yanlış!",
         "loggingIn": "Giriş yapılıyor..."
       }
