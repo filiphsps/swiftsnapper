@@ -15,7 +15,8 @@
         "password": "Kodeord",
         "wrongUsernameOrPassword": "Forkert brugernavn eller kode!",
         "failedToLogIn":  "Login mislykket",
-        "userNotValid": "Brugernavnet du indtastede er ikke gyldigt!"
+        "userNotValid": "Brugernavnet du indtastede er ikke gyldigt!",
+        "loggingIn": "Logger ind..."
       }
     },
 
