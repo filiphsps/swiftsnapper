@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "SwiftSnapper",
-    "lang":  "nl_NL"
+    "lang":  "nl-BE"
   },
 
   "views": {
@@ -14,12 +14,18 @@
         "username": "Gebruikersnaam",
         "password": "Wachtwoord",
         "wrongUsernameOrPassword": "Gebruikersnaam of wachtwoord incorrect!",
-        "userNotValid": "Gebruikersnaam bestaat niet!!"
+        "userNotValid": "Gebruikersnaam bestaat niet!"
       }
     },
 
-    "overview": {
-
+   "overview": {
+      "views": {
+        "stories": {
+          "title": "Verhalen",
+          "myStory": "Mijn verhalen",
+          "explore":  "Verkennen"
+        }
+      }
     },
 
     "settings": {

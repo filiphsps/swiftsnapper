@@ -1,0 +1,37 @@
+﻿{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "it-IT"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Entra",
+      "signUp": "Registrati",
+
+      "logInView": {
+        "username": "Username",
+        "password": "Password",
+        "wrongUsernameOrPassword": "Username o password errati!",
+        "failedToLogIn":  "Login fallito",
+        "userNotValid": "L'username inserito non è valido",
+        "loggingIn": "Sto entrando..."
+      }
+    },
+
+    "overview": {
+      "views": {
+        "stories": {
+          "title": "Storie",
+          "myStory": "La mia storia",
+          "explore":  "Esplora"
+        }
+      }
+    },
+
+    "settings": {
+
+    }
+  }
+}

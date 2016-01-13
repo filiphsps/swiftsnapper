@@ -13,9 +13,6 @@ body {
     user-select: none;
     font-family: 'Segoe UI';
 }
-body.mobile {
-    margin: 20px 0 -20px 0;
-}
 .icon {
     color: #fff;
     font-size: 20px;
@@ -52,6 +49,9 @@ header {
     color: #fff;
     background: #3498DB;
     line-height: 60px;
+}
+body.mobile header {
+    padding-top: 20px;
 }
 header .header {
     float: left;
@@ -121,7 +121,4 @@ footer .item .icon::before {
     padding: 0;
     background: #fff;
     touch-action: pan-y;
-}
-body.mobile .view {
-    height: calc(100vh - 20px);
 }

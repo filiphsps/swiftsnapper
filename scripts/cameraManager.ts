@@ -60,8 +60,6 @@
         //mediaSettings.streamingCaptureMode = Windows.Media.Capture.StreamingCaptureMode.video;;
         //mediaSettings.photoCaptureSource = Capture.PhotoCaptureSource.photo;
 
-        console.log("InitializeCameraAsync");
-
         // Get available devices for capturing pictures
         findCameraDeviceByPanelAsync(cameraPanelEnumerate)
             .then(function (camera) {
@@ -106,11 +104,24 @@
 
                     video.addEventListener("playing", function () {
                         isPreviewing = true;
+                        // Doing a catch loop because often the mediaCapture.setEncodingPropertiesAsync function was still in progress.
+                        // I don't know any better way to do this maybe a singleton design pattern?
+                        // TODO: get input on this.
+                        try {
+                            setPreviewRotationAsync();
+                        }
+                        catch (Error) {
+                            console.log(Error.message);
+                            console.log("Error in setPreviewEotationAsync");
+                        }
+
+                        /*
                         setPreviewRotationAsync().then(function () {
                             console.log("setPreviewRotationAsync completed correctly");
                         }, function () {
                             console.log("Error in setPreviewEotationAsync");
                         })
+                        */
                     });
                 },
                     function (error) {
@@ -120,36 +131,7 @@
             }, function (error) {
                 console.log(error.message);
             }
-
-            /*
-            Windows.Devices.Enumeration.DeviceInformation.findAllAsync(Windows.Devices.Enumeration.DeviceClass.videoCapture)
-                .done(function (devices) {
-                    if (devices.length > 0) {
-                        if (conf.frontFacing) {
-                            video.classList.add('FrontFacing');
-                            rotationValue = Capture.VideoRotation.clockwise90Degrees;
-
-                            mediaSettings.videoDeviceId = devices[1].id;
-                        } else {
-                            video.classList.remove('FrontFacing');
-                            rotationValue = Capture.VideoRotation.clockwise270Degrees;
-
-                            mediaSettings.videoDeviceId = devices[0].id;
-                        }
-
-                        mediaCapture.initializeAsync(mediaSettings).done(function () {
-                            if (device.model == "ARM") {
-                                mediaCapture.setPreviewRotation(rotationValue);
-                            }
-                            video.src = URL.createObjectURL(mediaCapture);
-                            video.play();
-                        });
-                    } else {
-                        //No camera found
-                    }
-                })
-                */
-            )
+        )
     }
 
     export function getExportSettings() {
@@ -181,8 +163,7 @@
         console.log("Photo taken!");
 
         var photoOrientation = convertOrientationToPhotoOrientation(getCameraOrientation());
-        console.log(inputStream);
-        bitmapDecoder = Imaging.BitmapDecoder.createAsync(inputStream)
+
         return inputStream
         //return reencodeAndSavePhotoAsync(inputStream, photoOrientation);
     }
