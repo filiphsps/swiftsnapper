@@ -7,5 +7,7 @@
 SwiftSnapper is a community driven Snapchat client for Windows 10 licensed under GPL 3.
 It's currently in early development with no set release date.
 
+A subreddit exists for general discussion or questions about the application [here](http://reddit.com/r/swiftsnapper).
+
 ## Contribute
 An Contribution guide is being written so we can work on getting this to a usable state together.
