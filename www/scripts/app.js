@@ -600,10 +600,9 @@ var Snapchat;
         };
         /*
             Get the media for the provided snap
-            Does not work yet thanks to the requirement of gauth
         */
         Client.prototype.GetSnapMedia = function (snap) {
-            var self = this, data = this.AllUpdatesData, timestamp = this.SnapchatAgent.GenerateTimeStamp(), req_token = this.SnapchatAgent.GenerateRequestToken(this.SnapchatAgent.SNAPCHAT_AUTH_TOKEN, timestamp);
+            var self = this, data = this.AllUpdatesData, timestamp = this.SnapchatAgent.GenerateTimeStamp();
             return new Promise(function (resolve) {
                 self.SnapchatAgent.GetSnapchatAuthFromCasper('/ph/blob', timestamp).then(function (d) {
                     var cData = JSON.parse(d);
@@ -628,8 +627,7 @@ var Snapchat;
                         ['timestamp', cData.params['timestamp']],
                         ['username', self.CurrentUser.username]
                     ], headers).then(function (data) {
-                        console.log(data);
-                        resolve(null);
+                        resolve(data);
                     });
                 });
             });
@@ -980,18 +978,25 @@ var swiftsnapper;
                 else
                     windowManager.showStatusBar();
             });
+            CameraManager.initialize({
+                'frontFacing': false
+            });
             //temp: view unread snaps
             var snaps = SnapchatClient.GetPendingFeed();
-            console.log(SnapchatClient.GetSnapMedia(snaps[0]));
             for (var n = 0; n < snaps.length; n++) {
-                var snap = snaps[n], output = '<article class="item"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                var snap = snaps[n], output = '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
                     '<div class="header">' + snap.sender + '</div>' +
                     '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
                     '</div></article>';
                 $('#SnapsView .SnapsList').append(output);
             }
-            CameraManager.initialize({
-                'frontFacing': false
+            //Temp for showing snaps
+            $('#SnapsView .SnapsList article').on('click tap', function (e) {
+                var snap = snaps[$(e.currentTarget).attr('id')];
+                SnapchatClient.GetSnapMedia(snap).then(function (img) {
+                    $('#ShowSnapView').css('display', 'block');
+                    $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + btoa(img));
+                });
             });
             $('#ViewSnapsBtn').on('click tap', function () {
                 views.trigger('prev.owl.carousel', [300]);
