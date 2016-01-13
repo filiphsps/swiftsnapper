@@ -998,6 +998,9 @@ var swiftsnapper;
                     $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + btoa(img));
                 });
             });
+            $('#ShowSnapView').on('click tap', function () {
+                $('#ShowSnapView').css('display', 'none');
+            });
             $('#ViewSnapsBtn').on('click tap', function () {
                 views.trigger('prev.owl.carousel', [300]);
             });
