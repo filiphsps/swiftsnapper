@@ -202,6 +202,40 @@ namespace Snapchat {
             return id;
         }
 
+        public GetSnapchatAuthFromCasper(endpoint, timestamp) {
+            let URI = new Windows.Foundation.Uri('http://heroku.casper.io/snapchat/ios/endpointauth'),
+                parameters = [
+                    ['auth_token', this.SNAPCHAT_AUTH_TOKEN],
+                    ['casper_version', this.CASPER_VERSION],
+                    ['endpoint', endpoint],
+                    ['snapchat_version', this.SNAPCHAT_VERSION],
+                    ['timestamp', timestamp],
+                    ['username', 'TODO'],
+                    ['password', 'TODO']
+                ],
+                headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': this.CASPER_USER_AGENT,
+                };
+
+            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, true), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
+                HTTP = new Windows.Web['Http'].HttpClient(),
+                HEAD = HTTP.defaultRequestHeaders;
+
+            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
+            HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
+            HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
+
+            return new Promise((resolve) => {
+                let promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e)
+                    });
+                });
+            });
+        }
+
         /*
 	        Converts an Array of Arrys to uri parameters
 	        Ex. input [['para1', 'val1'], ['para2', 'val2'], ['para3', 'val3']].
