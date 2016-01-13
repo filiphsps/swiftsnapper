@@ -8,7 +8,7 @@
 
     "account": {
       "logIn": "Connexion",
-      "signUp": "S'inscrire",
+      "signUp": "Inscription",
 
       "logInView": {
         "username": "Nom d'utilisateur",
