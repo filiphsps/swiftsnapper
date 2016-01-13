@@ -10,4 +10,6 @@ It's currently in early development with no set release date.
 A subreddit exists for general discussion or questions about the application [here](http://reddit.com/r/swiftsnapper).
 
 ## Contribute
+
+[![Join the chat at https://gitter.im/filfat/swiftsnapper](https://badges.gitter.im/filfat/swiftsnapper.svg)](https://gitter.im/filfat/swiftsnapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 An Contribution guide is being written so we can work on getting this to a usable state together.
