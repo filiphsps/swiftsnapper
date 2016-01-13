@@ -5,15 +5,15 @@ namespace Snapchat {
     export class Client {
         private SnapchatAgent: Snapchat.Agent;
 
-        public AllUpdatesData; //Temp
-        public CurrentUser: Snapchat.User; //Temp
+        public AllUpdatesData;
+        public CurrentUser: Snapchat.User;
 
         public Initialize() {
             this.SnapchatAgent = new Snapchat.Agent();
             this.CurrentUser = new Snapchat.User();
 
             return new Promise((resolve) => {
-                this.SnapchatAgent.Initialize().then(function () {
+                this.SnapchatAgent.Initialize(this.CurrentUser).then(function () {
                     resolve(this);
                 });
             });
@@ -59,29 +59,38 @@ namespace Snapchat {
         public GetSnapMedia(snap: Snapchat.Snap) {
             let self = this,
                 data = this.AllUpdatesData,
-                timestamp = this.SnapchatAgent.GenerateTimeStamp(),
-                req_token = this.SnapchatAgent.GenerateRequestToken(this.SnapchatAgent.SNAPCHAT_AUTH_TOKEN, timestamp);
+                timestamp = this.SnapchatAgent.GenerateTimeStamp();
 
             return new Promise((resolve) => {
-                let headers = {
-                    'Accept': '*/*',
-                    'Accept-Language': 'en',
-                    'Accept-Locale': 'en_US',
-                    'User-Agent': self.SnapchatAgent.SNAPCHAT_USER_AGENT,
-                    'Connection': 'Keep-Alive',
-                    'Accept-Encoding': 'gzip',
-                };
+                self.SnapchatAgent.GetSnapchatAuthFromCasper('/ph/blob', timestamp).then(function (d: string) {
+                    let cData = JSON.parse(d);
+                    for (var n = 0; n < cData.endpoints.length; n++)
+                        if (cData.endpoints[n].endpoint == '/ph/blob') {
+                            cData = cData.endpoints[n];
+                            break;
+                        }
 
-                self.SnapchatAgent.PostSnapchat('/ph/blob', [
-                    ['id', snap.id],
-                    ['req_token', req_token],
-                    ['timestamp', timestamp],
-                    ['username', self.CurrentUser.username]
-                ], headers).then(
-                    function (data) {
-                        console.log(data);
-                        resolve(null);
-                    });
+                    let headers = {
+                        'Accept': '*/*',
+                        'Accept-Language': 'en',
+                        'Accept-Locale': 'en_US',
+                        'User-Agent': cData.headers['User-Agent'],
+                        'Connection': 'Keep-Alive',
+                        'Accept-Encoding': 'gzip',
+                        'X-Snapchat-Client-Auth-Token': cData.headers['X-Snapchat-Client-Auth-Token'],
+                        'X-Snapchat-UUID': cData.headers['X-Snapchat-UUID'],
+                    };
+
+                    self.SnapchatAgent.PostSnapchat('/ph/blob', [
+                        ['id', snap.id],
+                        ['req_token', cData.params['req_token']],
+                        ['timestamp', cData.params['timestamp']],
+                        ['username', self.CurrentUser.username]
+                    ], headers).then(
+                        function (data) {
+                            resolve(data);
+                        });
+                });
             });
         }
 
@@ -185,6 +194,9 @@ namespace Snapchat {
 
                         self.SnapchatAgent.SNAPCHAT_AUTH_TOKEN = self.AllUpdatesData.updates_response.auth_token;
                         self.CurrentUser.username = details.username;
+                        self.CurrentUser.password = details.password;
+                        self.CurrentUser.google_username = null;
+                        self.CurrentUser.google_password = null;
                         resolve(JSON.parse(data));
                     });
                 });

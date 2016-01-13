@@ -26,7 +26,11 @@ namespace Snapchat {
         public CASPER_VERSION = '1.5.2.3';
         public CASPER_DEVICE_ID = null;
 
-        public Initialize() {
+        private CURRENT_USER_REFERENCE: Snapchat.User;
+
+        public Initialize(cur) {
+            this.CURRENT_USER_REFERENCE = cur;
+
             return new Promise((resolve) => {
                 this.InitializeCasper().then(function () {
                     resolve(this);
@@ -77,8 +81,6 @@ namespace Snapchat {
                 HEAD = HTTP.defaultRequestHeaders;
 
             HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
-            HEAD.append('X-Snapchat-Client-Auth-Token', this.SNAPCHAT_CLIENT_AUTH_TOKEN);
-            HEAD.append('X-Snapchat-UUID', this.SNAPCHAT_UUID);
 
             return new Promise((resolve) => {
                 let promise = HTTP.postAsync(URI, REQ).done(function (res) {
@@ -210,8 +212,8 @@ namespace Snapchat {
                     ['endpoint', endpoint],
                     ['snapchat_version', this.SNAPCHAT_VERSION],
                     ['timestamp', timestamp],
-                    ['username', 'TODO'],
-                    ['password', 'TODO']
+                    ['username', this.CURRENT_USER_REFERENCE.username],
+                    ['password', this.CURRENT_USER_REFERENCE.password]
                 ],
                 headers = {
                     'Connection': 'Keep-Alive',
@@ -287,6 +289,12 @@ namespace Snapchat {
 
             if (typeof headers['X-Snapchat-Client-Token'] !== 'undefined')
                 HEAD.append('X-Snapchat-Client-Token', headers['X-Snapchat-Client-Token']);
+
+            if (typeof headers['X-Snapchat-Client-Auth-Token'] !== 'undefined')
+                HEAD.append('X-Snapchat-Client-Auth-Token', headers['X-Snapchat-Client-Auth-Token']);
+
+            if (typeof headers['X-Snapchat-UUID'] !== 'undefined')
+                HEAD.append('X-Snapchat-UUID', headers['X-Snapchat-UUID']);
 
             if (typeof headers['X-Timestamp'] !== 'undefined')
                 HEAD.append('X-Timestamp', headers['X-Timestamp']);

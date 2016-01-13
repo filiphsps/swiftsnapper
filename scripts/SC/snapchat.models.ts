@@ -1,6 +1,11 @@
 ﻿namespace Snapchat {
     export class User {
         public username: string;
+
+        //Only used by current user
+        public password: string;
+        public google_username: string;
+        public google_password: string;
     }
 
     export class Snap {

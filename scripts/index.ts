@@ -179,7 +179,7 @@ module swiftsnapper {
 
             //temp: view unread snaps
             var snaps = SnapchatClient.GetPendingFeed();
-
+            console.log(SnapchatClient.GetSnapMedia(snaps[0]));
             for (var n = 0; n < snaps.length; n++) {
                 let snap = snaps[n],
                     output =
