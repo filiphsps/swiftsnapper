@@ -41,6 +41,7 @@ namespace Snapchat {
             Snaps.sort(function (a, b) {
                 return a.timestamp - b.timestamp;
             });
+            Snaps.reverse();
             return Snaps;
         }
 
