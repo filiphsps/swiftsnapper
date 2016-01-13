@@ -76,7 +76,7 @@ module swiftsnapper {
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
             views = $('#views');
-            var owl = views.owlCarousel({
+            views.owlCarousel({
                 loop: false,
                 nav: false,
                 dots: false,
