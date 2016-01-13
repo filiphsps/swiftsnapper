@@ -1,4 +1,5 @@
-﻿/// <reference path="typings/winrt/winrt.d.ts" />
+﻿/// <reference path="typings/cordova/plugins/Device.d.ts" />
+/// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="SC/snapchat.ts" />

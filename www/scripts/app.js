@@ -49,6 +49,7 @@ var CameraManager;
             if (!camera.enclosureLocation || camera.enclosureLocation.panel === Windows.Devices.Enumeration.Panel.unknown) {
                 // No information on the location of the camera, assume it's an external camera, not integrated on the device
                 externalCamera = true;
+                oDisplayOrientation = DisplayOrientations.landscape;
             }
             else {
                 // Camera is fixed on the device
@@ -83,7 +84,7 @@ var CameraManager;
                     }
                     catch (Error) {
                         console.log(Error.message);
-                        console.log("Error in setPreviewEotationAsync");
+                        console.log("Error in setPreviewRotationAsync");
                     }
                     /*
                     setPreviewRotationAsync().then(function () {
@@ -246,6 +247,10 @@ var CameraManager;
     /// </summary>
     /// <returns></returns>
     function setPreviewRotationAsync() {
+        //Edge case for Windows on PCs
+        if (!(navigator.userAgent.indexOf('Phone') > -1)) {
+            return;
+        }
         // Calculate which way and how far to rotate the preview
         var rotationDegrees = convertDisplayOrientationToDegrees(oDisplayOrientation);
         // The rotation direction needs to be inverted if the preview is being mirrored
@@ -552,6 +557,7 @@ var Snapchat;
             Snaps.sort(function (a, b) {
                 return a.timestamp - b.timestamp;
             });
+            Snaps.reverse();
             return Snaps;
         };
         /*
@@ -677,7 +683,7 @@ var messageManager;
 })(messageManager || (messageManager = {}));
 var windowManager;
 (function (windowManager) {
-    var view = null, views = null, currentItem = null, pi = null, theme = {
+    var view = null, pi = null, theme = {
         a: 255,
         r: 52,
         g: 152,
@@ -694,7 +700,6 @@ var windowManager;
             height: 1024,
             width: 325
         });
-        view['visibleboundschanged'] += appView_VisibleBoundsChanged; // Might fix the onscreen buttons
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             $('body').addClass('mobile'); //TODO: Move to initialize()
             var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
@@ -707,10 +712,6 @@ var windowManager;
         }
     }
     windowManager.initialize = initialize;
-    function appView_VisibleBoundsChanged(sender, args) {
-        var v = sender.VisibleBounds;
-        this.Height = v.Height;
-    }
     function showStatusBar() {
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
@@ -741,6 +742,7 @@ var windowManager;
     }
     windowManager.stopLoading = stopLoading;
 })(windowManager || (windowManager = {}));
+/// <reference path="typings/cordova/plugins/Device.d.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
@@ -807,7 +809,7 @@ var swiftsnapper;
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
             views = $('#views');
-            var owl = views.owlCarousel({
+            views.owlCarousel({
                 loop: false,
                 nav: false,
                 dots: false,
