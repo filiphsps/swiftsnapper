@@ -197,9 +197,14 @@ module swiftsnapper {
             $('#ShutterBtn').on('click tap', function () {
                 var IStream = CameraManager.takePhotoAsync();
                 console.log("Picture Taken");
-                messageManager.alert("Picture Taken!", "Success", null);
-                // Send to SnapChat or editor view or something.
-                // SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
+                if (IStream != null) {
+                    messageManager.alert("Picture Taken!", "Success", null);
+                    // Send to SnapChat or editor view or something.
+                    // SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
+                }
+                else {
+                    messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                }
             });
 
 

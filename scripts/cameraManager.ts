@@ -149,23 +149,26 @@
     /// </summary>
     /// <returns></returns>
     export function takePhotoAsync() {
+        if (mediaCapture != null) {
 
-        var Streams = Windows.Storage.Streams;
-        var Imaging = Windows.Graphics.Imaging;
-        var inputStream = new Streams.InMemoryRandomAccessStream();
-        var bitmapDecoder = null,
-            bitmapEncoder = null,
-            outputStream = null;
+            var Streams = Windows.Storage.Streams;
+            var Imaging = Windows.Graphics.Imaging;
+            var inputStream = new Streams.InMemoryRandomAccessStream();
+            var bitmapDecoder = null,
+                bitmapEncoder = null,
+                outputStream = null;
 
-        // Take the picture
-        console.log("Taking photo...");
-        mediaCapture.capturePhotoToStreamAsync(Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg(), inputStream)
-        console.log("Photo taken!");
+            // Take the picture
+            console.log("Taking photo...");
+            mediaCapture.capturePhotoToStreamAsync(Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg(), inputStream)
+            console.log("Photo taken!");
 
-        var photoOrientation = convertOrientationToPhotoOrientation(getCameraOrientation());
+            var photoOrientation = convertOrientationToPhotoOrientation(getCameraOrientation());
 
-        return inputStream
-        //return reencodeAndSavePhotoAsync(inputStream, photoOrientation);
+            return inputStream
+            //return reencodeAndSavePhotoAsync(inputStream, photoOrientation);
+        }
+        return null;
     }
 
     /// <summary>

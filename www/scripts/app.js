@@ -115,17 +115,19 @@ var CameraManager;
     /// </summary>
     /// <returns></returns>
     function takePhotoAsync() {
-        var Streams = Windows.Storage.Streams;
-        var Imaging = Windows.Graphics.Imaging;
-        var inputStream = new Streams.InMemoryRandomAccessStream();
-        var bitmapDecoder = null, bitmapEncoder = null, outputStream = null;
-        // Take the picture
-        console.log("Taking photo...");
-        mediaCapture.capturePhotoToStreamAsync(Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg(), inputStream);
-        console.log("Photo taken!");
-        var photoOrientation = convertOrientationToPhotoOrientation(getCameraOrientation());
-        return inputStream;
-        //return reencodeAndSavePhotoAsync(inputStream, photoOrientation);
+        if (mediaCapture != null) {
+            var Streams = Windows.Storage.Streams;
+            var Imaging = Windows.Graphics.Imaging;
+            var inputStream = new Streams.InMemoryRandomAccessStream();
+            var bitmapDecoder = null, bitmapEncoder = null, outputStream = null;
+            // Take the picture
+            console.log("Taking photo...");
+            mediaCapture.capturePhotoToStreamAsync(Windows.Media.MediaProperties.ImageEncodingProperties.createJpeg(), inputStream);
+            console.log("Photo taken!");
+            var photoOrientation = convertOrientationToPhotoOrientation(getCameraOrientation());
+            return inputStream;
+        }
+        return null;
     }
     CameraManager.takePhotoAsync = takePhotoAsync;
     /// <summary>
@@ -908,9 +910,12 @@ var swiftsnapper;
             $('#ShutterBtn').on('click tap', function () {
                 var IStream = CameraManager.takePhotoAsync();
                 console.log("Picture Taken");
-                messageManager.alert("Picture Taken!", "Success", null);
-                // Send to SnapChat or editor view or something.
-                // SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
+                if (IStream != null) {
+                    messageManager.alert("Picture Taken!", "Success", null);
+                }
+                else {
+                    messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                }
             });
             if (typeof Windows !== 'undefined' && Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
                 Windows['Phone'].UI.Input.HardwareButtons.addEventListener('camerapressed', function (e) {
