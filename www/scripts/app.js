@@ -548,7 +548,12 @@ var Snapchat;
                 var snaps = friends[x].pending_received_snaps;
                 for (var n = 0; n < snaps.length; n++) {
                     var snap = snaps[n], sn = new Snapchat.Snap();
+                    sn.id = snap.id;
+                    sn.mediaType = snap.m;
                     sn.sender = snap.sn;
+                    sn.recipient = snap.rp;
+                    sn.mediaState = snap.st;
+                    //sn.timeSent = snap.sts;
                     sn.timer = snap.timer;
                     sn.timestamp = snap.ts;
                     Snaps.push(sn);
@@ -559,6 +564,15 @@ var Snapchat;
             });
             Snaps.reverse();
             return Snaps;
+        };
+        /*
+            Get the media for the provided snap
+            (stub)
+        */
+        Client.prototype.GetSnapMedia = function (snap) {
+            return new Promise(function (resolve) {
+                resolve(null);
+            });
         };
         /*
             Get a user's SnapTag

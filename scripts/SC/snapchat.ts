@@ -31,7 +31,13 @@ namespace Snapchat {
                 for (var n = 0; n < snaps.length; n++) {
                     let snap = snaps[n],
                         sn = new Snapchat.Snap();
+
+                    sn.id = snap.id;
+                    sn.mediaType = snap.m;
                     sn.sender = snap.sn;
+                    sn.recipient = snap.rp;
+                    sn.mediaState = snap.st;
+                    //sn.timeSent = snap.sts;
                     sn.timer = snap.timer;
                     sn.timestamp = snap.ts;
 

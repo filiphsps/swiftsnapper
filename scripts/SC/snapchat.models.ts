@@ -4,7 +4,11 @@
     }
 
     export class Snap {
-        public sender: string; //TODO: Switch to user
+        public id: string;
+        public mediaType: string;
+        public sender: string;
+        public recipient: string;
+        public mediaState: string;
         public timer: Number = 0;
         public timestamp: number = 0;
     }
