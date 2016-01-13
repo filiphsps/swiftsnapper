@@ -677,7 +677,7 @@ var messageManager;
 })(messageManager || (messageManager = {}));
 var windowManager;
 (function (windowManager) {
-    var view = null, pi = null, theme = {
+    var view = null, views = null, currentItem = null, pi = null, theme = {
         a: 255,
         r: 52,
         g: 152,
@@ -694,6 +694,7 @@ var windowManager;
             height: 1024,
             width: 325
         });
+        view['visibleboundschanged'] += appView_VisibleBoundsChanged; // Might fix the onscreen buttons
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             $('body').addClass('mobile'); //TODO: Move to initialize()
             var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
@@ -706,6 +707,10 @@ var windowManager;
         }
     }
     windowManager.initialize = initialize;
+    function appView_VisibleBoundsChanged(sender, args) {
+        var v = sender.VisibleBounds;
+        this.Height = v.Height;
+    }
     function showStatusBar() {
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
@@ -749,6 +754,7 @@ var swiftsnapper;
     "use strict";
     var SnapchatClient;
     var language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
+    var currentItem = null, SystemNavigator = null;
     var Application;
     (function (Application) {
         function initialize() {
@@ -776,6 +782,8 @@ var swiftsnapper;
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
+            SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView();
+            SystemNavigator.addEventListener("backrequested", toCenterView);
         }
         function onPause() {
             // TODO: This application has been suspended. Save application state here.
@@ -799,7 +807,7 @@ var swiftsnapper;
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
             views = $('#views');
-            views.owlCarousel({
+            var owl = views.owlCarousel({
                 loop: false,
                 nav: false,
                 dots: false,
@@ -811,6 +819,9 @@ var swiftsnapper;
                 pullDrag: false,
                 fallbackEasing: 'easeInOutQuart',
                 items: 1,
+            });
+            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
+                currentItem = event.item.index;
             });
             $('header').on('click tap', function () {
                 views.trigger('to.owl.carousel', [1, 300, true]);
@@ -845,6 +856,15 @@ var swiftsnapper;
         });
     }
     swiftsnapper.onAccountView = onAccountView;
+    function toCenterView(eventArgs) {
+        SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
+        console.log(currentItem);
+        if (currentItem != 1) {
+            views.trigger('to.owl.carousel', [1, 300, true]);
+            eventArgs.handled = true;
+        }
+        ;
+    }
     function onOverviewView() {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
@@ -869,8 +889,9 @@ var swiftsnapper;
                     }
                 }
             });
-            views.on('changed.owl.carousel', function (event) {
+            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
                 var pos = event.item.index;
+                currentItem = pos;
                 if (pos == 1) {
                     windowManager.hideStatusBar();
                 }

@@ -14,6 +14,8 @@ module swiftsnapper {
 
     let SnapchatClient: Snapchat.Client;
     let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
+    let currentItem = null,
+        SystemNavigator = null;
 
 
 
@@ -43,6 +45,8 @@ module swiftsnapper {
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
+            SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView()
+            SystemNavigator.addEventListener("backrequested", toCenterView);
         }
 
         function onPause() {
@@ -70,7 +74,6 @@ module swiftsnapper {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
-
             //Init Owl Carousel
             views = $('#views');
             views.owlCarousel({
@@ -86,6 +89,10 @@ module swiftsnapper {
                 fallbackEasing: 'easeInOutQuart',
                 items: 1,
             });
+
+            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
+                currentItem = event.item.index;
+            })
 
             $('header').on('click tap', function () {
                 views.trigger('to.owl.carousel', [1, 300, true]);
@@ -125,6 +132,15 @@ module swiftsnapper {
         });
     }
 
+    function toCenterView(eventArgs) {
+        SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
+        console.log(currentItem);
+        if (currentItem != 1) {
+            views.trigger('to.owl.carousel', [1, 300, true]);
+            eventArgs.handled = true;
+        };
+    }
+
     export function onOverviewView() {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
@@ -150,8 +166,10 @@ module swiftsnapper {
                     }
                 }
             });
-            views.on('changed.owl.carousel', function (event) {
+
+            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
                 let pos = event.item.index;
+                currentItem = pos
                 if (pos == 1) {
                     windowManager.hideStatusBar();
                 } else
