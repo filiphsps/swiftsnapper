@@ -1,7 +1,7 @@
 ﻿{
   "app": {
     "name": "SwiftSnapper",
-    "lang":  "en_US"
+    "lang":  "en-US"
   },
 
   "views": {
@@ -14,7 +14,9 @@
         "username": "Username",
         "password": "Password",
         "wrongUsernameOrPassword": "Wrong username or password!",
-        "userNotValid": "The username you entered is not valid!"
+        "failedToLogIn":  "Failed to Log In",
+        "userNotValid": "The username you entered is not valid!",
+        "loggingIn": "Logging in..."
       }
     },
 
