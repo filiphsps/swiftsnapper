@@ -54,7 +54,6 @@ namespace Snapchat {
 
         /*
             Get the media for the provided snap
-            Does not work yet thanks to the requirement of gauth
         */
         public GetSnapMedia(snap: Snapchat.Snap) {
             let self = this,
