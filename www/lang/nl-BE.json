@@ -7,14 +7,15 @@
   "views": {
 
     "account": {
-      "logIn": "Inloggen",
+      "logIn": "Login",
       "signUp": "Registreren",
 
       "logInView": {
         "username": "Gebruikersnaam",
         "password": "Wachtwoord",
         "wrongUsernameOrPassword": "Gebruikersnaam of wachtwoord incorrect!",
-        "userNotValid": "Gebruikersnaam bestaat niet!"
+        "userNotValid": "Gebruikersnaam bestaat niet!",
+        "loggingIn": "Inloggen..."
       }
     },
 
