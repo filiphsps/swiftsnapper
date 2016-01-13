@@ -4,6 +4,7 @@
     }
 
     export class Snap {
+        public conversationId: string;
         public id: string;
         public mediaType: string;
         public sender: string;

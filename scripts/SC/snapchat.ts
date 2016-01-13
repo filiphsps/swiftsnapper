@@ -32,6 +32,7 @@ namespace Snapchat {
                     let snap = snaps[n],
                         sn = new Snapchat.Snap();
 
+                    sn.conversationId = friends[x].id;
                     sn.id = snap.id;
                     sn.mediaType = snap.m;
                     sn.sender = snap.sn;
@@ -53,11 +54,34 @@ namespace Snapchat {
 
         /*
             Get the media for the provided snap
-            (stub)
+            Does not work yet thanks to the requirement of gauth
         */
         public GetSnapMedia(snap: Snapchat.Snap) {
+            let self = this,
+                data = this.AllUpdatesData,
+                timestamp = this.SnapchatAgent.GenerateTimeStamp(),
+                req_token = this.SnapchatAgent.GenerateRequestToken(this.SnapchatAgent.SNAPCHAT_AUTH_TOKEN, timestamp);
+
             return new Promise((resolve) => {
-                resolve(null);
+                let headers = {
+                    'Accept': '*/*',
+                    'Accept-Language': 'en',
+                    'Accept-Locale': 'en_US',
+                    'User-Agent': self.SnapchatAgent.SNAPCHAT_USER_AGENT,
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                };
+
+                self.SnapchatAgent.PostSnapchat('/ph/blob', [
+                    ['id', snap.id],
+                    ['req_token', req_token],
+                    ['timestamp', timestamp],
+                    ['username', self.CurrentUser.username]
+                ], headers).then(
+                    function (data) {
+                        console.log(data);
+                        resolve(null);
+                    });
             });
         }
 
@@ -68,7 +92,8 @@ namespace Snapchat {
         public GetSnapTag(username: string) {
             let self = this,
                 data = this.AllUpdatesData,
-                timestamp = this.SnapchatAgent.GenerateTimeStamp();
+                timestamp = this.SnapchatAgent.GenerateTimeStamp(),
+                req_token = this.SnapchatAgent.GenerateRequestToken(this.SnapchatAgent.SNAPCHAT_AUTH_TOKEN, timestamp);
 
             return new Promise((resolve) => {
                 let headers = {
@@ -81,10 +106,10 @@ namespace Snapchat {
                 };
 
                 self.SnapchatAgent.PostSnapchat('/bq/snaptag_download', [
-                    ['user_id', sha256.hex(username.toLowerCase())]
+                    ['user_id', sha256.hex(username.toLowerCase())],
                     ['type', 'SVG'],
-                    ['req_token', self.SnapchatAgent.GenerateRequestToken(self.SnapchatAgent.SNAPCHAT_CLIENT_AUTH_TOKEN, timestamp)],
-                    ['timestamp', timestamp.toString()],
+                    ['req_token', req_token],
+                    ['timestamp', timestamp],
                     ['username', username]
                 ], headers).then(
                     function (data) {
@@ -132,6 +157,7 @@ namespace Snapchat {
                     self.SnapchatAgent.SNAPCHAT_CLIENT_AUTH_TOKEN = data.headers['X-Snapchat-Client-Auth-Token'];
                     self.SnapchatAgent.SNAPCHAT_CLIENT_TOKEN = data.headers['X-Snapchat-Client-Token'];
                     self.SnapchatAgent.SNAPCHAT_UUID = data.headers['X-Snapchat-UUID'];
+                    self.SnapchatAgent.SNAPCHAT_USER_AGENT = data.headers['User-Agent'];
 
                     headers = data.headers;
                     headers['X-Snapchat-Client-Token'] = self.SnapchatAgent.SNAPCHAT_CLIENT_TOKEN;
@@ -152,11 +178,12 @@ namespace Snapchat {
                     ], headers).then(function (data) {
                         self.AllUpdatesData = JSON.parse(data);
 
-                        if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                            resolve({ 'status': data['status'], 'message': data['message'] });
+                        if (typeof self.AllUpdatesData['status'] !== 'undefined' && self.AllUpdatesData['status'] !== 200) {
+                            resolve({ 'status': self.AllUpdatesData['status'], 'message': self.AllUpdatesData['message'] });
                             return;
                         }
 
+                        self.SnapchatAgent.SNAPCHAT_AUTH_TOKEN = self.AllUpdatesData.updates_response.auth_token;
                         self.CurrentUser.username = details.username;
                         resolve(JSON.parse(data));
                     });
