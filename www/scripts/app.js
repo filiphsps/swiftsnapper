@@ -575,28 +575,34 @@ var Snapchat;
             Get the current user's pending Snapchat feed
         */
         Client.prototype.GetPendingFeed = function () {
-            var Snaps = [], friends = this.AllUpdatesData.conversations_response;
-            for (var x = 0; x < friends.length; x++) {
-                var snaps = friends[x].pending_received_snaps;
-                for (var n = 0; n < snaps.length; n++) {
-                    var snap = snaps[n], sn = new Snapchat.Snap();
-                    sn.conversationId = friends[x].id;
-                    sn.id = snap.id;
-                    sn.mediaType = snap.m;
-                    sn.sender = snap.sn;
-                    sn.recipient = snap.rp;
-                    sn.mediaState = snap.st;
-                    //sn.timeSent = snap.sts;
-                    sn.timer = snap.timer;
-                    sn.timestamp = snap.ts;
-                    Snaps.push(sn);
+            var Snaps = [];
+            if (this.AllUpdatesData != undefined) {
+                var friends = this.AllUpdatesData.conversations_response;
+                for (var x = 0; x < friends.length; x++) {
+                    var snaps = friends[x].pending_received_snaps;
+                    for (var n = 0; n < snaps.length; n++) {
+                        var snap = snaps[n], sn = new Snapchat.Snap();
+                        sn.conversationId = friends[x].id;
+                        sn.id = snap.id;
+                        sn.mediaType = snap.m;
+                        sn.sender = snap.sn;
+                        sn.recipient = snap.rp;
+                        sn.mediaState = snap.st;
+                        //sn.timeSent = snap.sts;
+                        sn.timer = snap.timer;
+                        sn.timestamp = snap.ts;
+                        Snaps.push(sn);
+                    }
                 }
+                Snaps.sort(function (a, b) {
+                    return a.timestamp - b.timestamp;
+                });
+                Snaps.reverse();
+                return Snaps;
             }
-            Snaps.sort(function (a, b) {
-                return a.timestamp - b.timestamp;
-            });
-            Snaps.reverse();
-            return Snaps;
+            else {
+                return Snaps;
+            }
         };
         /*
             Get the media for the provided snap
