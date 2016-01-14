@@ -24,7 +24,7 @@
             $('body').addClass('mobile'); //TODO: Move to initialize()
             let statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
             statusBar.showAsync();
-            statusBar.backgroundOpacity = 1;
+            statusBar.backgroundOpacity = 0;
             statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
             statusBar.foregroundColor = Windows.UI.Colors.white;
 
@@ -51,7 +51,7 @@
         if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
             pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
             pi.text = message;
-            pi.progressValue = 0.5;
+            pi.progressValue = null;
             pi.showAsync();
         }
     }
