@@ -13,8 +13,10 @@
       "logInView": {
         "username": "Utilizador",
         "password": "Senha",
-        "wrongUsernameOrPassword": "Utilizador ou senha errada.",
-        "userNotValid": "Utilizador Inválido"
+        "wrongUsernameOrPassword": "Nome de utilizador ou senha errada!",
+        "failedToLogIn":  "Erro",
+        "userNotValid": "Utilizador não é válido",
+        "loggingIn": "A Entrar..."
       }
     },
 

@@ -1,0 +1,36 @@
+{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "da-DK"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Log På",
+      "signUp": "Opret Konto",
+
+      "logInView": {
+        "username": "Brugernavn",
+        "password": "Kodeord",
+        "wrongUsernameOrPassword": "Forkert brugernavn eller kode!",
+        "failedToLogIn":  "Login mislykket",
+        "userNotValid": "Brugernavnet du indtastede er ikke gyldigt!"
+      }
+    },
+
+    "overview": {
+      "views": {
+        "stories": {
+          "title": "Stories",
+          "myStory": "My Story",
+          "explore":  "Explore"
+        }
+      }
+    },
+
+    "settings": {
+
+    }
+  }
+}

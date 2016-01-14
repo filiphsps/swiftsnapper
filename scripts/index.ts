@@ -25,20 +25,18 @@ module swiftsnapper {
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
-            $.get('lang/' + lang + '.json').done(function () {
-                $.getJSON('lang/' + lang + '.json', function (lang) {
+            $.getJSON('lang/' + lang + '.json', function (lang) {
+                callback(lang);
+            }, function (e) {
+                //Error
+                $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
-                }, function (e) {
-                    //Error
-                    $.getJSON('lang/en-US.json', function (lang) {
-                        callback(lang);
-                    });
                 });
             }).fail(function () {
                 $.getJSON('lang/en-US.json', function (lang) {
                     callback(lang);
                 });
-            });;
+            });
         }
 
         function onDeviceReady() {
@@ -101,7 +99,7 @@ module swiftsnapper {
 
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                windowManager.startLoading('Logging In...');
+                windowManager.startLoading(lang.views.account.logInView.loggingIn); 
                 $('#LogInView form .username').prop("disabled", true);
                 $('#LogInView form .password').prop("disabled", true);
 
@@ -111,14 +109,16 @@ module swiftsnapper {
                 }).then(
                     function (data) {
                         if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                            messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, 'Failed to login', null); //TODO: Lang
+                            messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
 
+                            windowManager.stopLoading();
                             $('#LogInView form .username').prop("disabled", false);
                             $('#LogInView form .password').prop("disabled", false);
                             return -1;
                         }
                                                 
                         windowManager.stopLoading();
+                        windowManager.hideStatusBar();
                         $('body').load('views/overview/index.html');
                 });
             });
@@ -191,11 +191,20 @@ module swiftsnapper {
                     CameraManager.initialize({
                         'frontFacing': true
                     });
+                  }
                 }
-
-            });
+            );
             $('#ShutterBtn').on('click tap', function () {
-                CameraManager.takePhoto();
+                var IStream = CameraManager.takePhotoAsync();
+                console.log("Picture Taken");
+                if (IStream != null) {
+                    messageManager.alert("Picture Taken!", "Success", null);
+                    // Send to SnapChat or editor view or something.
+                    // SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
+                }
+                else {
+                    messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                }
             });
 
 
