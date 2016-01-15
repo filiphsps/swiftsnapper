@@ -920,26 +920,45 @@ var swiftsnapper;
             });
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                windowManager.startLoading(lang.views.account.logInView.loggingIn);
-                $('#LogInView form .username').prop("disabled", true);
-                $('#LogInView form .password').prop("disabled", true);
-                SnapchatClient.Login({
-                    username: $('#LogInView form .username').val(),
-                    password: $('#LogInView form .password').val(),
-                }).then(function (data) {
-                    if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                        messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
-                        windowManager.stopLoading();
-                        $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);
-                        return -1;
-                    }
-                    windowManager.stopLoading();
-                    windowManager.hideStatusBar();
-                    $('body').load('views/overview/index.html');
-                });
+                var credential = new Windows.Security.Credentials.PasswordCredential("SwiftSnapper", $('#LogInView form .username').val(), $('#LogInView form .password').val());
+                logIn(credential, lang);
+            });
+            $(function () {
+                var vault = new Windows.Security.Credentials.PasswordVault();
+                var credentialList = vault.retrieveAll();
+                if (credentialList.length > 0) {
+                    var credential = vault.retrieve("SwiftSnapper", credentialList[0].userName);
+                    logIn(credential, lang);
+                }
             });
         });
+        function logIn(credential, lang) {
+            windowManager.startLoading(lang.views.account.logInView.loggingIn);
+            $('#LogInView form .username').prop("disabled", true);
+            $('#LogInView form .password').prop("disabled", true);
+            SnapchatClient.Login({
+                username: credential.userName,
+                password: credential.password,
+            }).then(function (data) {
+                var vault = new Windows.Security.Credentials.PasswordVault();
+                if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
+                    if (vault.retrieveAll().length > 0) {
+                        vault.remove(credential);
+                    }
+                    messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
+                    windowManager.stopLoading();
+                    $('#LogInView form .username').prop("disabled", false);
+                    $('#LogInView form .password').prop("disabled", false);
+                    return -1;
+                }
+                if (vault.retrieveAll().length == 0) {
+                    vault.add(credential);
+                }
+                windowManager.stopLoading();
+                windowManager.hideStatusBar();
+                $('body').load('views/overview/index.html');
+            });
+        }
     }
     swiftsnapper.onAccountView = onAccountView;
     function toCenterView(eventArgs) {
