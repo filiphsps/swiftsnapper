@@ -23,33 +23,39 @@ namespace Snapchat {
             Get the current user's pending Snapchat feed
         */
         public GetPendingFeed(): Array<Snapchat.Snap> {
-            let Snaps: Array<Snapchat.Snap> = [],
-                friends = this.AllUpdatesData.conversations_response;
+            let Snaps: Array<Snapchat.Snap> = [];
+            if (this.AllUpdatesData != undefined) {
+                let friends = this.AllUpdatesData.conversations_response;
 
-            for (var x = 0; x < friends.length; x++) {
-                const snaps = friends[x].pending_received_snaps;
-                for (var n = 0; n < snaps.length; n++) {
-                    let snap = snaps[n],
-                        sn = new Snapchat.Snap();
+                for (var x = 0; x < friends.length; x++) {
+                    const snaps = friends[x].pending_received_snaps;
+                    for (var n = 0; n < snaps.length; n++) {
+                        let snap = snaps[n],
+                            sn = new Snapchat.Snap();
 
-                    sn.conversationId = friends[x].id;
-                    sn.id = snap.id;
-                    sn.mediaType = snap.m;
-                    sn.sender = snap.sn;
-                    sn.recipient = snap.rp;
-                    sn.mediaState = snap.st;
-                    //sn.timeSent = snap.sts;
-                    sn.timer = snap.timer;
-                    sn.timestamp = snap.ts;
+                        sn.conversationId = friends[x].id;
+                        sn.id = snap.id;
+                        sn.mediaType = snap.m;
+                        sn.sender = snap.sn;
+                        sn.recipient = snap.rp;
+                        sn.mediaState = snap.st;
+                        //sn.timeSent = snap.sts;
+                        sn.timer = snap.timer;
+                        sn.timestamp = snap.ts;
 
-                    Snaps.push(sn);
+                        Snaps.push(sn);
+                    }
                 }
+                Snaps.sort(function (a, b) {
+                    return a.timestamp - b.timestamp;
+                });
+                Snaps.reverse();
+                return Snaps;
             }
-            Snaps.sort(function (a, b) {
-                return a.timestamp - b.timestamp;
-            });
-            Snaps.reverse();
-            return Snaps;
+            else
+            {
+                return Snaps;
+            }
         }
 
         /*
