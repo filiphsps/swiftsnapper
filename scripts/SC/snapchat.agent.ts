@@ -9,9 +9,10 @@ namespace Snapchat {
         public SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
         public SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
         public SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-        public SNAPCHAT_CLIENT_AUTH_TOKEN = null;
-        public SNAPCHAT_CLIENT_TOKEN = null;
-        public SNAPCHAT_UUID = null;
+        public SNAPCHAT_CLIENT_AUTH_TOKEN = null; //TODO: Use val from http://heroku.casper.io/snapchat/ios/endpointauth 
+        public SNAPCHAT_CLIENT_TOKEN = null; //TODO: Use from http://heroku.casper.io/snapchat/ios/endpointauth 
+        public SNAPCHAT_AUTH_TOKEN = null;
+        public SNAPCHAT_UUID = null; //TODO: Use val from http://heroku.casper.io/snapchat/ios/endpointauth 
         public SNAPCHAT_USER_AGENT = null;
         public SNAPCHAT_VERSION = '9.18.2.0';
 
@@ -25,7 +26,11 @@ namespace Snapchat {
         public CASPER_VERSION = '1.5.2.3';
         public CASPER_DEVICE_ID = null;
 
-        public Initialize() {
+        private CURRENT_USER_REFERENCE: Snapchat.User;
+
+        public Initialize(cur) {
+            this.CURRENT_USER_REFERENCE = cur;
+
             return new Promise((resolve) => {
                 this.InitializeCasper().then(function () {
                     resolve(this);
@@ -71,13 +76,11 @@ namespace Snapchat {
                 return null;
             URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + URI);
 
-            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
+            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, false), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
                 HTTP = new Windows.Web['Http'].HttpClient(),
                 HEAD = HTTP.defaultRequestHeaders;
 
             HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
-            HEAD.append('X-Snapchat-Client-Auth-Token', this.SNAPCHAT_CLIENT_AUTH_TOKEN);
-            HEAD.append('X-Snapchat-UUID', this.SNAPCHAT_UUID);
 
             return new Promise((resolve) => {
                 let promise = HTTP.postAsync(URI, REQ).done(function (res) {
@@ -141,7 +144,7 @@ namespace Snapchat {
                 return null;
             URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
 
-            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
+            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, true), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
                 HTTP = new Windows.Web['Http'].HttpClient(),
                 HEAD = HTTP.defaultRequestHeaders;
 
@@ -201,14 +204,50 @@ namespace Snapchat {
             return id;
         }
 
+        public GetSnapchatAuthFromCasper(endpoint, timestamp) {
+            let URI = new Windows.Foundation.Uri('http://heroku.casper.io/snapchat/ios/endpointauth'),
+                parameters = [
+                    ['auth_token', this.SNAPCHAT_AUTH_TOKEN],
+                    ['casper_version', this.CASPER_VERSION],
+                    ['endpoint', endpoint],
+                    ['snapchat_version', this.SNAPCHAT_VERSION],
+                    ['timestamp', timestamp],
+                    ['username', this.CURRENT_USER_REFERENCE.username],
+                    ['password', this.CURRENT_USER_REFERENCE.password]
+                ],
+                headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': this.CASPER_USER_AGENT,
+                };
+
+            let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, true), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
+                HTTP = new Windows.Web['Http'].HttpClient(),
+                HEAD = HTTP.defaultRequestHeaders;
+
+            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
+            HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
+            HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
+
+            return new Promise((resolve) => {
+                let promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                    res.content.readAsStringAsync().done(function (e) {
+                        resolve(e)
+                    });
+                });
+            });
+        }
+
         /*
 	        Converts an Array of Arrys to uri parameters
 	        Ex. input [['para1', 'val1'], ['para2', 'val2'], ['para3', 'val3']].
         */
-        public ArrayToURIParameters(data: Array<Array<string>>) {
-            data = data.sort(function (a, b) {
-                return a[0] > b[0] ? 1 : -1;
-            })
+        public ArrayToURIParameters(data: Array<Array<string>>, shouldSort) {
+            if (shouldSort) {
+                data = data.sort(function (a, b) {
+                    return a[0] > b[0] ? 1 : -1;
+                })
+            }
 
             var res = '';
             for (var n = 0; n < data.length; n++) {
@@ -223,6 +262,7 @@ namespace Snapchat {
 
     export module Http {
         export function ConfigureHeaders(HEAD, headers) {
+
             //TODO: Custom headers?
             if (typeof headers['Accept-Encoding'] !== 'undefined') {
                 HEAD.acceptEncoding.clear();
@@ -243,14 +283,21 @@ namespace Snapchat {
 
             if (typeof headers['Cache-Control'] !== 'undefined')
                 HEAD.cacheControl.parseAdd(headers.CacheControl);
-            else
-                HEAD.cacheControl.clear();
 
             if (typeof headers['User-Agent'] !== 'undefined')
                 HEAD.userAgent.parseAdd(headers['User-Agent']);
 
             if (typeof headers['X-Snapchat-Client-Token'] !== 'undefined')
                 HEAD.append('X-Snapchat-Client-Token', headers['X-Snapchat-Client-Token']);
+
+            if (typeof headers['X-Snapchat-Client-Auth-Token'] !== 'undefined')
+                HEAD.append('X-Snapchat-Client-Auth-Token', headers['X-Snapchat-Client-Auth-Token']);
+
+            if (typeof headers['X-Snapchat-UUID'] !== 'undefined')
+                HEAD.append('X-Snapchat-UUID', headers['X-Snapchat-UUID']);
+
+            if (typeof headers['X-Timestamp'] !== 'undefined')
+                HEAD.append('X-Timestamp', headers['X-Timestamp']);
 
             return HEAD;
         }

@@ -1,0 +1,37 @@
+{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "si-SI"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Prijava",
+      "signUp": "Registracija",
+
+      "logInView": {
+        "username": "Uporabniško ime",
+        "password": "Geslo",
+        "wrongUsernameOrPassword": "Napačno uporabniško ime ali geslo!",
+        "failedToLogIn":  "Napaka pri prijavi",
+        "userNotValid": "Vneseno uporabniško ime ni veljavno!",
+        "loggingIn": "Prijavljanje..."
+      }
+    },
+
+    "overview": {
+      "views": {
+        "stories": {
+          "title": "Zgodbe",
+          "myStory": "Moja Zgodba",
+          "explore":  "Razišči"
+        }
+      }
+    },
+
+    "settings": {
+
+    }
+  }
+}

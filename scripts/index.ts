@@ -1,4 +1,5 @@
-﻿/// <reference path="typings/winrt/winrt.d.ts" />
+﻿/// <reference path="typings/cordova/plugins/Device.d.ts" />
+/// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
 /// <reference path="typings/es6-promise/es6-promise.d.ts" />
 /// <reference path="SC/snapchat.ts" />
@@ -14,6 +15,8 @@ module swiftsnapper {
 
     let SnapchatClient: Snapchat.Client;
     let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
+    let currentItem = null,
+        SystemNavigator = null;
 
 
 
@@ -43,6 +46,8 @@ module swiftsnapper {
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
+            SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView()
+            SystemNavigator.addEventListener("backrequested", toCenterView);
         }
 
         function onPause() {
@@ -70,7 +75,6 @@ module swiftsnapper {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
-
             //Init Owl Carousel
             views = $('#views');
             views.owlCarousel({
@@ -86,6 +90,10 @@ module swiftsnapper {
                 fallbackEasing: 'easeInOutQuart',
                 items: 1,
             });
+
+            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
+                currentItem = event.item.index;
+            })
 
             $('header').on('click tap', function () {
                 views.trigger('to.owl.carousel', [1, 300, true]);
@@ -149,6 +157,15 @@ module swiftsnapper {
         }
     }
 
+    function toCenterView(eventArgs) {
+        SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
+        console.log(currentItem);
+        if (currentItem != 1) {
+            views.trigger('to.owl.carousel', [1, 300, true]);
+            eventArgs.handled = true;
+        };
+    }
+
     export function onOverviewView() {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
@@ -174,20 +191,26 @@ module swiftsnapper {
                     }
                 }
             });
-            views.on('changed.owl.carousel', function (event) {
+
+            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
                 let pos = event.item.index;
+                currentItem = pos
                 if (pos == 1) {
                     windowManager.hideStatusBar();
                 } else
                     windowManager.showStatusBar();
             });
 
+            CameraManager.initialize({
+                'frontFacing': false
+            });
+
             //temp: view unread snaps
-            var snaps = SnapchatClient.GetPendingFeed()
+            let snaps = SnapchatClient.GetPendingFeed();
             for (var n = 0; n < snaps.length; n++) {
                 let snap = snaps[n],
                     output =
-                        '<article class="item"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                        '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
                         '<div class="header">' + snap.sender + '</div>' +
                         '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
                         '</div></article>';
@@ -195,9 +218,17 @@ module swiftsnapper {
                 $('#SnapsView .SnapsList').append(output);
             }
 
-            CameraManager.initialize({
-                'frontFacing': false
+            //Temp for showing snaps
+            $('#SnapsView .SnapsList article').on('click tap', function (e) {
+                let snap = snaps[$(e.currentTarget).attr('id')];
+                SnapchatClient.GetSnapMedia(snap).then(function (img: string) {
+                    $('#ShowSnapView').css('display', 'block');
+                    $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + btoa(img));
+                });
             });
+            $('#ShowSnapView').on('click tap', function() {
+                $('#ShowSnapView').css('display', 'none');
+            })
 
             $('#ViewSnapsBtn').on('click tap', function () {
                 views.trigger('prev.owl.carousel', [300]);

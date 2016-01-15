@@ -71,6 +71,7 @@
                 if (!camera.enclosureLocation || camera.enclosureLocation.panel === Windows.Devices.Enumeration.Panel.unknown) {
                     // No information on the location of the camera, assume it's an external camera, not integrated on the device
                     externalCamera = true;
+                    oDisplayOrientation = DisplayOrientations.landscape; 
                 }
                 else {
                     // Camera is fixed on the device
@@ -112,7 +113,7 @@
                         }
                         catch (Error) {
                             console.log(Error.message);
-                            console.log("Error in setPreviewEotationAsync");
+                            console.log("Error in setPreviewRotationAsync");
                         }
 
                         /*
@@ -300,6 +301,11 @@
     /// </summary>
     /// <returns></returns>
     function setPreviewRotationAsync() {
+        //Edge case for Windows on PCs
+        if (!(navigator.userAgent.indexOf('Phone') > -1)) {
+            return;
+        }
+
         // Calculate which way and how far to rotate the preview
         var rotationDegrees = convertDisplayOrientationToDegrees(oDisplayOrientation);
 
