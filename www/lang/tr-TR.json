@@ -1,0 +1,37 @@
+{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "tr-TR"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Giriş yap",
+      "signUp": "Kayıt ol",
+
+      "logInView": {
+        "username": "Kullanıcı adı",
+        "password": "Şifre",
+        "wrongUsernameOrPassword": "Yanlış kullanıcı adı veya şifre!",
+        "failedToLogIn":  "Giriş başarısız.",
+        "userNotValid": "Girdiğiniz kullanıcı adı yanlış!",
+        "loggingIn": "Giriş yapılıyor..."
+      }
+    },
+
+    "overview": {
+      "views": {
+        "stories": {
+          "title": "Hikayeler",
+          "myStory": "Benim hikayem",
+          "explore":  "Keşfet"
+        }
+      }
+    },
+
+    "settings": {
+
+    }
+  }
+}
