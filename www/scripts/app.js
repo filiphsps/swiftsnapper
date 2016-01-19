@@ -1054,6 +1054,9 @@ var swiftsnapper;
                     messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
                 }
             });
+            $('#SettingsBtn').on('click tap', function () {
+                $('body').load('views/settings/index.html');
+            });
             if (typeof Windows !== 'undefined' && Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
                 Windows['Phone'].UI.Input.HardwareButtons.addEventListener('camerapressed', function (e) {
                     $('#ShutterBtn').click();
@@ -1062,5 +1065,20 @@ var swiftsnapper;
         });
     }
     swiftsnapper.onOverviewView = onOverviewView;
+    function onSettingsView() {
+        alert('settings view');
+        $('#LogoutBtn').on('click tap', function () {
+            messageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
+            var vault = new Windows.Security.Credentials.PasswordVault();
+            var creds = vault.retrieveAll();
+            for (var i = 0; i < creds.length; ++i) {
+                vault.remove(creds[i]);
+            }
+        });
+        $('#BackBtn').on('click tap', function () {
+            $('body').load('views/overview/index.html');
+        });
+    }
+    swiftsnapper.onSettingsView = onSettingsView;
 })(swiftsnapper || (swiftsnapper = {}));
 //# sourceMappingURL=app.js.map
