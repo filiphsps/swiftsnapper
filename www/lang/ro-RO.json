@@ -1,0 +1,37 @@
+{
+  "app": {
+    "name": "SwiftSnapper",
+    "lang":  "ro-RO"
+  },
+
+  "views": {
+
+    "account": {
+      "logIn": "Autentifică-te",
+      "signUp": "Înregistrează-te",
+
+      "logInView": {
+        "username": "Nume utilizator",
+        "password": "Parolă",
+        "wrongUsernameOrPassword": "Nume de utilizator sau parolă incorecte!",
+        "failedToLogIn":  "Autentificare eșuată",
+        "userNotValid": "Numele de utilizator pe care l-ai introdus nu este valid!",
+        "loggingIn": "Autentificare..."
+      }
+    },
+
+    "overview": {
+      "views": {
+        "stories": {
+          "title": "Povești",
+          "myStory": "Povestea mea",
+          "explore":  "Explorează"
+        }
+      }
+    },
+
+    "settings": {
+
+    }
+  }
+}
