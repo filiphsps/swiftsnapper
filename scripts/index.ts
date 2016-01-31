@@ -61,14 +61,20 @@ module swiftsnapper {
 
     window.onload = function () {
         Application.initialize();
-
-        //Init Snapchat
-        SnapchatClient = new Snapchat.Client();
-        SnapchatClient.Initialize().then(function () {
-            $(document).ready(function () {
-                $('body').load('views/account/index.html');
+        var connectionProfile = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
+        if (connectionProfile != null && connectionProfile.getNetworkConnectivityLevel() == Windows.Networking.Connectivity.NetworkConnectivityLevel.internetAccess) {
+            //Init Snapchat
+            SnapchatClient = new Snapchat.Client();
+            SnapchatClient.Initialize().then(function () {
+                $(document).ready(function () {
+                    $('body').load('views/account/index.html');
+                });
             });
-        });
+        } else {
+            messageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
+                window.close();
+            });
+        }
     }
 
     export function onAccountView() {
