@@ -24,7 +24,7 @@ label {
     font-size: 14px;
     line-height: 18px;
 }
-input[type=text], input[type=password]{
+input[type=text], input[type=password], input[type=email], input[type=tel]{
     height: 20px;
     padding: 4px 5px;
     color: #000;

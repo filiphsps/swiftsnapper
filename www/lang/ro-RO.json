@@ -17,6 +17,12 @@
         "failedToLogIn":  "Autentificare eșuată",
         "userNotValid": "Numele de utilizator pe care l-ai introdus nu este valid!",
         "loggingIn": "Autentificare..."
+      },
+      "signUpView": {
+        "username": "Nume utilizator",
+        "password": "Parolă",
+        "verifynumber": "Verificați numarul de telefon mobil",
+        "repeatPassword": "Confirmare parolă"
       }
     },
 

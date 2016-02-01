@@ -17,6 +17,12 @@
         "failedToLogIn":  "Logowanie nie powiodło się",
         "userNotValid": "Wprowadzona nazwa użytkownika jest nieprawidłowa!",
         "loggingIn": "Logowanie..."
+      },
+      "signUpView": {
+        "username": "Nazwa użytkownika",
+        "password": "Hasło",
+        "verifynumber": "Sprawdzić numer telefonu komórkowego",
+        "repeatPassword": "Potwierdź hasło"
       }
     },
 

@@ -17,6 +17,12 @@
         "failedToLogIn":  "Giriş başarısız.",
         "userNotValid": "Girdiğiniz kullanıcı adı yanlış!",
         "loggingIn": "Giriş yapılıyor..."
+      },
+      "signUpView": {
+        "username": "Kullanıcı adı",
+        "password": "Şifre",
+        "verifynumber": "Mobil Numara Kontrol",
+        "repeatPassword": "şifreyi onaylayın"
       }
     },
 

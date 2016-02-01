@@ -1,4 +1,6 @@
-﻿#SelectView {
+﻿/* Select view */
+
+#SelectView {
     overflow: hidden;
     background: #3498DB;
 }
@@ -41,6 +43,8 @@ body.mobile header nav .item.right, body.mobile header nav .item.left {
     top: 20px;
 }
 
+/* Login view */
+
 #LogInView header .header{
     padding: 0 0 0 32px;
 }
@@ -52,5 +56,21 @@ body.mobile header nav .item.right, body.mobile header nav .item.left {
     margin: 5px 10px 0 10px;
 }
 #LogInView input[type=submit] {
+    width: auto;
+}
+
+/* Sign up view */
+
+#SignUpView header .header{
+    padding: 0 0 0 32px;
+}
+#SignUpView input{
+    width: calc(100% - 33px);
+    margin: 5px 10px;
+}
+#SignUpView label {
+    margin: 5px 10px 0 10px;
+}
+#SignUpView input[type=submit] {
     width: auto;
 }

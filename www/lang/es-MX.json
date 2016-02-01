@@ -15,6 +15,12 @@
         "password": "Contraseña",
         "wrongUsernameOrPassword": "¡Usuario o contraseña incorrectos!",
         "userNotValid": "¡El usuario no es válido!"
+      },
+      "signUpView": {
+        "username": "Usuario",
+        "password": "Contraseña",
+        "verifynumber": "Compruebe Número móvil",
+        "repeatPassword": "Confirme la contraseña"
       }
     },
 

@@ -136,6 +136,13 @@ namespace Snapchat {
             return this.SnapchatAgent.PostSnapchat(URI, parameters, headers);
         }
 
+        /* 
+            Register a new user
+        */
+        public Register(details: Snapchat.RegisterDetails) {
+            //TODO when Casper/Snapchat API become available 
+            
+        }
         /*
             Log In a user
         */

@@ -16,6 +16,12 @@
         "failedToLogIn": "Falha no login",
         "userNotValid": "O nome de usuário que você digitou não é válido!",
         "loggingIn": "Efetuando login..."
+      },
+      "signUpView": {
+        "username": "Nome de Usuário",
+        "password": "Senha",
+        "verifynumber": "Verificar número de celular",
+        "repeatPassword": "Confirmar senha"
       }
     },
 
