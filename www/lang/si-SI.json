@@ -21,8 +21,8 @@
       "signUpView": {
         "username": "Uporabniško ime",
         "password": "Geslo",
-        "verifynumber": "Preverite številko mobilnega telefonar",
-        "repeatPassword": "Potrdite številko"
+        "verifynumber": "Potrdite številko",
+        "repeatPassword": "Potrdite geslo"
       }
     },
 
