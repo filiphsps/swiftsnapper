@@ -36,8 +36,8 @@
     },
 
     "settings": {
-      "title": "Einstellungen",
-      "logout": "Ausloggen"
+      "title": "Instellingen",
+      "logout": "Uitloggen"
     }
   }
 }
