@@ -16,6 +16,12 @@
         "wrongUsernameOrPassword": "Falscher Benutzername oder Passwort!",
         "failedToLogIn":  "Login fehlgeschlagen",
         "userNotValid": "Der eingegebene Benutzername ist ungültig!"
+      },
+      "signUpView": {
+        "username": "Benutzername",
+        "password": "Passwort",
+        "verifynumber": "Überprüfen Mobile Number",
+        "repeatPassword": "Passwort bestätigen"
       }
     },
 

@@ -1,7 +1,6 @@
-﻿#SettingsTitle {
-    padding: 0 0 0 32px;
+﻿body.mobile header nav .item.right, body.mobile header nav .item.left {
+    top: 20px;
 }
-
-button {
-    
+header .header{
+    padding: 0 0 0 32px;
 }

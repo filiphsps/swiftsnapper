@@ -668,6 +668,12 @@ var Snapchat;
             return this.SnapchatAgent.PostSnapchat(URI, parameters, headers);
         };
         /*
+            Register a new user
+        */
+        Client.prototype.Register = function (details) {
+            //TODO when Casper/Snapchat API become available 
+        };
+        /*
             Log In a user
         */
         Client.prototype.Login = function (details) {
@@ -888,11 +894,13 @@ var swiftsnapper;
                     $('body').load('views/account/index.html');
                 });
             });
-        } else {
+        }
+        else {
             messageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
                 window.close();
             });
         }
+    };
     function onAccountView() {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());

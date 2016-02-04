@@ -17,6 +17,12 @@
         "failedToLogIn": "Fallo al iniciar sesión",
         "userNotValid": "El nombre de usuario que ha introducido no es válido!",
         "loggingIn": "Iniciando sesión..."
+      },
+      "signUpView": {
+        "username": "Nombre de usuario",
+        "password": "Clave",
+        "verifynumber": "Compruebe Número móvil",
+        "repeatPassword": "Confirme la contraseña"
       }
     },
 

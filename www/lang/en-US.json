@@ -17,6 +17,12 @@
         "failedToLogIn": "Failed to Log In",
         "userNotValid": "The username you entered is not valid!",
         "loggingIn": "Logging in..."
+      },
+      "signUpView": {
+        "username": "Username",
+        "password": "Password",
+        "verifynumber": "Verify number",
+        "repeatPassword": "Confirm password"
       }
     },
 

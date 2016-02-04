@@ -23,4 +23,10 @@
         username: string,
         password: string,
     }
+    export interface RegisterDetails {
+        username: string,
+        password: string,
+        email: string,
+        cellphoneNumber: number,
+    }
 }

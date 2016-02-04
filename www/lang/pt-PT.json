@@ -14,9 +14,15 @@
         "username": "Utilizador",
         "password": "Senha",
         "wrongUsernameOrPassword": "Utilizador ou senha errada!",
-        "failedToLogIn":  "Erro",
+        "failedToLogIn": "Erro",
         "userNotValid": "Utilizador inválido",
         "loggingIn": "A Entrar..."
+      },
+      "signUpView": {
+        "username": "Utilizador",
+        "password": "Senha",
+        "verifynumber": "Verificar número de celular",
+        "repeatPassword": "Confirmar senha"
       }
     },
 

@@ -17,6 +17,12 @@
         "failedToLogIn":  "Login mislykket",
         "userNotValid": "Brugernavnet du indtastede er ikke gyldigt!",
         "loggingIn": "Logger ind..."
+      },
+      "signUpView": {
+        "username": "Brugernavn",
+        "password": "Kodeord",
+        "verifynumber": "Tjek mobilnummer",
+        "repeatPassword": "Bekræft adgangskode"
       }
     },
 

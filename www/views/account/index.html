@@ -4,16 +4,26 @@
 <script id="template" type="text/x-handlebars-template">
     <main id="views">
         <!-- Sign Up View -->
-        <section id="SingUpView" class="view">
+        <section id="SignUpView" class="view">
             <header>
                 <div class="header">{{views.account.signUp}}</div>
                 <nav>
                     <div class="item right"><span class="icon mdl2-scroll-chevron-right-legacy"></span></div>
                 </nav>
             </header>
-            <article>
-                Coming soon-ish?
-            </article>
+            <form id="SignUpForm">
+                <label>{{views.account.signUpView.username}}</label>
+                <input class="username" type="text" required />
+                <label>{{views.account.signUpView.password}}</label>
+                <input class="password" type="password" required />
+                <label>{{views.account.signUpView.repeatPassword}}</label>
+                <input class="password" type="password" required />
+                <label>E-mail</label>
+                <input class="email" type="email" required />
+                <label>{{views.account.signUpView.verifynumber}}</label>
+                <input class="cpnumber" type="tel" /> <!-- Verifying the number is optional because it can be done later -->
+                <input type="submit" value="{{views.account.signUp}}" />
+            </form>
         </section>
 
         <!-- Select View -->
