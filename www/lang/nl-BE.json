@@ -20,8 +20,8 @@
       "signUpView": {
         "username": "Gebruikersnaam",
         "password": "Wachtwoord",
-        "verifynumber": "Controleer Mobile Number",
-        "repeatPassword": "Passwort bestätigen"
+        "verifynumber": "Verifieer GSM nummer",
+        "repeatPassword": "Herhaal wachtwoord"
       }
     },
 
