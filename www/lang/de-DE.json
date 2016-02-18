@@ -20,7 +20,7 @@
       "signUpView": {
         "username": "Benutzername",
         "password": "Passwort",
-        "verifynumber": "Überprüfen Mobile Number",
+        "verifynumber": "Überprüfe Mobile Number",
         "repeatPassword": "Passwort bestätigen"
       }
     },
@@ -28,16 +28,16 @@
     "overview": {
       "views": {
         "stories": {
-          "title": "Historie",
-          "myStory": "Min historie",
+          "title": "Geschichten",
+          "myStory": "Meine Geschichte",
           "explore":  "Erkunden"
         }
       }
     },
 
     "settings": {
-      "title": "Indstillinger",
-      "logout": "Log ud"
+      "title": "Einstellungen",
+      "logout": "Abmelden"
     }
   }
 }
