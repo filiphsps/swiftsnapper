@@ -14,14 +14,15 @@
         "username": "Gebruikersnaam",
         "password": "Wachtwoord",
         "wrongUsernameOrPassword": "Gebruikersnaam of wachtwoord incorrect!",
+        "failedToLogIn": "Login mislukt",
         "userNotValid": "Gebruikersnaam bestaat niet!",
         "loggingIn": "Inloggen..."
       },
       "signUpView": {
         "username": "Gebruikersnaam",
         "password": "Wachtwoord",
-        "verifynumber": "Controleer Mobile Number",
-        "repeatPassword": "Passwort bestätigen"
+        "verifynumber": "Verifieer GSM nummer",
+        "repeatPassword": "Herhaal wachtwoord"
       }
     },
 
