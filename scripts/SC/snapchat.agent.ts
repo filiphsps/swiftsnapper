@@ -9,31 +9,30 @@ namespace Snapchat {
         public SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
         public SNAPCHAT_API_SECRET = 'iEk21fuwZApXlz93750dmW22pw389dPwOk';
         public SNAPCHAT_API_STATIC_TOKEN = 'm198sOkJEn37DjqZ32lpRu76xmw288xSQ9';
-        public SNAPCHAT_CLIENT_AUTH_TOKEN = null; //TODO: Use val from http://heroku.casper.io/snapchat/ios/endpointauth 
-        public SNAPCHAT_CLIENT_TOKEN = null; //TODO: Use from http://heroku.casper.io/snapchat/ios/endpointauth 
+        public SNAPCHAT_CLIENT_AUTH_TOKEN = null; //TODO
+        public SNAPCHAT_CLIENT_TOKEN = null; //TODO
         public SNAPCHAT_AUTH_TOKEN = null;
-        public SNAPCHAT_UUID = null; //TODO: Use val from http://heroku.casper.io/snapchat/ios/endpointauth 
+        public SNAPCHAT_UUID = null; //TODO
         public SNAPCHAT_USER_AGENT = null;
         public SNAPCHAT_VERSION = '9.18.2.0';
 
-        public CASPER_USER_AGENT = 'Casper/1.5.2.3 (SwiftSnapper; Windows 10; gzip)';
-        public CASPER_ENDPOINT = 'https://api.casper.io';
-        public CASPER_HASH_PATTERN = '0100011111110000101111101001101011110010100110011101110010101000';
-        public CASPER_API_KEY = '740c1d60b292fc8a44cdc9a3301e124a';
-        public CASPER_API_TOKEN = '9UpsYwhthWspIoHonKjniOMu09UBkS9w';
-        public CASPER_API_SECRET = 'fuckinginsecuresecretkey'; //API secret taken from io.casper.android.n.a.a
-        public CASPER_SIGNATURE = 'v1:3d603604ff4a56d8a6821e9edfd8bb1257af436faf88c1a9bbb9dcefe8a56849';
-        public CASPER_VERSION = '1.5.2.3';
-        public CASPER_DEVICE_ID = null;
+        public CASPER_USER_AGENT = 'SwiftSnapper/1.0.0.0 (SwiftSnapper; Windows 10; gzip)';
+        public CASPER_ENDPOINT = 'https://casper-api.herokuapp.com';
+        public CASPER_API_KEY = '';
+        public CASPER_API_SECRET = '';
 
         private CURRENT_USER_REFERENCE: Snapchat.User;
 
         public Initialize(cur) {
             this.CURRENT_USER_REFERENCE = cur;
+            this.CASPER_API_KEY = SwiftSnapper.Settings.Get('ApiKey');
+            this.CASPER_API_SECRET = SwiftSnapper.Settings.Get('ApiSecret');
 
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 this.InitializeCasper().then(function () {
                     resolve(this);
+                }).catch((err) => {
+                    reject(err);
                 });
             });
         }
@@ -43,6 +42,24 @@ namespace Snapchat {
         */
         public GenerateTimeStamp() {
             return Math.round((new Date).getTime());
+        }
+
+        /*
+            Generates a JWT token
+        */
+        public GenerateJwtToken(timestamp, parameteters) {
+            let header = {
+                alg: 'HS256'
+            };
+
+            if (!parameteters)
+                parameteters = {};
+            parameteters['iat'] = timestamp;
+
+            var payload = btoa(JSON.stringify(header)) + '.' + btoa(JSON.stringify(parameteters));
+            var signature = sha256.b64_hmac('secretkey', payload).slice(0, -1).replace(/\+/g, '-').replace(/\//g, '_');
+            var jwt = payload + '.' + signature;
+            return jwt;
         }
 
         /*
@@ -101,31 +118,28 @@ namespace Snapchat {
 	        Initialize Casper for use
         */
         private InitializeCasper() {
-            this.CASPER_DEVICE_ID = this.GenerateCasperDeviceId();
             var timestamp = this.GenerateTimeStamp();
 
             var self = this;
-            return new Promise((resolve) => {
+            return new Promise((resolve, reject) => {
                 let headers = {
                     'Connection': 'Keep-Alive',
                     'Accept-Encoding': 'gzip',
-                    'User-Agent': this.CASPER_USER_AGENT,
+                    'User-Agent': this.CASPER_USER_AGENT
                 };
+                this.PostCasper('/snapchat/ios/login', [
+                    ['jwt', this.GenerateJwtToken(timestamp, {
+                        'username': '',
+                        'password': ''
+                    })]
+                ], headers).then(function (res) {
+                    console.log(res);
 
-                this.PostCasper('/config', [
-                    ['casper_version', this.CASPER_VERSION],
-                    ['device_id', this.CASPER_DEVICE_ID],
-                    ['timestamp', timestamp.toString()],
-                    ['token', this.CASPER_API_TOKEN],
-                    ['token_hash', this.GenerateCasperTokenHash(timestamp)]
-                ], headers).then(function (conf) {
-                    let config = JSON.parse(conf);
+                    if (res.code !== 200)
+                        return reject(res.message);
 
-                    if (config.code !== 200)
-                        console.log('Failed to fetch Casper config!'); //TODO: Show error dialog through custom message class
-
-                    var sc_ver = self.SNAPCHAT_VERSION;
-                    self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
+                    //var sc_ver = self.SNAPCHAT_VERSION;
+                    //self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
 
                     resolve(this);
                 });
@@ -135,7 +149,7 @@ namespace Snapchat {
         /*
 	        Post request to Casper.io's API
         */
-        public PostCasper(URI, parameters, headers?): Promise<string> {
+        public PostCasper(URI, parameters, headers?): Promise<any> {
             if (headers == null) {
                 headers = {};
             }
@@ -150,75 +164,26 @@ namespace Snapchat {
 
             HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
             HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
-            HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
 
-            return new Promise((resolve) => {
-                let promise = HTTP.postAsync(URI, REQ).done(function (res) {
-                    res.content.readAsStringAsync().done(function (e) {
-                        resolve(e)
+            return new Promise((resolve, reject) => {
+                let promise = HTTP.postAsync(URI, REQ).done((res) => {
+                    res.content.readAsStringAsync().done((res) => {
+                        resolve(JSON.parse(res))
                     });
+                    //Handle reject
                 });
             });
         }
 
-        /*
-	        Generates Token hash to be used with Casper's API
-        */
-        public GenerateCasperTokenHash(timestamp) {
-            let s1: string = sha256.hex(this.CASPER_DEVICE_ID + this.CASPER_API_TOKEN),
-                s2: string = sha256.hex(this.CASPER_API_TOKEN + timestamp.toString());
-
-            let res = '';
-            for (var n = 0; n < this.CASPER_HASH_PATTERN.length; n++) {
-                if (this.CASPER_HASH_PATTERN.charAt(n) === '0') {
-                    res += s1[n];
-                } else {
-                    res += s2[n];
-                }
-            }
-            return res;
-        }
-
-        /*
-	        Generates Signature to be used with Casper's API
-	        P.S Casper expects the parameters to be in alphabetical order.
-        */
-        private GenerateCasperRequestSignature(parameters) {
-            let req = '';
-            parameters = parameters.sort(function (a, b) {
-                return a[0].localeCompare(b[0]);
-            })
-            for (var n = 0; n < parameters.length; n++) {
-                req += parameters[n][0] + parameters[n][1];
-            }
-
-            return 'v1:' + sha256.hex_hmac(this.CASPER_API_SECRET, req);
-        }
-
-        //TODO: Investigate how Android's device id is generated
-        private GenerateCasperDeviceId() {
-            var id = '';
-            var charset = "abcdefghijklmnopqrstuvwxyz0123456789";
-            for (var i = 0; i <= 16; i++)
-                id += charset.charAt(Math.floor(Math.random() * charset.length));
-            return id;
-        }
-
         public GetSnapchatAuthFromCasper(endpoint, timestamp) {
-            let URI = new Windows.Foundation.Uri('http://heroku.casper.io/snapchat/ios/endpointauth'),
+            let URI = new Windows.Foundation.Uri('https://casper-api.herokuapp.com/snapchat/ios/login'),
                 parameters = [
-                    ['auth_token', this.SNAPCHAT_AUTH_TOKEN],
-                    ['casper_version', this.CASPER_VERSION],
-                    ['endpoint', endpoint],
-                    ['snapchat_version', this.SNAPCHAT_VERSION],
-                    ['timestamp', timestamp],
-                    ['username', this.CURRENT_USER_REFERENCE.username],
-                    ['password', this.CURRENT_USER_REFERENCE.password]
+                    ['jwt', '']
                 ],
                 headers = {
                     'Connection': 'Keep-Alive',
                     'Accept-Encoding': 'gzip',
-                    'User-Agent': this.CASPER_USER_AGENT,
+                    'User-Agent': this.CASPER_USER_AGENT
                 };
 
             let REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, true), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
@@ -227,7 +192,6 @@ namespace Snapchat {
 
             HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
             HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
-            HEAD.append('X-Casper-Signature', this.GenerateCasperRequestSignature(parameters));
 
             return new Promise((resolve) => {
                 let promise = HTTP.postAsync(URI, REQ).done(function (res) {

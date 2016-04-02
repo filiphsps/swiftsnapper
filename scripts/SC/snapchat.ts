@@ -12,9 +12,11 @@ namespace Snapchat {
             this.SnapchatAgent = new Snapchat.Agent();
             this.CurrentUser = new Snapchat.User();
 
-            return new Promise((resolve) => {
-                this.SnapchatAgent.Initialize(this.CurrentUser).then(function () {
+            return new Promise((resolve, reject) => {
+                this.SnapchatAgent.Initialize(this.CurrentUser).then(() => {
                     resolve(this);
+                }).catch((err) => {
+                    reject(err);
                 });
             });
         }
@@ -143,75 +145,13 @@ namespace Snapchat {
             //TODO when Casper/Snapchat API become available 
             
         }
+
         /*
             Log In a user
         */
         public Login(details: Snapchat.LoginDetails) {
-            return new Promise((resolve) => {
-                if (details.username.length < 1 || details.password.length < 1) {
-                    resolve({ 'code': -1, 'message': 'You must provide both username AND password!' });
-                    return;
-                }
-
-                let headers = {
-                    'Connection': 'Keep-Alive',
-                    'Accept-Encoding': 'gzip',
-                    'User-Agent': this.SnapchatAgent.CASPER_USER_AGENT,
-                };
-                let timestamp = this.SnapchatAgent.GenerateTimeStamp(),
-                    self = this;
-
-                this.SnapchatAgent.PostCasper('/snapchat/auth', [
-                    ['username', details.username],
-                    ['password', details.password],
-                    ['snapchat_version', this.SnapchatAgent.SNAPCHAT_VERSION],
-                    ['timestamp', timestamp.toString()],
-                    ['token', this.SnapchatAgent.CASPER_API_TOKEN],
-                    ['token_hash', this.SnapchatAgent.GenerateCasperTokenHash(timestamp)]
-                ], headers).then(function (snapchatData) {
-                    var data = JSON.parse(snapchatData);
-                    if (data.code !== 200) {
-                        resolve(data); //TODO
-                        return;
-                    }
-
-                    self.SnapchatAgent.SNAPCHAT_CLIENT_AUTH_TOKEN = data.headers['X-Snapchat-Client-Auth-Token'];
-                    self.SnapchatAgent.SNAPCHAT_CLIENT_TOKEN = data.headers['X-Snapchat-Client-Token'];
-                    self.SnapchatAgent.SNAPCHAT_UUID = data.headers['X-Snapchat-UUID'];
-                    self.SnapchatAgent.SNAPCHAT_USER_AGENT = data.headers['User-Agent'];
-
-                    headers = data.headers;
-                    headers['X-Snapchat-Client-Token'] = self.SnapchatAgent.SNAPCHAT_CLIENT_TOKEN;
-                    self.SnapchatAgent.PostSnapchat('/loq/login', [
-                        ['height', data.params.height],
-                        ['ny', data.params.nt],
-                        ['password', data.params.password],
-                        ['remember_device', data.params.remember_device],
-                        ['req_token', data.params.req_token],
-                        ['screen_height_in', data.params.screen_height_in],
-                        ['screen_height_px', data.params.screen_height_px],
-                        ['screen_width_in', data.params.screen_width_in],
-                        ['screen_width_px', data.params.screen_width_px],
-                        ['timestamp', data.params.timestamp],
-                        ['user_ad_id', data.params.user_ad_id],
-                        ['username', data.params.username],
-                        ['width', data.params.width],
-                    ], headers).then(function (data) {
-                        self.AllUpdatesData = JSON.parse(data);
-
-                        if (typeof self.AllUpdatesData['status'] !== 'undefined' && self.AllUpdatesData['status'] !== 200) {
-                            resolve({ 'status': self.AllUpdatesData['status'], 'message': self.AllUpdatesData['message'] });
-                            return;
-                        }
-
-                        self.SnapchatAgent.SNAPCHAT_AUTH_TOKEN = self.AllUpdatesData.updates_response.auth_token;
-                        self.CurrentUser.username = details.username;
-                        self.CurrentUser.password = details.password;
-                        self.CurrentUser.google_username = null;
-                        self.CurrentUser.google_password = null;
-                        resolve(JSON.parse(data));
-                    });
-                });
+            return new Promise((resolve, reject) => {
+                reject('TODO');
             });
         }
     }

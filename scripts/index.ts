@@ -63,9 +63,13 @@ module SwiftSnapper {
         Application.initialize();
         var connectionProfile = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
         if (connectionProfile != null && connectionProfile.getNetworkConnectivityLevel() == Windows.Networking.Connectivity.NetworkConnectivityLevel.internetAccess) {
-            //Init Snapchat
             SnapchatClient = new Snapchat.Client();
             SnapchatClient.Initialize().then(function () {
+                $(document).ready(function () {
+                    $('body').load('views/account/index.html');
+                });
+            }).catch((err) => {
+                messageManager.alert('Error: ' + err, 'Error!', null);
                 $(document).ready(function () {
                     $('body').load('views/account/index.html');
                 });
@@ -159,7 +163,9 @@ module SwiftSnapper {
                     WindowManager.stopLoading();
                     WindowManager.hideStatusBar();
                     $('body').load('views/overview/index.html');
-                });
+            }).catch((err) => {
+                $('body').load('views/overview/index.html');
+            });
         }
     }
 
