@@ -139,31 +139,32 @@ module SwiftSnapper {
             SnapchatClient.Login({
                 username: credential.userName,
                 password: credential.password,
-            }).then(
-                function (data) {
-                    var vault = new Windows.Security.Credentials.PasswordVault();
+            }).then((data) => {
+                var vault = new Windows.Security.Credentials.PasswordVault();
 
-                    if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                        if (vault.retrieveAll().length > 0) {
-                            vault.remove(credential);
-                        }
-
-                        messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
-
-                        WindowManager.stopLoading();
-                        $('#LogInView form .username').prop("disabled", false);
-                        $('#LogInView form .password').prop("disabled", false);
-                        return -1;
+                if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
+                    if (vault.retrieveAll().length > 0) {
+                        vault.remove(credential);
                     }
 
-                    if (vault.retrieveAll().length == 0) {
-                        vault.add(credential);
-                    }
+                    messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
 
                     WindowManager.stopLoading();
-                    WindowManager.hideStatusBar();
-                    $('body').load('views/overview/index.html');
+                    $('#LogInView form .username').prop("disabled", false);
+                    $('#LogInView form .password').prop("disabled", false);
+                    return -1;
+                }
+
+                if (vault.retrieveAll().length == 0) {
+                    vault.add(credential);
+                }
+
+                WindowManager.stopLoading();
+                WindowManager.hideStatusBar();
+                $('body').load('views/overview/index.html');
             }).catch((err) => {
+                WindowManager.stopLoading();
+                WindowManager.hideStatusBar();
                 $('body').load('views/overview/index.html');
             });
         }

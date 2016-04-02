@@ -891,6 +891,8 @@ var SwiftSnapper;
                 SwiftSnapper.WindowManager.hideStatusBar();
                 $('body').load('views/overview/index.html');
             }).catch(function (err) {
+                SwiftSnapper.WindowManager.stopLoading();
+                SwiftSnapper.WindowManager.hideStatusBar();
                 $('body').load('views/overview/index.html');
             });
         }
