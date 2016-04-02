@@ -502,7 +502,7 @@ var Snapchat;
             return res;
         };
         return Agent;
-    })();
+    }());
     Snapchat.Agent = Agent;
     var Http;
     (function (Http) {
@@ -543,7 +543,7 @@ var Snapchat;
         function User() {
         }
         return User;
-    })();
+    }());
     Snapchat.User = User;
     var Snap = (function () {
         function Snap() {
@@ -551,7 +551,7 @@ var Snapchat;
             this.timestamp = 0;
         }
         return Snap;
-    })();
+    }());
     Snapchat.Snap = Snap;
 })(Snapchat || (Snapchat = {}));
 /// <reference path="snapchat.agent.ts" />
@@ -739,7 +739,7 @@ var Snapchat;
             });
         };
         return Client;
-    })();
+    }());
     Snapchat.Client = Client;
 })(Snapchat || (Snapchat = {}));
 var messageManager;
@@ -771,67 +771,70 @@ var messageManager;
     }
     messageManager.alertWithOptions = alertWithOptions;
 })(messageManager || (messageManager = {}));
-var windowManager;
-(function (windowManager) {
-    var view = null, pi = null, theme = {
-        a: 255,
-        r: 52,
-        g: 152,
-        b: 219
-    };
-    function initialize() {
-        view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-        view.titleBar.inactiveBackgroundColor = theme;
-        view.titleBar.buttonInactiveBackgroundColor = theme;
-        view.titleBar.backgroundColor = theme;
-        view.titleBar.buttonBackgroundColor = theme;
-        view['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-        view['setPreferredMinSize']({
-            height: 1024,
-            width: 325
-        });
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-            $('body').addClass('mobile'); //TODO: Move to initialize()
-            var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-            statusBar.showAsync();
-            statusBar.backgroundOpacity = 0;
-            statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
-            statusBar.foregroundColor = Windows.UI.Colors.white;
-            //Lock portrait
-            Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait;
+var SwiftSnapper;
+(function (SwiftSnapper) {
+    var WindowManager;
+    (function (WindowManager) {
+        var view = null, pi = null, theme = {
+            a: 255,
+            r: 52,
+            g: 152,
+            b: 219
+        };
+        function initialize() {
+            view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+            view.titleBar.inactiveBackgroundColor = theme;
+            view.titleBar.buttonInactiveBackgroundColor = theme;
+            view.titleBar.backgroundColor = theme;
+            view.titleBar.buttonBackgroundColor = theme;
+            view['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
+            view['setPreferredMinSize']({
+                height: 1024,
+                width: 325
+            });
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                $('body').addClass('mobile'); //TODO: Move to initialize()
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+                statusBar.backgroundOpacity = 0;
+                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
+                statusBar.foregroundColor = Windows.UI.Colors.white;
+                //Lock portrait
+                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait;
+            }
         }
-    }
-    windowManager.initialize = initialize;
-    function showStatusBar() {
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-            var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-            statusBar.showAsync();
+        WindowManager.initialize = initialize;
+        function showStatusBar() {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+            }
         }
-    }
-    windowManager.showStatusBar = showStatusBar;
-    function hideStatusBar() {
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-            var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-            statusBar.hideAsync();
+        WindowManager.showStatusBar = showStatusBar;
+        function hideStatusBar() {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.hideAsync();
+            }
         }
-    }
-    windowManager.hideStatusBar = hideStatusBar;
-    function startLoading(message) {
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-            pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
-            pi.text = message;
-            pi.progressValue = null;
-            pi.showAsync();
+        WindowManager.hideStatusBar = hideStatusBar;
+        function startLoading(message) {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
+                pi.text = message;
+                pi.progressValue = null;
+                pi.showAsync();
+            }
         }
-    }
-    windowManager.startLoading = startLoading;
-    function stopLoading() {
-        if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined' && pi !== null) {
-            pi.hideAsync();
+        WindowManager.startLoading = startLoading;
+        function stopLoading() {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined' && pi !== null) {
+                pi.hideAsync();
+            }
         }
-    }
-    windowManager.stopLoading = stopLoading;
-})(windowManager || (windowManager = {}));
+        WindowManager.stopLoading = stopLoading;
+    })(WindowManager = SwiftSnapper.WindowManager || (SwiftSnapper.WindowManager = {}));
+})(SwiftSnapper || (SwiftSnapper = {}));
 /// <reference path="typings/cordova/plugins/Device.d.ts" />
 /// <reference path="typings/winrt/winrt.d.ts" />
 /// <reference path="typings/jquery/jquery.d.ts" />
@@ -841,8 +844,8 @@ var windowManager;
 /// <reference path="messageManager.ts" />
 /// <reference path="windowManager.ts" />
 var views;
-var swiftsnapper;
-(function (swiftsnapper) {
+var SwiftSnapper;
+(function (SwiftSnapper) {
     "use strict";
     var SnapchatClient;
     var language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
@@ -852,7 +855,7 @@ var swiftsnapper;
         function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
             messageManager.initialize();
-            windowManager.initialize();
+            SwiftSnapper.WindowManager.initialize();
         }
         Application.initialize = initialize;
         function getLanguageStrings(lang, callback) {
@@ -882,7 +885,7 @@ var swiftsnapper;
         }
         function onResume() {
         }
-    })(Application = swiftsnapper.Application || (swiftsnapper.Application = {}));
+    })(Application = SwiftSnapper.Application || (SwiftSnapper.Application = {}));
     window.onload = function () {
         Application.initialize();
         var connectionProfile = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
@@ -947,7 +950,7 @@ var swiftsnapper;
             });
         });
         function logIn(credential, lang) {
-            windowManager.startLoading(lang.views.account.logInView.loggingIn);
+            SwiftSnapper.WindowManager.startLoading(lang.views.account.logInView.loggingIn);
             $('#LogInView form .username').prop("disabled", true);
             $('#LogInView form .password').prop("disabled", true);
             SnapchatClient.Login({
@@ -960,7 +963,7 @@ var swiftsnapper;
                         vault.remove(credential);
                     }
                     messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
-                    windowManager.stopLoading();
+                    SwiftSnapper.WindowManager.stopLoading();
                     $('#LogInView form .username').prop("disabled", false);
                     $('#LogInView form .password').prop("disabled", false);
                     return -1;
@@ -968,13 +971,13 @@ var swiftsnapper;
                 if (vault.retrieveAll().length == 0) {
                     vault.add(credential);
                 }
-                windowManager.stopLoading();
-                windowManager.hideStatusBar();
+                SwiftSnapper.WindowManager.stopLoading();
+                SwiftSnapper.WindowManager.hideStatusBar();
                 $('body').load('views/overview/index.html');
             });
         }
     }
-    swiftsnapper.onAccountView = onAccountView;
+    SwiftSnapper.onAccountView = onAccountView;
     function toCenterView(eventArgs) {
         SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
         console.log(currentItem);
@@ -1012,10 +1015,10 @@ var swiftsnapper;
                 var pos = event.item.index;
                 currentItem = pos;
                 if (pos == 1) {
-                    windowManager.hideStatusBar();
+                    SwiftSnapper.WindowManager.hideStatusBar();
                 }
                 else
-                    windowManager.showStatusBar();
+                    SwiftSnapper.WindowManager.showStatusBar();
             });
             CameraManager.initialize({
                 'frontFacing': false
@@ -1078,7 +1081,7 @@ var swiftsnapper;
             }
         });
     }
-    swiftsnapper.onOverviewView = onOverviewView;
+    SwiftSnapper.onOverviewView = onOverviewView;
     function onSettingsView() {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
@@ -1096,6 +1099,20 @@ var swiftsnapper;
             });
         });
     }
-    swiftsnapper.onSettingsView = onSettingsView;
-})(swiftsnapper || (swiftsnapper = {}));
+    SwiftSnapper.onSettingsView = onSettingsView;
+})(SwiftSnapper || (SwiftSnapper = {}));
+var SwiftSnapper;
+(function (SwiftSnapper) {
+    var Settings;
+    (function (Settings) {
+        function Get(item) {
+            return localStorage.getItem('_s_' + item);
+        }
+        Settings.Get = Get;
+        function Set(item, data) {
+            localStorage.setItem('_s_' + item, data);
+        }
+        Settings.Set = Set;
+    })(Settings || (Settings = {}));
+})(SwiftSnapper || (SwiftSnapper = {}));
 //# sourceMappingURL=app.js.map

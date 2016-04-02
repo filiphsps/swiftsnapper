@@ -10,7 +10,7 @@
 declare var Handlebars: any;
 let views;
 
-module swiftsnapper {
+module SwiftSnapper {
     "use strict";
 
     let SnapchatClient: Snapchat.Client;
@@ -24,7 +24,7 @@ module swiftsnapper {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
             messageManager.initialize();
-            windowManager.initialize();
+            WindowManager.initialize();
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
@@ -128,7 +128,7 @@ module swiftsnapper {
         });
 
         function logIn(credential, lang) {
-            windowManager.startLoading(lang.views.account.logInView.loggingIn);
+            WindowManager.startLoading(lang.views.account.logInView.loggingIn);
             $('#LogInView form .username').prop("disabled", true);
             $('#LogInView form .password').prop("disabled", true);
 
@@ -146,7 +146,7 @@ module swiftsnapper {
 
                         messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
 
-                        windowManager.stopLoading();
+                        WindowManager.stopLoading();
                         $('#LogInView form .username').prop("disabled", false);
                         $('#LogInView form .password').prop("disabled", false);
                         return -1;
@@ -156,8 +156,8 @@ module swiftsnapper {
                         vault.add(credential);
                     }
 
-                    windowManager.stopLoading();
-                    windowManager.hideStatusBar();
+                    WindowManager.stopLoading();
+                    WindowManager.hideStatusBar();
                     $('body').load('views/overview/index.html');
                 });
         }
@@ -202,9 +202,9 @@ module swiftsnapper {
                 let pos = event.item.index;
                 currentItem = pos
                 if (pos == 1) {
-                    windowManager.hideStatusBar();
+                    WindowManager.hideStatusBar();
                 } else
-                    windowManager.showStatusBar();
+                    WindowManager.showStatusBar();
             });
 
             CameraManager.initialize({

@@ -119,6 +119,6 @@ footer .item .icon::before {
     max-width: 100vw;
     max-height: 100vh;
     padding: 0;
-    background: #fff;
+    background: #efefef;
     touch-action: pan-y;
 }

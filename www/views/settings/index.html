@@ -13,15 +13,26 @@
         <div id="PageContent"></div>
             <script id="template" type="text/x-handlebars-template">
                 <header>
-                    <div class="header">{{views.settings.title}}</div> <!--id="SettingsTitle"-->
+                    <div class="header">{{views.settings.title}}</div>
                     <nav>
                         <div class="item left"><span class="icon mdl2-scroll-chevron-left-legacy" id="BackBtn"></span></div>
                     </nav>
                 </header>
-                <button id="LogoutBtn">{{views.settings.logout}}</button>
+                <div class="settings-list">
+                    <div class="item">
+                        <label>{{views.settings.casperDescription}}</label>
+                    </div>
+                    <div class="item">
+                        <input type="text" placeholder="{{views.settings.casperApiKey}}" />
+                    </div>
+                    
+                    <div class="item">
+                        <button id="LogoutBtn">{{views.settings.logout}}</button>
+                    </div>
+                </div>
             </script>
         <script>
-            swiftsnapper.onSettingsView();
+            SwiftSnapper.onSettingsView();
         </script>
 
     </body>
