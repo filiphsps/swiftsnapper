@@ -1023,14 +1023,19 @@ var SwiftSnapper;
             CameraManager.initialize({
                 'frontFacing': false
             });
-            //temp: view unread snaps
-            var snaps = SnapchatClient.GetPendingFeed();
-            for (var n = 0; n < snaps.length; n++) {
-                var snap = snaps[n], output = '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
-                    '<div class="header">' + snap.sender + '</div>' +
-                    '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
-                    '</div></article>';
-                $('#SnapsView .SnapsList').append(output);
+            var snaps;
+            try {
+                snaps = SnapchatClient.GetPendingFeed();
+                for (var n = 0; n < snaps.length; n++) {
+                    var snap = snaps[n], output = '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                        '<div class="header">' + snap.sender + '</div>' +
+                        '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
+                        '</div></article>';
+                    $('#SnapsView .SnapsList').append(output);
+                }
+            }
+            catch (e) {
+                $('#SnapsView .SnapsList').append('<p>' + lang.views.overview.emptyFeed + '</p>');
             }
             //Temp for showing snaps
             $('#SnapsView .SnapsList article').on('click tap', function (e) {
@@ -1050,14 +1055,15 @@ var SwiftSnapper;
                 views.trigger('next.owl.carousel', [300]);
             });
             $('#CameraToggleBtn').on('click tap', function () {
+                $('#CameraPreview').toggleClass('FrontFacing');
                 if ($('#CameraPreview').hasClass('FrontFacing')) {
                     CameraManager.initialize({
-                        'frontFacing': false
+                        frontFacing: true
                     });
                 }
                 else {
                     CameraManager.initialize({
-                        'frontFacing': true
+                        frontFacing: false
                     });
                 }
             });
@@ -1093,9 +1099,17 @@ var SwiftSnapper;
                 for (var i = 0; i < creds.length; ++i) {
                     vault.remove(creds[i]);
                 }
+                $('body').load('views/account/index.html');
             });
             $('#BackBtn').on('click tap', function () {
                 $('body').load('views/overview/index.html');
+            });
+            //Handle API Key
+            var ApiKey = SwiftSnapper.Settings.Get('ApiKey');
+            if (ApiKey)
+                $('#TextBoxApiKey').val(ApiKey);
+            $('#TextBoxApiKey').on('change', function (e) {
+                SwiftSnapper.Settings.Set('ApiKey', $('#TextBoxApiKey').val());
             });
         });
     }
@@ -1113,6 +1127,6 @@ var SwiftSnapper;
             localStorage.setItem('_s_' + item, data);
         }
         Settings.Set = Set;
-    })(Settings || (Settings = {}));
+    })(Settings = SwiftSnapper.Settings || (SwiftSnapper.Settings = {}));
 })(SwiftSnapper || (SwiftSnapper = {}));
 //# sourceMappingURL=app.js.map

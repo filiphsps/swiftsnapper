@@ -27,6 +27,7 @@
     },
 
     "overview": {
+      "emptyFeed":  "This feed is empty :(",
       "views": {
         "stories": {
           "title": "Stories",

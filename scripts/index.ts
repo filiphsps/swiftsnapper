@@ -211,51 +211,57 @@ module SwiftSnapper {
                 'frontFacing': false
             });
 
-            //temp: view unread snaps
-            let snaps = SnapchatClient.GetPendingFeed();
-            for (var n = 0; n < snaps.length; n++) {
-                let snap = snaps[n],
-                    output =
-                        '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
-                        '<div class="header">' + snap.sender + '</div>' +
-                        '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
-                        '</div></article>';
+            let snaps;
+            try {
+                snaps = SnapchatClient.GetPendingFeed();
+                for (var n = 0; n < snaps.length; n++) {
+                    let snap = snaps[n],
+                        output =
+                            '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                            '<div class="header">' + snap.sender + '</div>' +
+                            '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
+                            '</div></article>';
 
-                $('#SnapsView .SnapsList').append(output);
+                    $('#SnapsView .SnapsList').append(output);
+                }
+            } catch (e) {
+                $('#SnapsView .SnapsList').append('<p>' + lang.views.overview.emptyFeed + '</p>');
             }
 
             //Temp for showing snaps
-            $('#SnapsView .SnapsList article').on('click tap', function (e) {
+            $('#SnapsView .SnapsList article').on('click tap', (e) => {
                 let snap = snaps[$(e.currentTarget).attr('id')];
                 SnapchatClient.GetSnapMedia(snap).then(function (img: string) {
                     $('#ShowSnapView').css('display', 'block');
                     $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + btoa(img));
                 });
             });
-            $('#ShowSnapView').on('click tap', function() {
+            $('#ShowSnapView').on('click tap', () => {
                 $('#ShowSnapView').css('display', 'none');
             })
 
-            $('#ViewSnapsBtn').on('click tap', function () {
+            $('#ViewSnapsBtn').on('click tap', () => {
                 views.trigger('prev.owl.carousel', [300]);
             });
-            $('#ViewStoriesBtn').on('click tap', function () {
+            $('#ViewStoriesBtn').on('click tap', () => {
                 views.trigger('next.owl.carousel', [300]);
             });
 
-            $('#CameraToggleBtn').on('click tap', function () {
+            $('#CameraToggleBtn').on('click tap', () => {
+                $('#CameraPreview').toggleClass('FrontFacing');
+
                 if ($('#CameraPreview').hasClass('FrontFacing')) {
                     CameraManager.initialize({
-                        'frontFacing': false
+                        frontFacing: true
                     });
                 } else {
                     CameraManager.initialize({
-                        'frontFacing': true
+                        frontFacing: false
                     });
                   }
                 }
             );
-            $('#ShutterBtn').on('click tap', function () {
+            $('#ShutterBtn').on('click tap', () => {
                 var IStream = CameraManager.takePhotoAsync();
                 console.log("Picture Taken");
                 if (IStream != null) {
@@ -267,7 +273,7 @@ module SwiftSnapper {
                     messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
                 }
             });
-            $('#SettingsBtn').on('click tap', function () {
+            $('#SettingsBtn').on('click tap', () => {
                 $('body').load('views/settings/index.html');
             });
 
@@ -284,6 +290,7 @@ module SwiftSnapper {
         Application.getLanguageStrings(language, function (lang) {
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
+
             $('#LogoutBtn').on('click tap', function () {
                 messageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
                 var vault = new Windows.Security.Credentials.PasswordVault();
@@ -291,9 +298,19 @@ module SwiftSnapper {
                 for (var i = 0; i < creds.length; ++i) {
                     vault.remove(creds[i]);
                 }
+
+                $('body').load('views/account/index.html');
             });
             $('#BackBtn').on('click tap', function () {
                 $('body').load('views/overview/index.html');
+            });
+
+            //Handle API Key
+            var ApiKey = Settings.Get('ApiKey');
+            if (ApiKey)
+                $('#TextBoxApiKey').val(ApiKey);
+            $('#TextBoxApiKey').on('change', function (e) {
+                Settings.Set('ApiKey', $('#TextBoxApiKey').val());
             });
         });
     }

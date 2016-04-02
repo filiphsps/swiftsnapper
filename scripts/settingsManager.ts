@@ -1,5 +1,5 @@
 ﻿module SwiftSnapper {
-    module Settings {
+    export module Settings {
         export function Get(item) {
             return localStorage.getItem('_s_' + item);
         }
