@@ -40,7 +40,7 @@
     "settings": {
       "title": "Settings",
       "logout": "Logout",
-      "casperDescription":  "An Casper api key is needed to access SnapChat services. See SwiftSnapper's website.",
+      "casperDescription":  "An Casper api key is needed to access the Snapchat services. See SwiftSnapper's website.",
       "casperApiKey":  "Casper Api Key"
     }
   }
