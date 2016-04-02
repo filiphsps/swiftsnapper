@@ -957,7 +957,7 @@ var SwiftSnapper;
                     throw ('no snaps');
             }
             catch (e) {
-                $('#SnapsView .SnapsList').append('<p>' + lang.views.overview.emptyFeed + '</p>');
+                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             }
             //Temp for showing snaps
             $('#SnapsView .SnapsList article').on('click tap', function (e) {

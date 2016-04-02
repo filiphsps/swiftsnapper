@@ -124,3 +124,9 @@ footer .item .icon::before {
     background: #efefef;
     touch-action: pan-y;
 }
+
+.note {
+    text-align: center;
+    padding: 15px;
+    font-size: 22px;
+}
