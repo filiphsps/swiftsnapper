@@ -231,6 +231,9 @@ module SwiftSnapper {
 
                     $('#SnapsView .SnapsList').append(output);
                 }
+
+                if (snaps.length < 1)
+                    throw ('no snaps');
             } catch (e) {
                 $('#SnapsView .SnapsList').append('<p>' + lang.views.overview.emptyFeed + '</p>');
             }
