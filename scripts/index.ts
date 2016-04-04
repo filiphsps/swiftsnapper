@@ -25,6 +25,9 @@ module SwiftSnapper {
             document.addEventListener('deviceready', onDeviceReady, false);
             messageManager.initialize();
             WindowManager.initialize();
+
+            if (!SwiftSnapper.Settings.Get('ApiEndpoint'))
+                SwiftSnapper.Settings.Set('ApiEndpoint', 'https://app.snapchat.com')
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
@@ -315,12 +318,28 @@ module SwiftSnapper {
                 $('body').load('views/overview/index.html');
             });
 
-            //Handle API Key
-            var ApiKey = Settings.Get('ApiKey');
-            if (ApiKey)
-                $('#TextBoxApiKey').val(ApiKey);
-            $('#TextBoxApiKey').on('change', function (e) {
-                Settings.Set('ApiKey', $('#TextBoxApiKey').val());
+            //Handle API Token
+            var ApiToken = Settings.Get('ApiToken');
+            if (ApiToken)
+                $('#TextBoxApiToken').val(ApiToken);
+            $('#TextBoxApiToken').on('change', function (e) {
+                Settings.Set('ApiToken', $('#TextBoxApiToken').val());
+            });
+
+            //Handle API Secret
+            var ApiSecret = Settings.Get('ApiSecret');
+            if (ApiSecret)
+                $('#TextBoxApiSecret').val(ApiSecret);
+            $('#TextBoxApiSecret').on('change', function (e) {
+                Settings.Set('ApiSecret', $('#TextBoxApiSecret').val());
+            });
+
+            //Handle API Endpoint
+            var ApiEndpoint = Settings.Get('ApiEndpoint');
+            if (ApiEndpoint)
+                $('#TextBoxApiEndpoint').val(ApiEndpoint);
+            $('#TextBoxApiEndpoint').on('change', function (e) {
+                Settings.Set('ApiEndpoint', $('#TextBoxApiEndpoint').val());
             });
         });
     }

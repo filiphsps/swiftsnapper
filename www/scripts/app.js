@@ -286,7 +286,7 @@ var Snapchat;
 (function (Snapchat) {
     var Agent = (function () {
         function Agent() {
-            this.SNAPCHAT_BASE_ENDPOINT = 'https://app.snapchat.com';
+            this.SNAPCHAT_BASE_ENDPOINT = null;
             this.SNAPCHAT_EVENTS_ENDPOINT = 'https://sc-analytics.appspot.com/post_events';
             this.SNAPCHAT_ANALYTICS_ENDPOINT = 'https://sc-analytics.appspot.com/analytics/b';
             this.SNAPCHAT_HASH_PATTERN = '0001110111101110001111010101111011010001001110011000110001000110';
@@ -300,14 +300,15 @@ var Snapchat;
             this.SNAPCHAT_VERSION = '9.18.2.0';
             this.CASPER_USER_AGENT = 'SwiftSnapper/1.0.0.0 (SwiftSnapper; Windows 10; gzip)';
             this.CASPER_ENDPOINT = 'https://casper-api.herokuapp.com';
-            this.CASPER_API_KEY = '';
+            this.CASPER_API_TOKEN = '';
             this.CASPER_API_SECRET = '';
         }
         Agent.prototype.Initialize = function (cur) {
             var _this = this;
             this.CURRENT_USER_REFERENCE = cur;
-            this.CASPER_API_KEY = SwiftSnapper.Settings.Get('ApiKey');
+            this.CASPER_API_TOKEN = SwiftSnapper.Settings.Get('ApiToken');
             this.CASPER_API_SECRET = SwiftSnapper.Settings.Get('ApiSecret');
+            this.SNAPCHAT_BASE_ENDPOINT = SwiftSnapper.Settings.Get('ApiEndpoint');
             return new Promise(function (resolve, reject) {
                 _this.InitializeCasper().then(function () {
                     resolve(this);
@@ -365,7 +366,7 @@ var Snapchat;
             if (URI == null || parameters == null)
                 return null;
             URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + URI);
-            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, false), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+            var REQ = Windows.Web['Http'].HttpStringContent(this.ParametersToURI(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
             HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
             return new Promise(function (resolve) {
                 var promise = HTTP.postAsync(URI, REQ).done(function (res) {
@@ -384,43 +385,26 @@ var Snapchat;
             Initialize Casper for use
         */
         Agent.prototype.InitializeCasper = function () {
-            var _this = this;
-            var timestamp = this.GenerateTimeStamp();
-            var self = this;
             return new Promise(function (resolve, reject) {
-                var headers = {
-                    'Connection': 'Keep-Alive',
-                    'Accept-Encoding': 'gzip',
-                    'User-Agent': _this.CASPER_USER_AGENT
-                };
-                _this.PostCasper('/snapchat/ios/login', [
-                    ['jwt', _this.GenerateJwtToken(timestamp, {
-                            'username': '',
-                            'password': ''
-                        })]
-                ], headers).then(function (res) {
-                    console.log(res);
-                    if (res.code !== 200)
-                        return reject(res.message);
-                    //var sc_ver = self.SNAPCHAT_VERSION;
-                    //self.SNAPCHAT_VERSION = config.configuration.snapchat.login.snapchat_version;
-                    resolve(this);
-                });
+                resolve();
             });
         };
         /*
             Post request to Casper.io's API
         */
         Agent.prototype.PostCasper = function (URI, parameters, headers) {
-            if (headers == null) {
+            if (!headers) {
                 headers = {};
+            }
+            if (!parameters) {
+                parameters = {};
             }
             if (URI == null || parameters == null)
                 return null;
             URI = new Windows.Foundation.Uri(this.CASPER_ENDPOINT + URI);
-            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, true), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+            var REQ = Windows.Web['Http'].HttpStringContent(this.ParametersToURI(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
             HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
-            HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
+            HEAD.append('X-Casper-API-Key', this.CASPER_API_TOKEN);
             return new Promise(function (resolve, reject) {
                 var promise = HTTP.postAsync(URI, REQ).done(function (res) {
                     res.content.readAsStringAsync().done(function (res) {
@@ -431,74 +415,73 @@ var Snapchat;
             });
         };
         Agent.prototype.GetSnapchatAuthFromCasper = function (endpoint, timestamp) {
-            var URI = new Windows.Foundation.Uri('https://casper-api.herokuapp.com/snapchat/ios/login'), parameters = [
-                ['jwt', '']
-            ], headers = {
-                'Connection': 'Keep-Alive',
-                'Accept-Encoding': 'gzip',
-                'User-Agent': this.CASPER_USER_AGENT
-            };
-            var REQ = Windows.Web['Http'].HttpStringContent(this.ArrayToURIParameters(parameters, true), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
-            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
-            HEAD.append('X-Casper-API-Key', this.CASPER_API_KEY);
-            return new Promise(function (resolve) {
-                var promise = HTTP.postAsync(URI, REQ).done(function (res) {
-                    res.content.readAsStringAsync().done(function (e) {
-                        resolve(e);
-                    });
+            var _this = this;
+            var self = this;
+            return new Promise(function (resolve, reject) {
+                var headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': _this.CASPER_USER_AGENT
+                };
+                _this.PostCasper('/snapchat/ios/login', {
+                    'jwt': _this.GenerateJwtToken(timestamp, {
+                        'username': '',
+                        'password': ''
+                    }),
+                }, headers).then(function (res) {
+                    console.log(res);
+                    if (res.code !== 200)
+                        return reject(res.message);
+                    //Set data
+                    resolve(_this);
                 });
             });
         };
         /*
-            Converts an Array of Arrys to uri parameters
-            Ex. input [['para1', 'val1'], ['para2', 'val2'], ['para3', 'val3']].
+            Converts parameters to URI
         */
-        Agent.prototype.ArrayToURIParameters = function (data, shouldSort) {
-            if (shouldSort) {
-                data = data.sort(function (a, b) {
-                    return a[0] > b[0] ? 1 : -1;
-                });
-            }
+        Agent.prototype.ParametersToURI = function (parameters) {
             var res = '';
-            for (var n = 0; n < data.length; n++) {
-                if (res != '') {
-                    res += '&';
+            for (var index in parameters) {
+                if (parameters.hasOwnProperty(index)) {
+                    var parameter = parameters[index];
+                    if (res != '') {
+                        res += '&';
+                    }
+                    res += index + '=' + parameter;
                 }
-                res += data[n][0] + '=' + data[n][1];
             }
             return res;
         };
         return Agent;
-    }());
+    })();
     Snapchat.Agent = Agent;
     var Http;
     (function (Http) {
         function ConfigureHeaders(HEAD, headers) {
-            //TODO: Custom headers?
-            if (typeof headers['Accept-Encoding'] !== 'undefined') {
-                HEAD.acceptEncoding.clear();
-                HEAD.acceptEncoding.parseAdd(headers['Accept-Encoding']);
+            for (var index in headers) {
+                if (headers.hasOwnProperty(index)) {
+                    var header = headers[index];
+                    if (index === 'Accept-Encoding') {
+                        HEAD.acceptEncoding.clear();
+                        HEAD.acceptEncoding.parseAdd(header);
+                    }
+                    if (index === 'Accept')
+                        HEAD.accept.parseAdd(headers.Accept);
+                    if (index === 'Accept-Language')
+                        HEAD.acceptLanguage.parseAdd(header);
+                    if (index === 'Accept-Locale')
+                        HEAD.append('Accept-Locale', header);
+                    if (index === 'Connection')
+                        HEAD.connection.parseAdd(header);
+                    if (index === 'Cache-Control')
+                        HEAD.cacheControl.parseAdd(header);
+                    if (index === 'User-Agent')
+                        HEAD.userAgent.parseAdd(header);
+                    else
+                        HEAD.append(index, headers[index]);
+                }
             }
-            if (typeof headers.Accept !== 'undefined')
-                HEAD.accept.parseAdd(headers.Accept);
-            if (typeof headers['Accept-Language'] !== 'undefined')
-                HEAD.acceptLanguage.parseAdd(headers['Accept-Language']);
-            if (typeof headers['Accept-Locale'] !== 'undefined')
-                HEAD.append('Accept-Locale', headers['Accept-Locale']);
-            if (typeof headers.Connection !== 'undefined')
-                HEAD.connection.parseAdd(headers.Connection);
-            if (typeof headers['Cache-Control'] !== 'undefined')
-                HEAD.cacheControl.parseAdd(headers.CacheControl);
-            if (typeof headers['User-Agent'] !== 'undefined')
-                HEAD.userAgent.parseAdd(headers['User-Agent']);
-            if (typeof headers['X-Snapchat-Client-Token'] !== 'undefined')
-                HEAD.append('X-Snapchat-Client-Token', headers['X-Snapchat-Client-Token']);
-            if (typeof headers['X-Snapchat-Client-Auth-Token'] !== 'undefined')
-                HEAD.append('X-Snapchat-Client-Auth-Token', headers['X-Snapchat-Client-Auth-Token']);
-            if (typeof headers['X-Snapchat-UUID'] !== 'undefined')
-                HEAD.append('X-Snapchat-UUID', headers['X-Snapchat-UUID']);
-            if (typeof headers['X-Timestamp'] !== 'undefined')
-                HEAD.append('X-Timestamp', headers['X-Timestamp']);
             return HEAD;
         }
         Http.ConfigureHeaders = ConfigureHeaders;
@@ -510,7 +493,7 @@ var Snapchat;
         function User() {
         }
         return User;
-    }());
+    })();
     Snapchat.User = User;
     var Snap = (function () {
         function Snap() {
@@ -518,7 +501,7 @@ var Snapchat;
             this.timestamp = 0;
         }
         return Snap;
-    }());
+    })();
     Snapchat.Snap = Snap;
 })(Snapchat || (Snapchat = {}));
 /// <reference path="snapchat.agent.ts" />
@@ -651,7 +634,7 @@ var Snapchat;
             });
         };
         return Client;
-    }());
+    })();
     Snapchat.Client = Client;
 })(Snapchat || (Snapchat = {}));
 var messageManager;
@@ -768,6 +751,8 @@ var SwiftSnapper;
             document.addEventListener('deviceready', onDeviceReady, false);
             messageManager.initialize();
             SwiftSnapper.WindowManager.initialize();
+            if (!SwiftSnapper.Settings.Get('ApiEndpoint'))
+                SwiftSnapper.Settings.Set('ApiEndpoint', 'https://app.snapchat.com');
         }
         Application.initialize = initialize;
         function getLanguageStrings(lang, callback) {
@@ -1026,12 +1011,19 @@ var SwiftSnapper;
             $('#BackBtn').on('click tap', function () {
                 $('body').load('views/overview/index.html');
             });
-            //Handle API Key
-            var ApiKey = SwiftSnapper.Settings.Get('ApiKey');
-            if (ApiKey)
-                $('#TextBoxApiKey').val(ApiKey);
-            $('#TextBoxApiKey').on('change', function (e) {
-                SwiftSnapper.Settings.Set('ApiKey', $('#TextBoxApiKey').val());
+            //Handle API Token
+            var ApiToken = SwiftSnapper.Settings.Get('ApiToken');
+            if (ApiToken)
+                $('#TextBoxApiToken').val(ApiToken);
+            $('#TextBoxApiToken').on('change', function (e) {
+                SwiftSnapper.Settings.Set('ApiToken', $('#TextBoxApiToken').val());
+            });
+            //Handle API Secret
+            var ApiSecret = SwiftSnapper.Settings.Get('ApiSecret');
+            if (ApiSecret)
+                $('#TextBoxApiSecret').val(ApiSecret);
+            $('#TextBoxApiSecret').on('change', function (e) {
+                SwiftSnapper.Settings.Set('ApiSecret', $('#TextBoxApiSecret').val());
             });
         });
     }
