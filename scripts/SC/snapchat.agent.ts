@@ -128,6 +128,7 @@ namespace Snapchat {
 	        Post request to Casper.io's API
         */
         public PostCasper(URI, parameters, headers?): Promise<any> {
+            //TODO: Check cache
             if (!headers) {
                 headers = {};
             }
@@ -149,6 +150,7 @@ namespace Snapchat {
             return new Promise((resolve, reject) => {
                 let promise = HTTP.postAsync(URI, REQ).done((res) => {
                     res.content.readAsStringAsync().done((res) => {
+                        //TODO: Cache response
                         resolve(JSON.parse(res))
                     });
                     //Handle reject
@@ -156,7 +158,34 @@ namespace Snapchat {
             });
         }
 
-        public GetSnapchatAuthFromCasper(endpoint, timestamp) {
+        public LoginSnapchatCasper(timestamp) {
+            var self = this;
+                return new Promise((resolve, reject) => {
+                    let headers = {
+                        'Connection': 'Keep-Alive',
+                        'Accept-Encoding': 'gzip',
+                        'User-Agent': this.CASPER_USER_AGENT
+                    };
+                    this.PostCasper('/snapchat/ios/login', {
+                        'jwt': this.GenerateJwtToken(timestamp, {
+                            'username': this.CURRENT_USER_REFERENCE.username,
+                            'password': this.CURRENT_USER_REFERENCE.password
+                        }),
+
+                    }, headers).then((res) => {
+                        console.log(res);
+
+                        if (res.code !== 200)
+                            return reject(res);
+
+                        //TODO: Model
+
+                        resolve(this);
+                    });
+                });
+        }
+
+        public EndpointAuthCasper(endpoint, timestamp) {
             var self = this;
             return new Promise((resolve, reject) => {
                 let headers = {
@@ -164,19 +193,19 @@ namespace Snapchat {
                     'Accept-Encoding': 'gzip',
                     'User-Agent': this.CASPER_USER_AGENT
                 };
-                this.PostCasper('/snapchat/ios/login', {
+                this.PostCasper(endpoint, {
                     'jwt': this.GenerateJwtToken(timestamp, {
-                        'username': '',
-                        'password': ''
+                        'username': this.CURRENT_USER_REFERENCE.username,
+                        'password': this.CURRENT_USER_REFERENCE.password
                     }),
 
                 }, headers).then((res) => {
                     console.log(res);
 
                     if (res.code !== 200)
-                        return reject(res.message);
+                        return reject(res);
 
-                    //Set data
+                    //TODO: Model
 
                     resolve(this);
                 });

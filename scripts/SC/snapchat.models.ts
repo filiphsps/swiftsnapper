@@ -29,4 +29,15 @@
         email: string,
         cellphoneNumber: number,
     }
+
+    export interface CasperResponse {
+        code: number,
+        endpoints: [{
+            endpoint: string,
+            cache_millis: number,
+            header: any,
+            params: any
+        }],
+        settings: any
+    }
 }

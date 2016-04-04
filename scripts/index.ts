@@ -23,7 +23,7 @@ module SwiftSnapper {
     export module Application {
         export function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            messageManager.initialize();
+            MessageManager.initialize();
             WindowManager.initialize();
 
             if (!SwiftSnapper.Settings.Get('ApiEndpoint'))
@@ -72,13 +72,13 @@ module SwiftSnapper {
                     $('body').load('views/account/index.html');
                 });
             }).catch((err) => {
-                messageManager.alert('Error: ' + err, 'Error!', null);
+                MessageManager.alert('Error: ' + err, 'Error!', null);
                 $(document).ready(function () {
                     $('body').load('views/account/index.html');
                 });
             });
         } else {
-            messageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
+            MessageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
                 window.close();
             });
         }
@@ -150,7 +150,7 @@ module SwiftSnapper {
                         vault.remove(credential);
                     }
 
-                    messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
+                    MessageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn);
 
                     WindowManager.stopLoading();
                     $('#LogInView form .username').prop("disabled", false);
@@ -168,6 +168,8 @@ module SwiftSnapper {
             }).catch((err) => {
                 WindowManager.stopLoading();
                 WindowManager.hideStatusBar();
+
+                MessageManager.alert(err, 'Error');
                 $('body').load('views/overview/index.html');
             });
         }
@@ -278,12 +280,12 @@ module SwiftSnapper {
                 var IStream = CameraManager.takePhotoAsync();
                 console.log("Picture Taken");
                 if (IStream != null) {
-                    messageManager.alert("Picture Taken!", "Success", null);
+                    MessageManager.alert("Picture Taken!", "Success", null);
                     // Send to SnapChat or editor view or something.
                     // SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
                 }
                 else {
-                    messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                    MessageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
                 }
             });
             $('#SettingsBtn').on('click tap', () => {
@@ -305,7 +307,7 @@ module SwiftSnapper {
             $('#PageContent').html(template(lang));
 
             $('#LogoutBtn').on('click tap', function () {
-                messageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
+                MessageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
                 var vault = new Windows.Security.Credentials.PasswordVault();
                 var creds = vault.retrieveAll();
                 for (var i = 0; i < creds.length; ++i) {

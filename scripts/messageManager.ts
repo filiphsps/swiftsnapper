@@ -1,15 +1,15 @@
-﻿module messageManager {
+﻿module MessageManager {
     let popup;
 
     export function initialize() {
         popup = Windows.UI.Popups;
     }
 
-    export function alert(message: string, title: string, callback) {
+    export function alert(message: string, title: string, callback?) {
         let alert = new popup.MessageDialog(message, title);
         alert.commands.append(new popup.UICommand("OK", function (cmd) {
 
-            if(callback !== null)
+            if(callback)
                 callback();
         }));
         alert.defaultCommandIndex = 1;

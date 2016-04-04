@@ -393,6 +393,7 @@ var Snapchat;
             Post request to Casper.io's API
         */
         Agent.prototype.PostCasper = function (URI, parameters, headers) {
+            //TODO: Check cache
             if (!headers) {
                 headers = {};
             }
@@ -408,13 +409,14 @@ var Snapchat;
             return new Promise(function (resolve, reject) {
                 var promise = HTTP.postAsync(URI, REQ).done(function (res) {
                     res.content.readAsStringAsync().done(function (res) {
+                        //TODO: Cache response
                         resolve(JSON.parse(res));
                     });
                     //Handle reject
                 });
             });
         };
-        Agent.prototype.GetSnapchatAuthFromCasper = function (endpoint, timestamp) {
+        Agent.prototype.LoginSnapchatCasper = function (timestamp) {
             var _this = this;
             var self = this;
             return new Promise(function (resolve, reject) {
@@ -425,14 +427,37 @@ var Snapchat;
                 };
                 _this.PostCasper('/snapchat/ios/login', {
                     'jwt': _this.GenerateJwtToken(timestamp, {
-                        'username': '',
-                        'password': ''
+                        'username': _this.CURRENT_USER_REFERENCE.username,
+                        'password': _this.CURRENT_USER_REFERENCE.password
                     }),
                 }, headers).then(function (res) {
                     console.log(res);
                     if (res.code !== 200)
-                        return reject(res.message);
-                    //Set data
+                        return reject(res);
+                    //TODO: Model
+                    resolve(_this);
+                });
+            });
+        };
+        Agent.prototype.EndpointAuthCasper = function (endpoint, timestamp) {
+            var _this = this;
+            var self = this;
+            return new Promise(function (resolve, reject) {
+                var headers = {
+                    'Connection': 'Keep-Alive',
+                    'Accept-Encoding': 'gzip',
+                    'User-Agent': _this.CASPER_USER_AGENT
+                };
+                _this.PostCasper(endpoint, {
+                    'jwt': _this.GenerateJwtToken(timestamp, {
+                        'username': _this.CURRENT_USER_REFERENCE.username,
+                        'password': _this.CURRENT_USER_REFERENCE.password
+                    }),
+                }, headers).then(function (res) {
+                    console.log(res);
+                    if (res.code !== 200)
+                        return reject(res);
+                    //TODO: Model
                     resolve(_this);
                 });
             });
@@ -515,6 +540,7 @@ var Snapchat;
             var _this = this;
             this.SnapchatAgent = new Snapchat.Agent();
             this.CurrentUser = new Snapchat.User();
+            console.log(this.CurrentUser);
             return new Promise(function (resolve, reject) {
                 _this.SnapchatAgent.Initialize(_this.CurrentUser).then(function () {
                     resolve(_this);
@@ -527,93 +553,22 @@ var Snapchat;
             Get the current user's pending Snapchat feed
         */
         Client.prototype.GetPendingFeed = function () {
-            var Snaps = [];
-            if (this.AllUpdatesData != undefined) {
-                var friends = this.AllUpdatesData.conversations_response;
-                for (var x = 0; x < friends.length; x++) {
-                    var snaps = friends[x].pending_received_snaps;
-                    for (var n = 0; n < snaps.length; n++) {
-                        var snap = snaps[n], sn = new Snapchat.Snap();
-                        sn.conversationId = friends[x].id;
-                        sn.id = snap.id;
-                        sn.mediaType = snap.m;
-                        sn.sender = snap.sn;
-                        sn.recipient = snap.rp;
-                        sn.mediaState = snap.st;
-                        //sn.timeSent = snap.sts;
-                        sn.timer = snap.timer;
-                        sn.timestamp = snap.ts;
-                        Snaps.push(sn);
-                    }
-                }
-                Snaps.sort(function (a, b) {
-                    return a.timestamp - b.timestamp;
-                });
-                Snaps.reverse();
-                return Snaps;
-            }
-            else {
-                return Snaps;
-            }
+            return null;
         };
         /*
             Get the media for the provided snap
         */
         Client.prototype.GetSnapMedia = function (snap) {
-            var self = this, data = this.AllUpdatesData, timestamp = this.SnapchatAgent.GenerateTimeStamp();
-            return new Promise(function (resolve) {
-                self.SnapchatAgent.GetSnapchatAuthFromCasper('/ph/blob', timestamp).then(function (d) {
-                    var cData = JSON.parse(d);
-                    for (var n = 0; n < cData.endpoints.length; n++)
-                        if (cData.endpoints[n].endpoint == '/ph/blob') {
-                            cData = cData.endpoints[n];
-                            break;
-                        }
-                    var headers = {
-                        'Accept': '*/*',
-                        'Accept-Language': 'en',
-                        'Accept-Locale': 'en_US',
-                        'User-Agent': cData.headers['User-Agent'],
-                        'Connection': 'Keep-Alive',
-                        'Accept-Encoding': 'gzip',
-                        'X-Snapchat-Client-Auth-Token': cData.headers['X-Snapchat-Client-Auth-Token'],
-                        'X-Snapchat-UUID': cData.headers['X-Snapchat-UUID'],
-                    };
-                    self.SnapchatAgent.PostSnapchat('/ph/blob', [
-                        ['id', snap.id],
-                        ['req_token', cData.params['req_token']],
-                        ['timestamp', cData.params['timestamp']],
-                        ['username', self.CurrentUser.username]
-                    ], headers).then(function (data) {
-                        resolve(data);
-                    });
-                });
+            return new Promise(function (resolve, reject) {
+                resolve();
             });
         };
         /*
-            Get a user's SnapTag
-            Doesn't work yet.
+            Get user's SnapTag
         */
         Client.prototype.GetSnapTag = function (username) {
-            var self = this, data = this.AllUpdatesData, timestamp = this.SnapchatAgent.GenerateTimeStamp(), req_token = this.SnapchatAgent.GenerateRequestToken(this.SnapchatAgent.SNAPCHAT_AUTH_TOKEN, timestamp);
-            return new Promise(function (resolve) {
-                var headers = {
-                    'Accept': '*/*',
-                    'Accept-Language': 'en',
-                    'Accept-Locale': 'en_us',
-                    'User-Agent': self.SnapchatAgent.SNAPCHAT_USER_AGENT,
-                    'Accept-Encoding': 'gzip',
-                    'Connection': 'Keep-Alive',
-                };
-                self.SnapchatAgent.PostSnapchat('/bq/snaptag_download', [
-                    ['user_id', sha256.hex(username.toLowerCase())],
-                    ['type', 'SVG'],
-                    ['req_token', req_token],
-                    ['timestamp', timestamp],
-                    ['username', username]
-                ], headers).then(function (data) {
-                    resolve(data);
-                });
+            return new Promise(function (resolve, reject) {
+                resolve();
             });
         };
         Client.prototype.PostSnap = function (URI, parameters, headers) {
@@ -623,37 +578,50 @@ var Snapchat;
             Register a new user
         */
         Client.prototype.Register = function (details) {
-            //TODO when Casper/Snapchat API become available 
+            return new Promise(function (resolve, reject) {
+                resolve();
+            });
         };
         /*
-            Log In a user
+            Login a user
         */
         Client.prototype.Login = function (details) {
+            var _this = this;
             return new Promise(function (resolve, reject) {
-                reject('TODO');
+                _this.CurrentUser['username'] = details.username;
+                _this.CurrentUser['password'] = details.password;
+                var ts = _this.SnapchatAgent.GenerateTimeStamp();
+                _this.SnapchatAgent.LoginSnapchatCasper(ts).then(function (res) {
+                    if (res.code !== 200)
+                        return reject(res.message);
+                    resolve(_this);
+                    //TODO
+                }).catch(function (res) {
+                    return reject(res.message);
+                });
             });
         };
         return Client;
     })();
     Snapchat.Client = Client;
 })(Snapchat || (Snapchat = {}));
-var messageManager;
-(function (messageManager) {
+var MessageManager;
+(function (MessageManager) {
     var popup;
     function initialize() {
         popup = Windows.UI.Popups;
     }
-    messageManager.initialize = initialize;
+    MessageManager.initialize = initialize;
     function alert(message, title, callback) {
         var alert = new popup.MessageDialog(message, title);
         alert.commands.append(new popup.UICommand("OK", function (cmd) {
-            if (callback !== null)
+            if (callback)
                 callback();
         }));
         alert.defaultCommandIndex = 1;
         alert.showAsync();
     }
-    messageManager.alert = alert;
+    MessageManager.alert = alert;
     function alertWithOptions(message, title, commands, index, callback) {
         var alert = new popup.MessageDialog(message, title), cb = function (cmd) {
             callback(cmd.label);
@@ -664,8 +632,8 @@ var messageManager;
         alert.defaultCommandIndex = index;
         alert.showAsync();
     }
-    messageManager.alertWithOptions = alertWithOptions;
-})(messageManager || (messageManager = {}));
+    MessageManager.alertWithOptions = alertWithOptions;
+})(MessageManager || (MessageManager = {}));
 var SwiftSnapper;
 (function (SwiftSnapper) {
     var WindowManager;
@@ -749,7 +717,7 @@ var SwiftSnapper;
     (function (Application) {
         function initialize() {
             document.addEventListener('deviceready', onDeviceReady, false);
-            messageManager.initialize();
+            MessageManager.initialize();
             SwiftSnapper.WindowManager.initialize();
             if (!SwiftSnapper.Settings.Get('ApiEndpoint'))
                 SwiftSnapper.Settings.Set('ApiEndpoint', 'https://app.snapchat.com');
@@ -793,14 +761,14 @@ var SwiftSnapper;
                     $('body').load('views/account/index.html');
                 });
             }).catch(function (err) {
-                messageManager.alert('Error: ' + err, 'Error!', null);
+                MessageManager.alert('Error: ' + err, 'Error!', null);
                 $(document).ready(function () {
                     $('body').load('views/account/index.html');
                 });
             });
         }
         else {
-            messageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
+            MessageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
                 window.close();
             });
         }
@@ -863,7 +831,7 @@ var SwiftSnapper;
                     if (vault.retrieveAll().length > 0) {
                         vault.remove(credential);
                     }
-                    messageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn, null);
+                    MessageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn);
                     SwiftSnapper.WindowManager.stopLoading();
                     $('#LogInView form .username').prop("disabled", false);
                     $('#LogInView form .password').prop("disabled", false);
@@ -878,6 +846,7 @@ var SwiftSnapper;
             }).catch(function (err) {
                 SwiftSnapper.WindowManager.stopLoading();
                 SwiftSnapper.WindowManager.hideStatusBar();
+                MessageManager.alert(err, 'Error');
                 $('body').load('views/overview/index.html');
             });
         }
@@ -978,10 +947,10 @@ var SwiftSnapper;
                 var IStream = CameraManager.takePhotoAsync();
                 console.log("Picture Taken");
                 if (IStream != null) {
-                    messageManager.alert("Picture Taken!", "Success", null);
+                    MessageManager.alert("Picture Taken!", "Success", null);
                 }
                 else {
-                    messageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                    MessageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
                 }
             });
             $('#SettingsBtn').on('click tap', function () {
@@ -1000,7 +969,7 @@ var SwiftSnapper;
             var template = Handlebars.compile($("#template").html());
             $('#PageContent').html(template(lang));
             $('#LogoutBtn').on('click tap', function () {
-                messageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
+                MessageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
                 var vault = new Windows.Security.Credentials.PasswordVault();
                 var creds = vault.retrieveAll();
                 for (var i = 0; i < creds.length; ++i) {
