@@ -1025,6 +1025,13 @@ var SwiftSnapper;
             $('#TextBoxApiSecret').on('change', function (e) {
                 SwiftSnapper.Settings.Set('ApiSecret', $('#TextBoxApiSecret').val());
             });
+            //Handle API Endpoint
+            var ApiEndpoint = SwiftSnapper.Settings.Get('ApiEndpoint');
+            if (ApiEndpoint)
+                $('#TextBoxApiEndpoint').val(ApiEndpoint);
+            $('#TextBoxApiEndpoint').on('change', function (e) {
+                SwiftSnapper.Settings.Set('ApiEndpoint', $('#TextBoxApiEndpoint').val());
+            });
         });
     }
     SwiftSnapper.onSettingsView = onSettingsView;
