@@ -358,20 +358,34 @@ var Snapchat;
         };
         /*
             Post request to Snapchat's API
+            TODO: Cache
         */
-        Agent.prototype.PostSnapchat = function (URI, parameters, headers) {
-            if (headers == null) {
-                headers = {};
-            }
-            if (URI == null || parameters == null)
-                return null;
-            URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + URI);
-            var REQ = Windows.Web['Http'].HttpStringContent(this.ParametersToURI(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
-            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
-            return new Promise(function (resolve) {
-                var promise = HTTP.postAsync(URI, REQ).done(function (res) {
-                    res.content.readAsStringAsync().done(function (e) {
-                        resolve(e);
+        Agent.prototype.PostSnapchat = function (endpoint, parameters) {
+            var _this = this;
+            var timestamp = this.GenerateTimeStamp();
+            return new Promise(function (resolve, reject) {
+                if (!endpoint)
+                    reject({
+                        message: 'Endpoint requiered',
+                        code: -1
+                    });
+                return _this.PostCasper('/snapchat/ios/endpointauth', {
+                    'jwt': _this.GenerateJwtToken(timestamp, {
+                        'username': _this.CURRENT_USER_REFERENCE.username,
+                        'auth_token': _this.SNAPCHAT_AUTH_TOKEN,
+                        'endpoint': endpoint
+                    }),
+                }).then(function (res) {
+                    if (res.code !== 200)
+                        return reject(res);
+                    var endpoint = res.endpoints[0];
+                    var URI = new Windows.Foundation.Uri(_this.SNAPCHAT_BASE_ENDPOINT + endpoint.endpoint);
+                    var REQ = Windows.Web['Http'].HttpStringContent(_this.ParametersToURI(endpoint.params.concat(parameters)), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'), HTTP = new Windows.Web['Http'].HttpClient(), HEAD = HTTP.defaultRequestHeaders;
+                    HEAD = Snapchat.Http.ConfigureHeaders(HEAD, endpoint.headers);
+                    var promise = HTTP.postAsync(URI, REQ).done(function (res) {
+                        res.content.readAsStringAsync().done(function (e) {
+                            return resolve(JSON.parse(e));
+                        });
                     });
                 });
             });
@@ -571,8 +585,8 @@ var Snapchat;
                 resolve();
             });
         };
-        Client.prototype.PostSnap = function (URI, parameters, headers) {
-            return this.SnapchatAgent.PostSnapchat(URI, parameters, headers);
+        Client.prototype.PostSnap = function (URI, parameters) {
+            return this.SnapchatAgent.PostSnapchat(URI, parameters);
         };
         /*
             Register a new user

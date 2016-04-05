@@ -35,7 +35,7 @@
         endpoints: [{
             endpoint: string,
             cache_millis: number,
-            header: any,
+            headers: any,
             params: any
         }],
         settings: any

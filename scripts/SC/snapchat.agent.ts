@@ -84,26 +84,41 @@ namespace Snapchat {
 
         /*
 	        Post request to Snapchat's API
+            TODO: Cache
         */
-        public PostSnapchat(URI, parameters, headers?): Promise<string> {
-            if (headers == null) {
-                headers = {};
-            }
+        public PostSnapchat(endpoint, parameters): Promise<string> {
+            let timestamp = this.GenerateTimeStamp();
 
-            if (URI == null || parameters == null)
-                return null;
-            URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + URI);
+            return new Promise((resolve, reject) => {
+                if (!endpoint)
+                    reject({
+                        message: 'Endpoint requiered',
+                        code: -1
+                    });
+                
+                return this.PostCasper('/snapchat/ios/endpointauth', {
+                    'jwt': this.GenerateJwtToken(timestamp, {
+                        'username': this.CURRENT_USER_REFERENCE.username,
+                        'auth_token': this.SNAPCHAT_AUTH_TOKEN,
+                        'endpoint': endpoint
+                    }),
 
-            let REQ = Windows.Web['Http'].HttpStringContent(this.ParametersToURI(parameters), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
-                HTTP = new Windows.Web['Http'].HttpClient(),
-                HEAD = HTTP.defaultRequestHeaders;
+                }).then((res: CasperResponse) => {
+                    if (res.code !== 200)
+                        return reject(res);
 
-            HEAD = Snapchat.Http.ConfigureHeaders(HEAD, headers);
+                    let endpoint = res.endpoints[0];
 
-            return new Promise((resolve) => {
-                let promise = HTTP.postAsync(URI, REQ).done((res) => {
-                    res.content.readAsStringAsync().done((e) => {
-                        resolve(e)
+                    let URI = new Windows.Foundation.Uri(this.SNAPCHAT_BASE_ENDPOINT + endpoint.endpoint);
+                    let REQ = Windows.Web['Http'].HttpStringContent(this.ParametersToURI(endpoint.params.concat(parameters)), Windows.Storage.Streams.UnicodeEncoding.utf8, 'application/x-www-form-urlencoded'),
+                        HTTP = new Windows.Web['Http'].HttpClient(),
+                        HEAD = HTTP.defaultRequestHeaders;
+
+                    HEAD = Snapchat.Http.ConfigureHeaders(HEAD, endpoint.headers);
+                    let promise = HTTP.postAsync(URI, REQ).done((res) => {
+                        res.content.readAsStringAsync().done((e) => {
+                            return resolve(JSON.parse(e));
+                        });
                     });
                 });
             });
@@ -132,6 +147,7 @@ namespace Snapchat {
             if (!headers) {
                 headers = {};
             }
+
             if (!parameters) {
                 parameters = {};
             }
