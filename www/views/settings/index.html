@@ -19,8 +19,20 @@
                     </nav>
                 </header>
                 <div class="settings-list">
+                    <!-- Buy access -->
                     <div class="item">
-                        <label>{{views.settings.casperDescription}}</label>
+                        <h2>{{views.settings.buyAccess}}</h2>
+                    </div>
+                    <div class="item">
+                        <button>1.99$ {{views.settings.oneMonth}}</button>
+                    </div>
+                    <div class="item">
+                        <button>3.99$ {{views.settings.twoMonths}}</button>
+                    </div>
+
+                    <!-- Casper keys for OSS -->
+                    <div class="item">
+                        <h2>{{views.settings.alreadyAccess}}</h2>
                     </div>
                     <div class="item">
                         <input id="TextBoxApiToken" type="text" placeholder="{{views.settings.casperApiToken}}" />

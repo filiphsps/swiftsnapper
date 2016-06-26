@@ -493,7 +493,7 @@ var Snapchat;
             return res;
         };
         return Agent;
-    })();
+    }());
     Snapchat.Agent = Agent;
     var Http;
     (function (Http) {
@@ -532,7 +532,7 @@ var Snapchat;
         function User() {
         }
         return User;
-    })();
+    }());
     Snapchat.User = User;
     var Snap = (function () {
         function Snap() {
@@ -540,7 +540,7 @@ var Snapchat;
             this.timestamp = 0;
         }
         return Snap;
-    })();
+    }());
     Snapchat.Snap = Snap;
 })(Snapchat || (Snapchat = {}));
 /// <reference path="snapchat.agent.ts" />
@@ -616,7 +616,7 @@ var Snapchat;
             });
         };
         return Client;
-    })();
+    }());
     Snapchat.Client = Client;
 })(Snapchat || (Snapchat = {}));
 var MessageManager;
