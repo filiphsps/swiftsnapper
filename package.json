@@ -1,8 +1,8 @@
 {
   "name": "swiftsnapper",
   "version": "1.0.0",
-  "author": "Filiph Sandström <filiph.sandstrom@filfatstudios.com>",
-  "license": "GPL 3",
+  "author": "Filiph SandstrÃ¶m <filiph.sandstrom@filfatstudios.com>",
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/filfat/swiftsnapper"
@@ -15,6 +15,9 @@
     "phone",
     "snapchat"
   ],
-  "dependencies": {
+  "dependencies": {},
+  "devDependencies": {
+    "tslint": "^3.12.1",
+    "typescript": "^1.8.10"
   }
 }

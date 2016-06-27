@@ -1,24 +1,22 @@
-﻿/// <reference path="typings/cordova/plugins/Device.d.ts" />
-/// <reference path="typings/winrt/winrt.d.ts" />
-/// <reference path="typings/jquery/jquery.d.ts" />
-/// <reference path="typings/es6-promise/es6-promise.d.ts" />
-/// <reference path="SC/snapchat.ts" />
-/// <reference path="cameraManager.ts" />
-/// <reference path="messageManager.ts" />
-/// <reference path="windowManager.ts" />
+﻿'use strict';
+
+/// <reference path='typings/cordova/plugins/Device.d.ts' />
+/// <reference path='typings/winrt/winrt.d.ts' />
+/// <reference path='typings/jquery/jquery.d.ts' />
+/// <reference path='typings/es6-promise/es6-promise.d.ts' />
+/// <reference path='SC/snapchat.ts' />
+/// <reference path='cameraManager.ts' />
+/// <reference path='messageManager.ts' />
+/// <reference path='windowManager.ts' />
 
 declare var Handlebars: any;
 let views;
 
 module SwiftSnapper {
-    "use strict";
-
     let SnapchatClient: Snapchat.Client;
     let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
     let currentItem = null,
         SystemNavigator = null;
-
-
 
     export module Application {
         export function initialize() {
@@ -50,7 +48,7 @@ module SwiftSnapper {
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
             SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView()
-            SystemNavigator.addEventListener("backrequested", toCenterView);
+            SystemNavigator.addEventListener('backrequested', toCenterView);
         }
 
         function onPause() {
@@ -78,7 +76,7 @@ module SwiftSnapper {
                 });
             });
         } else {
-            MessageManager.alert("Please press OK and connect to the internet", "No internet connection", function () {
+            MessageManager.alert('Please connect to the internet and start the app again', 'No internet connection', function () {
                 window.close();
             });
         }
@@ -86,7 +84,7 @@ module SwiftSnapper {
 
     export function onAccountView() {
         Application.getLanguageStrings(language, function (lang) {
-            var template = Handlebars.compile($("#template").html());
+            var template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
             views = $('#views');
@@ -120,7 +118,7 @@ module SwiftSnapper {
 
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                var credential = new Windows.Security.Credentials.PasswordCredential("SwiftSnapper", $('#LogInView form .username').val(), $('#LogInView form .password').val());
+                var credential = new Windows.Security.Credentials.PasswordCredential('SwiftSnapper', $('#LogInView form .username').val(), $('#LogInView form .password').val());
                 logIn(credential, lang);
             });
 
@@ -128,7 +126,7 @@ module SwiftSnapper {
                 var vault = new Windows.Security.Credentials.PasswordVault();
                 var credentialList = vault.retrieveAll();
                 if (credentialList.length > 0) {
-                    var credential = vault.retrieve("SwiftSnapper", credentialList[0].userName);
+                    var credential = vault.retrieve('SwiftSnapper', credentialList[0].userName);
                     logIn(credential, lang);
                 }
             });
@@ -136,8 +134,8 @@ module SwiftSnapper {
 
         function logIn(credential, lang) {
             WindowManager.startLoading(lang.views.account.logInView.loggingIn);
-            $('#LogInView form .username').prop("disabled", true);
-            $('#LogInView form .password').prop("disabled", true);
+            $('#LogInView form .username').prop('disabled', true);
+            $('#LogInView form .password').prop('disabled', true);
 
             SnapchatClient.Login({
                 username: credential.userName,
@@ -153,8 +151,8 @@ module SwiftSnapper {
                     MessageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn);
 
                     WindowManager.stopLoading();
-                    $('#LogInView form .username').prop("disabled", false);
-                    $('#LogInView form .password').prop("disabled", false);
+                    $('#LogInView form .username').prop('disabled', false);
+                    $('#LogInView form .password').prop('disabled', false);
                     return -1;
                 }
 
@@ -170,23 +168,19 @@ module SwiftSnapper {
                 WindowManager.hideStatusBar();
 
                 MessageManager.alert(err, 'Error');
-                $('body').load('views/overview/index.html');
+
+                console.log(err);
+                if (err == 'API Key is Invalid.')
+                    $('body').load('views/settings/index.html');
+                else
+                    $('body').load('views/overview/index.html');
             });
         }
     }
 
-    function toCenterView(eventArgs) {
-        SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
-        console.log(currentItem);
-        if (currentItem != 1) {
-            views.trigger('to.owl.carousel', [1, 300, true]);
-            eventArgs.handled = true;
-        };
-    }
-
     export function onOverviewView() {
         Application.getLanguageStrings(language, function (lang) {
-            var template = Handlebars.compile($("#template").html());
+            var template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
 
             //Init Owl Carousel
@@ -229,9 +223,9 @@ module SwiftSnapper {
                 for (var n = 0; n < snaps.length; n++) {
                     let snap = snaps[n],
                         output =
-                            '<article class="item" id="' + n + '"><div class="notify snap"><span class="icon mdl2-checkbox-fill"></span></div><div class="details">' +
-                            '<div class="header">' + snap.sender + '</div>' +
-                            '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
+                            '<article class='item' id='' + n + ''><div class='notify snap'><span class='icon mdl2-checkbox-fill'></span></div><div class='details'>' +
+                            '<div class='header'>' + snap.sender + '</div>' +
+                            '<div class='details'>Length: ' + snap.timer.toString() + '</div>' +
                             '</div></article>';
 
                     $('#SnapsView .SnapsList').append(output);
@@ -240,7 +234,7 @@ module SwiftSnapper {
                 if (snaps.length < 1)
                     throw ('no snaps');
             } catch (e) {
-                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
+                $('#SnapsView .SnapsList').append('<p class='note'>' + lang.views.overview.emptyFeed + '</p>');
             }
 
             //Temp for showing snaps
@@ -278,14 +272,14 @@ module SwiftSnapper {
             );
             $('#ShutterBtn').on('click tap', () => {
                 var IStream = CameraManager.takePhotoAsync();
-                console.log("Picture Taken");
+                console.log('Picture Taken');
                 if (IStream != null) {
-                    MessageManager.alert("Picture Taken!", "Success", null);
+                    MessageManager.alert('Picture Taken!', 'Success', null);
                     // Send to SnapChat or editor view or something.
                     // SnapchatClient.PostSnap(IStream, [['paraName1', 'Val'], ['paraName2', 'Val']], {});
                 }
                 else {
-                    MessageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                    MessageManager.alert('No Camera!', 'Failure', null);
                 }
             });
             $('#SettingsBtn').on('click tap', () => {
@@ -303,11 +297,11 @@ module SwiftSnapper {
 
     export function onSettingsView() {
         Application.getLanguageStrings(language, function (lang) {
-            var template = Handlebars.compile($("#template").html());
+            var template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
 
             $('#LogoutBtn').on('click tap', function () {
-                MessageManager.alert("Cleared all credentials!", "Cleared Credentials", null);
+                MessageManager.alert('Cleared all credentials!', 'Cleared Credentials', null);
                 var vault = new Windows.Security.Credentials.PasswordVault();
                 var creds = vault.retrieveAll();
                 for (var i = 0; i < creds.length; ++i) {
@@ -344,5 +338,14 @@ module SwiftSnapper {
                 Settings.Set('ApiEndpoint', $('#TextBoxApiEndpoint').val());
             });
         });
+    }
+
+    function toCenterView(eventArgs) {
+        SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
+        console.log(currentItem);
+        if (currentItem != 1) {
+            views.trigger('to.owl.carousel', [1, 300, true]);
+            eventArgs.handled = true;
+        };
     }
 }

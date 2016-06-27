@@ -861,7 +861,11 @@ var SwiftSnapper;
                 SwiftSnapper.WindowManager.stopLoading();
                 SwiftSnapper.WindowManager.hideStatusBar();
                 MessageManager.alert(err, 'Error');
-                $('body').load('views/overview/index.html');
+                console.log(err);
+                if (err == 'API Key is Invalid')
+                    $('body').load('views/settings/index.html');
+                else
+                    $('body').load('views/overview/index.html');
             });
         }
     }
@@ -964,7 +968,7 @@ var SwiftSnapper;
                     MessageManager.alert("Picture Taken!", "Success", null);
                 }
                 else {
-                    MessageManager.alert("No Camera!\nSilly Goose!", "Failure", null);
+                    MessageManager.alert("No Camera!", "Failure", null);
                 }
             });
             $('#SettingsBtn').on('click tap', function () {
