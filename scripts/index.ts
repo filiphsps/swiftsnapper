@@ -1,5 +1,8 @@
 ﻿'use strict';
 
+///FIXME: ES6 Import
+//import * as snapchat from './SC/snapchat';
+
 /// <reference path='typings/cordova/plugins/Device.d.ts' />
 /// <reference path='typings/winrt/winrt.d.ts' />
 /// <reference path='typings/jquery/jquery.d.ts' />
@@ -9,14 +12,14 @@
 /// <reference path='messageManager.ts' />
 /// <reference path='windowManager.ts' />
 
-declare var Handlebars: any;
+declare let Handlebars: any;
 let views;
 
 module SwiftSnapper {
-    let SnapchatClient: Snapchat.Client;
-    let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
-    let currentItem = null,
+    let SnapchatClient: Snapchat.Client,
+        currentItem = null,
         SystemNavigator = null;
+    const language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
 
     export module Application {
         export function initialize() {
@@ -25,7 +28,7 @@ module SwiftSnapper {
             WindowManager.initialize();
 
             if (!SwiftSnapper.Settings.Get('ApiEndpoint'))
-                SwiftSnapper.Settings.Set('ApiEndpoint', 'https://app.snapchat.com')
+                SwiftSnapper.Settings.Set('ApiEndpoint', 'https://app.snapchat.com');
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
@@ -47,7 +50,7 @@ module SwiftSnapper {
             // Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
-            SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView()
+            SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView();
             SystemNavigator.addEventListener('backrequested', toCenterView);
         }
 
@@ -62,7 +65,7 @@ module SwiftSnapper {
 
     window.onload = function () {
         Application.initialize();
-        var connectionProfile = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
+        let connectionProfile = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
         if (connectionProfile != null && connectionProfile.getNetworkConnectivityLevel() == Windows.Networking.Connectivity.NetworkConnectivityLevel.internetAccess) {
             SnapchatClient = new Snapchat.Client();
             SnapchatClient.Initialize().then(function () {
@@ -80,11 +83,11 @@ module SwiftSnapper {
                 window.close();
             });
         }
-    }
+    };
 
     export function onAccountView() {
         Application.getLanguageStrings(language, function (lang) {
-            var template = Handlebars.compile($('#template').html());
+            let template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
             views = $('#views');
@@ -104,7 +107,7 @@ module SwiftSnapper {
 
             views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
                 currentItem = event.item.index;
-            })
+            });
 
             $('header').on('click tap', function () {
                 views.trigger('to.owl.carousel', [1, 300, true]);
@@ -118,15 +121,15 @@ module SwiftSnapper {
 
             $('#LogInForm').submit(function (e) {
                 e.preventDefault();
-                var credential = new Windows.Security.Credentials.PasswordCredential('SwiftSnapper', $('#LogInView form .username').val(), $('#LogInView form .password').val());
+                let credential = new Windows.Security.Credentials.PasswordCredential('SwiftSnapper', $('#LogInView form .username').val(), $('#LogInView form .password').val());
                 logIn(credential, lang);
             });
 
             $(function () {
-                var vault = new Windows.Security.Credentials.PasswordVault();
-                var credentialList = vault.retrieveAll();
+                let vault = new Windows.Security.Credentials.PasswordVault();
+                let credentialList = vault.retrieveAll();
                 if (credentialList.length > 0) {
-                    var credential = vault.retrieve('SwiftSnapper', credentialList[0].userName);
+                    let credential = vault.retrieve('SwiftSnapper', credentialList[0].userName);
                     logIn(credential, lang);
                 }
             });
@@ -141,7 +144,7 @@ module SwiftSnapper {
                 username: credential.userName,
                 password: credential.password,
             }).then((data) => {
-                var vault = new Windows.Security.Credentials.PasswordVault();
+                let vault = new Windows.Security.Credentials.PasswordVault();
 
                 if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
                     if (vault.retrieveAll().length > 0) {
@@ -180,7 +183,7 @@ module SwiftSnapper {
 
     export function onOverviewView() {
         Application.getLanguageStrings(language, function (lang) {
-            var template = Handlebars.compile($('#template').html());
+            let template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
 
             //Init Owl Carousel
@@ -206,7 +209,7 @@ module SwiftSnapper {
 
             views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
                 let pos = event.item.index;
-                currentItem = pos
+                currentItem = pos;
                 if (pos == 1) {
                     WindowManager.hideStatusBar();
                 } else
@@ -220,12 +223,12 @@ module SwiftSnapper {
             let snaps;
             try {
                 snaps = SnapchatClient.GetPendingFeed();
-                for (var n = 0; n < snaps.length; n++) {
+                for (let n = 0; n < snaps.length; n++) {
                     let snap = snaps[n],
                         output =
-                            '<article class='item' id='' + n + ''><div class='notify snap'><span class='icon mdl2-checkbox-fill'></span></div><div class='details'>' +
-                            '<div class='header'>' + snap.sender + '</div>' +
-                            '<div class='details'>Length: ' + snap.timer.toString() + '</div>' +
+                            '<article class="item" id=" + n + "><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                            '<div class="header">' + snap.sender + '</div>' +
+                            '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
                             '</div></article>';
 
                     $('#SnapsView .SnapsList').append(output);
@@ -234,7 +237,7 @@ module SwiftSnapper {
                 if (snaps.length < 1)
                     throw ('no snaps');
             } catch (e) {
-                $('#SnapsView .SnapsList').append('<p class='note'>' + lang.views.overview.emptyFeed + '</p>');
+                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             }
 
             //Temp for showing snaps
@@ -247,7 +250,7 @@ module SwiftSnapper {
             });
             $('#ShowSnapView').on('click tap', () => {
                 $('#ShowSnapView').css('display', 'none');
-            })
+            });
 
             $('#ViewSnapsBtn').on('click tap', () => {
                 views.trigger('prev.owl.carousel', [300]);
@@ -271,7 +274,7 @@ module SwiftSnapper {
                 }
             );
             $('#ShutterBtn').on('click tap', () => {
-                var IStream = CameraManager.takePhotoAsync();
+                let IStream = CameraManager.takePhotoAsync();
                 console.log('Picture Taken');
                 if (IStream != null) {
                     MessageManager.alert('Picture Taken!', 'Success', null);
@@ -297,14 +300,14 @@ module SwiftSnapper {
 
     export function onSettingsView() {
         Application.getLanguageStrings(language, function (lang) {
-            var template = Handlebars.compile($('#template').html());
+            let template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
 
             $('#LogoutBtn').on('click tap', function () {
                 MessageManager.alert('Cleared all credentials!', 'Cleared Credentials', null);
-                var vault = new Windows.Security.Credentials.PasswordVault();
-                var creds = vault.retrieveAll();
-                for (var i = 0; i < creds.length; ++i) {
+                let vault = new Windows.Security.Credentials.PasswordVault();
+                let creds = vault.retrieveAll();
+                for (let i = 0; i < creds.length; ++i) {
                     vault.remove(creds[i]);
                 }
 
@@ -315,7 +318,7 @@ module SwiftSnapper {
             });
 
             //Handle API Token
-            var ApiToken = Settings.Get('ApiToken');
+            let ApiToken = Settings.Get('ApiToken');
             if (ApiToken)
                 $('#TextBoxApiToken').val(ApiToken);
             $('#TextBoxApiToken').on('change', function (e) {
@@ -323,7 +326,7 @@ module SwiftSnapper {
             });
 
             //Handle API Secret
-            var ApiSecret = Settings.Get('ApiSecret');
+            let ApiSecret = Settings.Get('ApiSecret');
             if (ApiSecret)
                 $('#TextBoxApiSecret').val(ApiSecret);
             $('#TextBoxApiSecret').on('change', function (e) {
@@ -331,7 +334,7 @@ module SwiftSnapper {
             });
 
             //Handle API Endpoint
-            var ApiEndpoint = Settings.Get('ApiEndpoint');
+            let ApiEndpoint = Settings.Get('ApiEndpoint');
             if (ApiEndpoint)
                 $('#TextBoxApiEndpoint').val(ApiEndpoint);
             $('#TextBoxApiEndpoint').on('change', function (e) {

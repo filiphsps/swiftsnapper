@@ -1,0 +1,10 @@
+{
+    "rules": {
+        "semicolon": [2, "always"],
+        "use-strict": [true],
+        "indent": [2, 4],
+        "curly": false,
+        "no-var-keyword": true,
+        "quotemark": ["single"]
+    }
+}
