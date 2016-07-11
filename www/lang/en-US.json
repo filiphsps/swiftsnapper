@@ -38,13 +38,7 @@
 
     "settings": {
       "title": "Settings",
-      "logout": "Logout",
-      "buyAccess":  "Buy Access",
-      "oneMonth":  "One Month",
-      "twoMonths":  "Two Months",
-      "alreadyAccess":  "Already Have Access?",
-      "casperApiToken":  "Casper Api Token",
-      "casperApiSecret":  "Casper Api Secret"
+      "logout": "Logout"
     }
   }
 }

@@ -1,3 +1,119 @@
+var SwiftSnapper;
+(function (SwiftSnapper) {
+    var Backend = (function () {
+        function Backend() {
+            Http.Initialize();
+        }
+        Backend.prototype.Get = function (options) {
+            return new Promise(function (resolve, reject) {
+                Http.Get(options).then(function (res) {
+                    resolve(res);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            });
+        };
+        Backend.prototype.Post = function (options) {
+            return new Promise(function (resolve, reject) {
+                Http.Post(options).then(function (res) {
+                    resolve(res);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            });
+        };
+        Backend.prototype.Put = function (options) {
+            return new Promise(function (resolve, reject) {
+                Http.Put(options).then(function (res) {
+                    resolve(res);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            });
+        };
+        Backend.prototype.Delete = function (options) {
+            return new Promise(function (resolve, reject) {
+                Http.Delete(options).then(function (res) {
+                    resolve(res);
+                }).catch(function (err) {
+                    reject(err);
+                });
+            });
+        };
+        return Backend;
+    }());
+    SwiftSnapper.Backend = Backend;
+    var Http;
+    (function (Http) {
+        var SWIFTSNAPPER_URI = 'https://swiftsnapper.playstr.link/v1/', SWIFTSNAPPER_USERAGENT = null;
+        function Initialize() {
+            var device = 'device', os = 'os', appVersion = 'x.x.x.x';
+            SWIFTSNAPPER_USERAGENT = 'SwiftSnapper/' + appVersion + ' (' + device + ', ' + os + '; gzip)';
+            $.ajaxSetup({
+                beforeSend: function (xhr) {
+                    if (localStorage.getItem('Authorization') !== null)
+                        xhr.setRequestHeader("Authorization", "Basic " + localStorage.getItem('Authorization'));
+                    xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                }
+            });
+        }
+        Http.Initialize = Initialize;
+        function Get(options) {
+            return new Promise(function (resolve, reject) {
+                $.getJSON(SWIFTSNAPPER_URI + options.endpoint).done(function (jqXHR, status, data) {
+                    resolve(data);
+                }).fail(function (jqXHR, err) {
+                    reject(err);
+                });
+            });
+        }
+        Http.Get = Get;
+        function Post(options) {
+            return new Promise(function (resolve, reject) {
+                $.post(SWIFTSNAPPER_URI + options.endpoint, options.data, function (res) {
+                    resolve(res);
+                }, 'json').fail(function (jqXHR, err) {
+                    reject(err);
+                });
+            });
+        }
+        Http.Post = Post;
+        function Put(options) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: options.endpoint,
+                    type: 'PUT',
+                    contentType: "application/json",
+                    data: options.data,
+                    success: function (res) {
+                        resolve(res);
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        Http.Put = Put;
+        function Delete(options) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    url: options.endpoint,
+                    type: 'DELETE',
+                    contentType: "application/json",
+                    data: options.data,
+                    success: function (res) {
+                        resolve(res);
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
+                });
+            });
+        }
+        Http.Delete = Delete;
+    })(Http || (Http = {}));
+})(SwiftSnapper || (SwiftSnapper = {}));
 var CameraManager;
 (function (CameraManager) {
     var video, mediaStream;

@@ -26,9 +26,6 @@ module SwiftSnapper {
             document.addEventListener('deviceready', onDeviceReady, false);
             MessageManager.initialize();
             WindowManager.initialize();
-
-            if (!SwiftSnapper.Settings.Get('ApiEndpoint'))
-                SwiftSnapper.Settings.Set('ApiEndpoint', 'https://app.snapchat.com');
         }
 
         export function getLanguageStrings(lang: string, callback: Function) {
