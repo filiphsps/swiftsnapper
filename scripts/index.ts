@@ -1,13 +1,8 @@
 ﻿'use strict';
-
-///FIXME: ES6 Import
-//import * as snapchat from './SC/snapchat';
-
 /// <reference path='typings/cordova/plugins/Device.d.ts' />
 /// <reference path='typings/winrt/winrt.d.ts' />
 /// <reference path='typings/jquery/jquery.d.ts' />
 /// <reference path='typings/es6-promise/es6-promise.d.ts' />
-/// <reference path='SC/snapchat.ts' />
 /// <reference path='cameraManager.ts' />
 /// <reference path='messageManager.ts' />
 /// <reference path='windowManager.ts' />
@@ -16,8 +11,7 @@ declare let Handlebars: any;
 let views;
 
 module SwiftSnapper {
-    let SnapchatClient: Snapchat.Client,
-        currentItem = null,
+    let currentItem = null,
         SystemNavigator = null;
     const language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
 
@@ -64,17 +58,7 @@ module SwiftSnapper {
         Application.initialize();
         let connectionProfile = Windows.Networking.Connectivity.NetworkInformation.getInternetConnectionProfile();
         if (connectionProfile != null && connectionProfile.getNetworkConnectivityLevel() == Windows.Networking.Connectivity.NetworkConnectivityLevel.internetAccess) {
-            SnapchatClient = new Snapchat.Client();
-            SnapchatClient.Initialize().then(function () {
-                $(document).ready(function () {
-                    $('body').load('views/account/index.html');
-                });
-            }).catch((err) => {
-                MessageManager.alert('Error: ' + err, 'Error!', null);
-                $(document).ready(function () {
-                    $('body').load('views/account/index.html');
-                });
-            });
+            $('body').load('views/account/index.html');
         } else {
             MessageManager.alert('Please connect to the internet and start the app again', 'No internet connection', function () {
                 window.close();
@@ -137,44 +121,16 @@ module SwiftSnapper {
             $('#LogInView form .username').prop('disabled', true);
             $('#LogInView form .password').prop('disabled', true);
 
-            SnapchatClient.Login({
-                username: credential.userName,
-                password: credential.password,
-            }).then((data) => {
-                let vault = new Windows.Security.Credentials.PasswordVault();
+            //TODO: Actually login
+            let vault = new Windows.Security.Credentials.PasswordVault();
+            if (vault.retrieveAll().length == 0) {
+                vault.add(credential);
+            }
 
-                if (typeof data['status'] !== 'undefined' && data['status'] !== 200) {
-                    if (vault.retrieveAll().length > 0) {
-                        vault.remove(credential);
-                    }
-
-                    MessageManager.alert(lang.views.account.logInView.wrongUsernameOrPassword, lang.views.account.logInView.failedToLogIn);
-
-                    WindowManager.stopLoading();
-                    $('#LogInView form .username').prop('disabled', false);
-                    $('#LogInView form .password').prop('disabled', false);
-                    return -1;
-                }
-
-                if (vault.retrieveAll().length == 0) {
-                    vault.add(credential);
-                }
-
-                WindowManager.stopLoading();
-                WindowManager.hideStatusBar();
-                $('body').load('views/overview/index.html');
-            }).catch((err) => {
-                WindowManager.stopLoading();
-                WindowManager.hideStatusBar();
-
-                MessageManager.alert(err, 'Error');
-
-                console.log(err);
-                if (err == 'API Key is Invalid.')
-                    $('body').load('views/settings/index.html');
-                else
-                    $('body').load('views/overview/index.html');
-            });
+            localStorage.setItem('Authorization', btoa(credential.userName + ":" + credential.password));
+            WindowManager.stopLoading();
+            WindowManager.hideStatusBar();
+            $('body').load('views/overview/index.html');
         }
     }
 
@@ -217,9 +173,14 @@ module SwiftSnapper {
                 'frontFacing': false
             });
 
-            let snaps;
-            try {
-                snaps = SnapchatClient.GetPendingFeed();
+            let cn = new SwiftSnapper.Backend(),
+                snaps;
+
+            cn.Get({
+                endpoint: 'snaps'
+            }).then((res: any) => {
+                snaps = res.data;
+
                 for (let n = 0; n < snaps.length; n++) {
                     let snap = snaps[n],
                         output =
@@ -232,17 +193,21 @@ module SwiftSnapper {
                 }
 
                 if (snaps.length < 1)
-                    throw ('no snaps');
-            } catch (e) {
-                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
-            }
+                    $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
+            }).catch((err) => {
+                MessageManager.alert('Error: ' + err, 'Error!', null);
+            });
 
             //Temp for showing snaps
             $('#SnapsView .SnapsList article').on('click tap', (e) => {
                 let snap = snaps[$(e.currentTarget).attr('id')];
-                SnapchatClient.GetSnapMedia(snap).then(function (img: string) {
+
+                console.log(snap);
+                cn.Get({
+                    endpoint: 'snaps/' + snap
+                }).then((res: any) => {
                     $('#ShowSnapView').css('display', 'block');
-                    $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + btoa(img));
+                    $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + res.data);
                 });
             });
             $('#ShowSnapView').on('click tap', () => {
