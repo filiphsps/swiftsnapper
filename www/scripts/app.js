@@ -45,8 +45,7 @@ var SwiftSnapper;
     SwiftSnapper.Backend = Backend;
     var Http;
     (function (Http) {
-        //let SWIFTSNAPPER_URI = 'https://swiftsnapper.playstr.link/v1/',
-        var SWIFTSNAPPER_URI = 'http://localhost:80/v1/', SWIFTSNAPPER_USERAGENT = null;
+        var SWIFTSNAPPER_URI = 'https://swiftsnapper.playstr.link/v1/', SWIFTSNAPPER_USERAGENT = null;
         function Initialize() {
             var device = 'device', os = 'os', appVersion = 'x.x.x.x';
             SWIFTSNAPPER_USERAGENT = 'SwiftSnapper/' + appVersion + ' (' + device + ', ' + os + '; gzip)';

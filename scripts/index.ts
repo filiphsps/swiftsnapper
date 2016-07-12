@@ -307,10 +307,9 @@ module SwiftSnapper {
 
     function toCenterView(eventArgs) {
         SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
-        console.log(currentItem);
         if (currentItem != 1) {
             views.trigger('to.owl.carousel', [1, 300, true]);
             eventArgs.handled = true;
-        };
+        }
     }
 }
