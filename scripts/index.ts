@@ -128,6 +128,7 @@ module SwiftSnapper {
             }
 
             localStorage.setItem('Authorization', btoa(credential.userName + ":" + credential.password));
+            localStorage.setItem('AuthToken', null);
             WindowManager.stopLoading();
             WindowManager.hideStatusBar();
             $('body').load('views/overview/index.html');
@@ -180,6 +181,10 @@ module SwiftSnapper {
                 endpoint: 'snaps'
             }).then((res: any) => {
                 snaps = res.data;
+                localStorage.setItem('AuthToken', res.authToken);
+
+                if (!snaps || snaps.length < 1)
+                    return $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
 
                 for (let n = 0; n < snaps.length; n++) {
                     let snap = snaps[n],
@@ -191,11 +196,9 @@ module SwiftSnapper {
 
                     $('#SnapsView .SnapsList').append(output);
                 }
-
-                if (snaps.length < 1)
-                    $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             }).catch((err) => {
                 MessageManager.alert('Error: ' + err, 'Error!', null);
+                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             });
 
             //Temp for showing snaps
@@ -277,30 +280,6 @@ module SwiftSnapper {
             });
             $('#BackBtn').on('click tap', function () {
                 $('body').load('views/overview/index.html');
-            });
-
-            //Handle API Token
-            let ApiToken = Settings.Get('ApiToken');
-            if (ApiToken)
-                $('#TextBoxApiToken').val(ApiToken);
-            $('#TextBoxApiToken').on('change', function (e) {
-                Settings.Set('ApiToken', $('#TextBoxApiToken').val());
-            });
-
-            //Handle API Secret
-            let ApiSecret = Settings.Get('ApiSecret');
-            if (ApiSecret)
-                $('#TextBoxApiSecret').val(ApiSecret);
-            $('#TextBoxApiSecret').on('change', function (e) {
-                Settings.Set('ApiSecret', $('#TextBoxApiSecret').val());
-            });
-
-            //Handle API Endpoint
-            let ApiEndpoint = Settings.Get('ApiEndpoint');
-            if (ApiEndpoint)
-                $('#TextBoxApiEndpoint').val(ApiEndpoint);
-            $('#TextBoxApiEndpoint').on('change', function (e) {
-                Settings.Set('ApiEndpoint', $('#TextBoxApiEndpoint').val());
             });
         });
     }

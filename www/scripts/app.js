@@ -61,6 +61,8 @@ var SwiftSnapper;
         function Get(options) {
             return new Promise(function (resolve, reject) {
                 $.getJSON(SWIFTSNAPPER_URI + options.endpoint).done(function (jqXHR, status, data) {
+                    if (data.status !== 200)
+                        return reject(data);
                     resolve(data);
                 }).fail(function (jqXHR, err) {
                     reject(err);
@@ -506,6 +508,7 @@ var SwiftSnapper;
                 vault.add(credential);
             }
             localStorage.setItem('Authorization', btoa(credential.userName + ":" + credential.password));
+            localStorage.setItem('AuthToken', null);
             SwiftSnapper.WindowManager.stopLoading();
             SwiftSnapper.WindowManager.hideStatusBar();
             $('body').load('views/overview/index.html');
@@ -553,6 +556,9 @@ var SwiftSnapper;
                 endpoint: 'snaps'
             }).then(function (res) {
                 snaps = res.data;
+                localStorage.setItem('AuthToken', res.authToken);
+                if (!snaps || snaps.length < 1)
+                    return $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
                 for (var n = 0; n < snaps.length; n++) {
                     var snap = snaps[n], output = '<article class="item" id=" + n + "><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
                         '<div class="header">' + snap.sender + '</div>' +
@@ -560,10 +566,9 @@ var SwiftSnapper;
                         '</div></article>';
                     $('#SnapsView .SnapsList').append(output);
                 }
-                if (snaps.length < 1)
-                    $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             }).catch(function (err) {
                 MessageManager.alert('Error: ' + err, 'Error!', null);
+                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             });
             //Temp for showing snaps
             $('#SnapsView .SnapsList article').on('click tap', function (e) {
@@ -635,38 +640,15 @@ var SwiftSnapper;
             $('#BackBtn').on('click tap', function () {
                 $('body').load('views/overview/index.html');
             });
-            //Handle API Token
-            var ApiToken = SwiftSnapper.Settings.Get('ApiToken');
-            if (ApiToken)
-                $('#TextBoxApiToken').val(ApiToken);
-            $('#TextBoxApiToken').on('change', function (e) {
-                SwiftSnapper.Settings.Set('ApiToken', $('#TextBoxApiToken').val());
-            });
-            //Handle API Secret
-            var ApiSecret = SwiftSnapper.Settings.Get('ApiSecret');
-            if (ApiSecret)
-                $('#TextBoxApiSecret').val(ApiSecret);
-            $('#TextBoxApiSecret').on('change', function (e) {
-                SwiftSnapper.Settings.Set('ApiSecret', $('#TextBoxApiSecret').val());
-            });
-            //Handle API Endpoint
-            var ApiEndpoint = SwiftSnapper.Settings.Get('ApiEndpoint');
-            if (ApiEndpoint)
-                $('#TextBoxApiEndpoint').val(ApiEndpoint);
-            $('#TextBoxApiEndpoint').on('change', function (e) {
-                SwiftSnapper.Settings.Set('ApiEndpoint', $('#TextBoxApiEndpoint').val());
-            });
         });
     }
     SwiftSnapper.onSettingsView = onSettingsView;
     function toCenterView(eventArgs) {
         SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
-        console.log(currentItem);
         if (currentItem != 1) {
             views.trigger('to.owl.carousel', [1, 300, true]);
             eventArgs.handled = true;
         }
-        ;
     }
 })(SwiftSnapper || (SwiftSnapper = {}));
 var MessageManager;
