@@ -189,7 +189,7 @@ module SwiftSnapper {
                 for (let n = 0; n < snaps.length; n++) {
                     let snap = snaps[n],
                         output =
-                            '<article class="item" id=" + n + "><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                            '<article class="item" data-id="' + snap.id + '"><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
                             '<div class="header">' + snap.sender + '</div>' +
                             '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
                             '</div></article>';
@@ -202,17 +202,20 @@ module SwiftSnapper {
             });
 
             //Temp for showing snaps
-            $('#SnapsView .SnapsList article').on('click tap', (e) => {
-                let snap = snaps[$(e.currentTarget).attr('id')];
+            $('body').on('click tap', '#SnapsView .SnapsList .item', (e) => {
+                let snap = $(e.currentTarget).data('id');
 
-                console.log(snap);
                 cn.Get({
-                    endpoint: 'snaps/' + snap
+                    endpoint: 'snaps/' + snap + '/' + localStorage.getItem('AuthToken')
                 }).then((res: any) => {
+
                     $('#ShowSnapView').css('display', 'block');
-                    $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + res.data);
+                    $('#ShowSnapView img').attr('src', 'data:image/*;base64,' + btoa(res));
+                }).catch((err) => {
+                    console.log(err);
                 });
             });
+
             $('#ShowSnapView').on('click tap', () => {
                 $('#ShowSnapView').css('display', 'none');
             });

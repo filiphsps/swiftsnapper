@@ -45,7 +45,8 @@ var SwiftSnapper;
     SwiftSnapper.Backend = Backend;
     var Http;
     (function (Http) {
-        var SWIFTSNAPPER_URI = 'https://swiftsnapper.playstr.link/v1/', SWIFTSNAPPER_USERAGENT = null;
+        //let SWIFTSNAPPER_URI = 'https://swiftsnapper.playstr.link/v1/',
+        var SWIFTSNAPPER_URI = 'http://localhost/v1/', SWIFTSNAPPER_USERAGENT = null;
         function Initialize() {
             var device = 'device', os = 'os', appVersion = 'x.x.x.x';
             SWIFTSNAPPER_USERAGENT = 'SwiftSnapper/' + appVersion + ' (' + device + ', ' + os + '; gzip)';
@@ -60,12 +61,15 @@ var SwiftSnapper;
         Http.Initialize = Initialize;
         function Get(options) {
             return new Promise(function (resolve, reject) {
-                $.getJSON(SWIFTSNAPPER_URI + options.endpoint).done(function (jqXHR, status, data) {
-                    if (data.status !== 200)
-                        return reject(data);
-                    resolve(data);
-                }).fail(function (jqXHR, err) {
-                    reject(err);
+                $.ajax({
+                    url: SWIFTSNAPPER_URI + options.endpoint,
+                    type: 'GET',
+                    success: function (res) {
+                        resolve(res);
+                    },
+                    error: function (err) {
+                        reject(err);
+                    }
                 });
             });
         }
@@ -560,7 +564,7 @@ var SwiftSnapper;
                 if (!snaps || snaps.length < 1)
                     return $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
                 for (var n = 0; n < snaps.length; n++) {
-                    var snap = snaps[n], output = '<article class="item" id=" + n + "><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
+                    var snap = snaps[n], output = '<article class="item" data-id="' + snap.id + '"><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
                         '<div class="header">' + snap.sender + '</div>' +
                         '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
                         '</div></article>';
@@ -571,14 +575,15 @@ var SwiftSnapper;
                 $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
             });
             //Temp for showing snaps
-            $('#SnapsView .SnapsList article').on('click tap', function (e) {
-                var snap = snaps[$(e.currentTarget).attr('id')];
-                console.log(snap);
+            $('body').on('click tap', '#SnapsView .SnapsList .item', function (e) {
+                var snap = $(e.currentTarget).data('id');
                 cn.Get({
-                    endpoint: 'snaps/' + snap
+                    endpoint: 'snaps/' + snap + '/' + localStorage.getItem('AuthToken')
                 }).then(function (res) {
                     $('#ShowSnapView').css('display', 'block');
-                    $('#ShowSnapView img').attr('src', 'data:image/jpeg;base64,' + res.data);
+                    $('#ShowSnapView img').attr('src', 'data:image/*;base64,' + res);
+                }).catch(function (err) {
+                    console.log(err);
                 });
             });
             $('#ShowSnapView').on('click tap', function () {

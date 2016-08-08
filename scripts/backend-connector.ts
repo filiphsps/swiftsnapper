@@ -73,13 +73,15 @@ namespace SwiftSnapper {
 
         export function Get(options: Http.HttpOptions) {
             return new Promise((resolve, reject) => {
-                $.getJSON(SWIFTSNAPPER_URI + options.endpoint).done((jqXHR, status, data) => {
-                    if (data.status !== 200)
-                        return reject(data);
-
-                    resolve(data);
-                }).fail((jqXHR, err) => {
-                    reject(err);
+                $.ajax({
+                    url: SWIFTSNAPPER_URI + options.endpoint,
+                    type: 'GET',
+                    success: (res) => {
+                        resolve(res);
+                    },
+                    error: (err) => {
+                        reject(err);
+                    }
                 });
             });
         }
