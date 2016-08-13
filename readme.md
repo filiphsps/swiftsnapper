@@ -1,5 +1,3 @@
-# [SwiftSnapper is not happening anymore, neither is Specter or even Casper](https://gitter.im/filfat/swiftsnapper?at=57872392d11cd288120d4e02)
-
 ![SwiftSnapper](http://i.imgur.com/DDrYKL9.png)
 [![Build status](https://ci.appveyor.com/api/projects/status/d8ldxvatsq9adp8w/branch/master?svg=true)](https://ci.appveyor.com/project/filfat/swiftsnapper)
 [![Preview builds](https://img.shields.io/badge/download-preview%20build-orange.svg)](https://ci.appveyor.com/project/filfat/swiftsnapper/build/artifacts)
