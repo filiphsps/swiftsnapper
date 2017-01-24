@@ -2,17 +2,7 @@
     Copyright (c) Filiph Sandström
 */
 body {
-    overflow: hidden;
-    padding: 0; margin: 0;
-    color: #000;
-    -ms-overflow-style: none;
-    -ms-content-zooming: none;
-    -ms-scroll-translation: vertical-to-horizontal;
-    -ms-scroll-chaining: none;
-    -ms-user-select: none;
-    user-select: none;
-    font-family: 'Segoe UI';
-}
+    
 .icon {
     color: #fff;
     font-size: 20px;
@@ -45,66 +35,8 @@ input[type=submit], input[type=button], button {
 }
 
 /* Header */
-header {
-    height: 60px;
-    width: calc(100% - 20px);
-    padding: 0 10px; margin: 0;
-    color: #fff;
-    background: #3498DB;
-    line-height: 60px;
-}
 body.mobile header {
     padding-top: 20px;
-}
-header .header {
-    float: left;
-    text-align: left;
-    text-transform: uppercase;
-    font-size: 28px;
-    font-weight: 100;
-}
-header nav {
-    float: right;
-}
-header nav .item, footer .item {
-    float: left;
-    padding: 0 10px;
-    cursor: pointer;
-}
-header nav .item.left, footer .item.left {
-    position: absolute;
-    top: 0; left: 0;
-    float: none;
-    text-align: left;
-}
-header nav .item.right, footer .item.right  {
-    position: absolute;
-    top: 0; right: 0;
-    float: none;
-    text-align: right;
-}
-header nav .item.center, footer .item.center{
-    position: absolute;
-    top: 0; left: calc(50% - 20px);
-    float: none;
-    text-align: center;
-}
-header nav .item .icon::before {
-    font-size: 20px !important;
-}
-
-/* Footer */
-footer .item.left {
-    top: calc(100% - 80px); left: 10%;
-}
-footer .item.right {
-    top: calc(100% - 80px); right: 10%;
-}
-footer .item.center{
-    top: calc(100% - 80px); left: calc(50% - 20px);
-}
-footer .item .icon::before {
-    font-size: 40px !important;
 }
 
 /* Views */

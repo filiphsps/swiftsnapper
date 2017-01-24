@@ -1,6 +1,6 @@
 # .gitignore
-[Pp]lugins/
-[Pp]latforms/
+/[Pp]lugins/
+/[Pp]latforms/
 
 # VS
 AppPackages/

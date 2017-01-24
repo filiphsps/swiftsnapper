@@ -1,0 +1,30 @@
+footer {
+    .item {
+        float: left;
+        padding: 0px 10px;
+        cursor: pointer;
+
+        .icon::before {
+            font-size: 40px !important;
+        }
+
+        &.left {
+            position: absolute;
+            top: calc(100% - 80px); left: 10%;
+            float: none;
+            text-align: left;
+        }
+        &.center {
+            position: absolute;
+            top: calc(100% - 80px); left: calc(50% - 20px);
+            float: none;
+            text-align: center;
+        }
+        &.right {
+            position: absolute;
+            top: calc(100% - 80px); right: 10%;
+            float: none;
+            text-align: right;
+        }
+    }
+}

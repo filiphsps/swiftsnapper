@@ -1,5 +1,4 @@
-﻿
-namespace SwiftSnapper {
+﻿namespace SwiftSnapper {
     export class Backend {
         constructor() {
             Http.Initialize();

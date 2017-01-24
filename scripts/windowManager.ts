@@ -1,4 +1,4 @@
-﻿module SwiftSnapper {
+﻿namespace SwiftSnapper {
     export module WindowManager {
         let view = null,
             pi = null,

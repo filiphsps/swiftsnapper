@@ -17,7 +17,11 @@
   ],
   "dependencies": {},
   "devDependencies": {
-    "tslint": "^3.12.1",
-    "typescript": "^1.8.10"
+    "autoprefixer": "^6.3.6",
+    "cssnano": "^3.7.0",
+    "gulp": "^3.9.1",
+    "gulp-typescript": "^2.13.6",
+    "node-sass": "~3.7.0",
+    "postcss": "^5.0.21"
   }
 }

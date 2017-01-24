@@ -3,17 +3,14 @@
 /// <reference path='typings/winrt/winrt.d.ts' />
 /// <reference path='typings/jquery/jquery.d.ts' />
 /// <reference path='typings/es6-promise/es6-promise.d.ts' />
-/// <reference path='cameraManager.ts' />
-/// <reference path='messageManager.ts' />
-/// <reference path='windowManager.ts' />
 
 declare let Handlebars: any;
 let views;
 
-module SwiftSnapper {
-    let currentItem = null,
-        SystemNavigator = null;
-    const language = Windows.System.UserProfile.GlobalizationPreferences.languages[0];
+namespace SwiftSnapper {
+    export let language = Windows.System.UserProfile.GlobalizationPreferences.languages[0] || 'en-US';
+    export let currentItem = null,
+            SystemNavigator = null;
 
     export module Application {
         export function initialize() {
@@ -38,7 +35,7 @@ module SwiftSnapper {
         }
 
         function onDeviceReady() {
-            // Handle the Cordova pause and resume events
+            //Handle the Cordova pause and resume events
             document.addEventListener('pause', onPause, false);
             document.addEventListener('resume', onResume, false);
             SystemNavigator = Windows.UI.Core['SystemNavigationManager'].getForCurrentView();
@@ -46,11 +43,11 @@ module SwiftSnapper {
         }
 
         function onPause() {
-            // TODO: This application has been suspended. Save application state here.
+            //TODO: This application has been suspended. Save application state here.
         }
 
         function onResume() {
-
+            //TODO: Resume
         }
     }
 
@@ -67,7 +64,7 @@ module SwiftSnapper {
     };
 
     export function onAccountView() {
-        Application.getLanguageStrings(language, function (lang) {
+        Application.getLanguageStrings(SwiftSnapper.language, function (lang) {
             let template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
             //Init Owl Carousel
@@ -136,7 +133,7 @@ module SwiftSnapper {
     }
 
     export function onOverviewView() {
-        Application.getLanguageStrings(language, function (lang) {
+        Application.getLanguageStrings(SwiftSnapper.language, function (lang) {
             let template = Handlebars.compile($('#template').html());
             $('#PageContent').html(template(lang));
 
@@ -263,27 +260,6 @@ module SwiftSnapper {
                     $('#ShutterBtn').click();
                 });
             }
-        });
-    }
-
-    export function onSettingsView() {
-        Application.getLanguageStrings(language, function (lang) {
-            let template = Handlebars.compile($('#template').html());
-            $('#PageContent').html(template(lang));
-
-            $('#LogoutBtn').on('click tap', function () {
-                MessageManager.alert('Cleared all credentials!', 'Cleared Credentials', null);
-                let vault = new Windows.Security.Credentials.PasswordVault();
-                let creds = vault.retrieveAll();
-                for (let i = 0; i < creds.length; ++i) {
-                    vault.remove(creds[i]);
-                }
-
-                $('body').load('views/account/index.html');
-            });
-            $('#BackBtn').on('click tap', function () {
-                $('body').load('views/overview/index.html');
-            });
         });
     }
 

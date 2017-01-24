@@ -1,0 +1,11 @@
+### SCSS/CSS
+  - Use soft-tabs with a __FOUR__ space indent.
+  - Put spaces before { in rule declarations.
+  - Put line breaks between rulesets.
+  - When grouping selectors, keep individual selectors to a single line.
+  - Place closing braces of declaration blocks on a new line.
+  - Each declaration should appear on its own line for more accurate error reporting.
+  - Use hex color codes #000 unless using rgba().
+  - Use // for comment blocks (instead of /* */).
+  - Specify units for zero values, e.g., margin: 0px; instead of margin: 0;.
+  - Use shorthand declarations where it's possible.

@@ -1,0 +1,50 @@
+header {
+    height: 60px;
+    width: calc(100% - 20px);
+    padding: 0px 10px;
+    margin: 0px;
+    line-height: 60px;
+    color: #fff;
+    background: #3498DB;
+
+    .header {
+        float: left;
+        text-align: left;
+        text-transform: uppercase;
+        font-size: 28px;
+        font-weight: 100;
+    }
+
+    nav {
+        float: right;
+
+        .item {
+            float: left;
+            padding: 0px 10px;
+            cursor: pointer;
+
+            .icon::before {
+                font-size: 20px !important;
+            }
+            
+            &.left {
+                position: absolute;
+                top: 0px; left: 0px;
+                float: none;
+                text-align: left;
+            }
+            &.center {
+                position: absolute;
+                top: 0px; left: calc(50% - 20px);
+                float: none;
+                text-align: center;
+            }
+            &.right {
+                position: absolute;
+                top: 0px; right: 0px;
+                float: none;
+                text-align: right;
+            }
+        }
+    }
+}
