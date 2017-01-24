@@ -1,11 +1,7 @@
 {
     "compilerOptions": { 
-        "noImplicitAny": false,
-        "noEmitOnError": true,
-        "removeComments": false,
+        "target": "es5",
         "sourceMap": true,
-        "inlineSources": true,
-        "out": "www/scripts/app.js",
-        "target": "es5"
+        "outFile": "app.js"
     }
 }
