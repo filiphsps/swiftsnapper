@@ -10,5 +10,33 @@ It's currently in early development with no set release date.
 
 A subreddit exists for general discussion or questions about the application which can be found [here](http://reddit.com/r/swiftsnapper).
 
-## Contribute
+<br><br>
+
+# Table Of Contents
+1. [Development](#development)
+2. [Testing](#testing)
+
+
+## Development
+### 1.1 Requirements
+- Node.js 6.1.0 or above
+- Windows 10, MacOS or Linux (Windows 10 is required to build the app for Windows 10)
+
+### 1.2 Building
+1. ```npm install -g cordova```
+2. ```npm install -g gulp```
+3. ```npm install```
+4. ```cordova platform add Windows```
+5. ```cordova platform build Windows```
+
+### 1.3 Running
+* On native hardware: ```cordova run Windows --device```
+* In an emulator: ```cordova emulate Windows```
+
+### 1.4 How to Contribute
 An Contribution guide is currently being written, for now; just be cool, okay?
+
+
+## Testing
+### 2.1 How to report an issue
+TODO
