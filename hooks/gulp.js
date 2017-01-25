@@ -7,7 +7,7 @@ var rootdir = process.argv[2];
 
 //Run gulp
 module.exports = function (context) {
-	Q = context.requireCordovaModule("q");
+	let Q = context.requireCordovaModule("q");
 	var deferred = Q.defer();
 
 	const process = child_process.spawn('gulp', [], {
