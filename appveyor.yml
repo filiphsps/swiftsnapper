@@ -19,6 +19,8 @@ build_script:
 - cmd: >-
     taco platform add windows
 
+    taco install-reqs windows
+
     taco plugin install
 
     taco build windows --arch=arm --debug
