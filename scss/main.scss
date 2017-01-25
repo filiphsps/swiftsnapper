@@ -1,26 +1,14 @@
-* {
-    -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
-    -webkit-tap-highlight-color: transparent !important;
-    outline: none;
-}
-body {
-    overflow: hidden;
-    padding: 0px; margin: 0px;
-    font-family: 'Segoe UI';
-    color: #000;
-    -ms-overflow-style: none;
-    -ms-content-zooming: none;
-    -ms-scroll-translation: vertical-to-horizontal;
-    -ms-scroll-chaining: none;
-    -ms-user-select: none;
-    user-select: none;
+/* Main
+===================================== */
 
-    /* Libraries */
-    @import "vendor/normalize";
-    @import "vendor/noise";
-    @import "vendor/mdl2";
-    @import "vendor/owl.carousel.css";
+/* Libraries */
+@import "vendor/normalize";
+@import "vendor/noise";
+@import "vendor/mdl2";
+@import "vendor/owl.carousel.css";
 
-    /* Modules */
-    @import 'partials/button';
-}
+/* Modules */
+@import 'partials/base';
+@import 'partials/button';
+@import 'partials/footer';
+@import 'partials/header';

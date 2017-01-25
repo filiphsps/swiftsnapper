@@ -1,0 +1,42 @@
+/* Base
+===================================== */
+
+//Base font
+$font-family: 'Segoe UI', 'Open Sans', sans-serif;
+$font-light: 100;
+$font-regular: 400;
+$font-bold: 600;
+
+//Colors
+$base-main-color: #3498DB;
+$base-secondary-color: #fff; //TODO
+
+* {
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0) !important;
+    -webkit-tap-highlight-color: transparent !important;
+    outline: none;
+}
+
+html, body {
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+    overflow: hidden;
+}
+
+body {
+    font-family: $font-family;
+    color: #000;
+
+    -ms-overflow-style: none;
+    -ms-content-zooming: none;
+    -ms-scroll-translation: vertical-to-horizontal;
+    -ms-scroll-chaining: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.icon {
+    color: #fff;
+    font-size: 20px;
+}

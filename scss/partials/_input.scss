@@ -1,0 +1,22 @@
+input {
+    -webkit-appearance: none;
+}
+
+input[type=text], input[type=password], input[type=email], input[type=tel]{
+    height: 20px;
+    padding: 4px 5px;
+    color: #000;
+    border: 2px solid #7A7A7A;
+    font-size: 14px;
+    line-height: 18px;
+}
+
+input[type=submit], input[type=button], button {
+    padding: 4px 15px;
+    background: #CCC;
+    color: #000;
+    border: 2px solid #CCC;
+    font-size: 14px;
+    line-height: 20px;
+    cursor: pointer;
+}

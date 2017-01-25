@@ -3,8 +3,8 @@
     <hook src="hooks/gulp.js" type="before_prepare" />
     <name>SwiftSnapper</name>
     <description>
-    An open source snapchat client for Windows 10.
-  </description>
+        An open source snapchat client for Windows 10.
+    </description>
     <author email="filiph.sandstrom@filfatstudios.com" href="http://filiphsandstrom.com">Filiph Sandström and Contributors</author>
     <content src="index.html" />
     <preference name="SplashScreen" value="screen" />
@@ -14,6 +14,7 @@
     <preference name="BackgroundColor" value="0xff3498DB" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="Orientation" value="default" />
+    <allow-navigation href="*" />
     <allow-intent href="http://*/*" />
     <allow-intent href="https://*/*" />
     <allow-intent href="tel:*" />
