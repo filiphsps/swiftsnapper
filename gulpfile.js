@@ -35,6 +35,5 @@ gulp.task('scss', () => {
         }).on('error', sass.logError))
         .pipe(autoprefixer())
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest(output + 'css'))
-        .pipe(rename({suffix: '.min'}));
+        .pipe(gulp.dest(output + 'css'));
 });

@@ -15,4 +15,4 @@ www/css/app.css
 node_modules/*
 appBundle.js
 appBundle.js.map
-www/css/app.min.css
+www/css/main.css
