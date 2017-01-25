@@ -24,7 +24,6 @@ gulp.task('typescript', (callback) => {
         //.pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(output + 'scripts'));
 });
-
 gulp.task('scss', () => {
     return gulp
         .src('./scss/**/*.scss')

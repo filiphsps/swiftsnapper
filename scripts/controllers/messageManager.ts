@@ -9,7 +9,6 @@
         export function alert(message: string, title: string, callback?) {
             let alert = new popup.MessageDialog(message, title);
             alert.commands.append(new popup.UICommand("OK", function (cmd) {
-
                 if(callback)
                     callback();
             }));

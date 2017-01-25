@@ -460,178 +460,6 @@ var SwiftSnapper;
             });
         }
     };
-    function onAccountView() {
-        Application.getLanguageStrings(SwiftSnapper.language, function (lang) {
-            var template = Handlebars.compile($('#template').html());
-            $('#PageContent').html(template(lang));
-            //Init Owl Carousel
-            views = $('#views');
-            views.owlCarousel({
-                loop: false,
-                nav: false,
-                dots: false,
-                video: true,
-                margin: 0,
-                startPosition: 1,
-                mouseDrag: false,
-                touchDrag: false,
-                pullDrag: false,
-                fallbackEasing: 'easeInOutQuart',
-                items: 1,
-            });
-            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
-                SwiftSnapper.currentItem = event.item.index;
-            });
-            $('header').on('click tap', function () {
-                views.trigger('to.owl.carousel', [1, 300, true]);
-            });
-            $('#LogInBtn').on('click tap', function () {
-                views.trigger('next.owl.carousel', [300]);
-            });
-            $('#SignUpBtn').on('click tap', function () {
-                views.trigger('prev.owl.carousel', [300]);
-            });
-            $('#LogInForm').submit(function (e) {
-                e.preventDefault();
-                var credential = new Windows.Security.Credentials.PasswordCredential('SwiftSnapper', $('#LogInView form .username').val(), $('#LogInView form .password').val());
-                logIn(credential, lang);
-            });
-            $(function () {
-                var vault = new Windows.Security.Credentials.PasswordVault();
-                var credentialList = vault.retrieveAll();
-                if (credentialList.length > 0) {
-                    var credential = vault.retrieve('SwiftSnapper', credentialList[0].userName);
-                    logIn(credential, lang);
-                }
-            });
-        });
-        function logIn(credential, lang) {
-            SwiftSnapper.WindowManager.startLoading(lang.views.account.logInView.loggingIn);
-            $('#LogInView form .username').prop('disabled', true);
-            $('#LogInView form .password').prop('disabled', true);
-            //TODO: Actually login
-            var vault = new Windows.Security.Credentials.PasswordVault();
-            if (vault.retrieveAll().length == 0) {
-                vault.add(credential);
-            }
-            localStorage.setItem('Authorization', btoa(credential.userName + ":" + credential.password));
-            localStorage.setItem('AuthToken', null);
-            SwiftSnapper.WindowManager.stopLoading();
-            SwiftSnapper.WindowManager.hideStatusBar();
-            $('body').load('views/overview/index.html');
-        }
-    }
-    SwiftSnapper.onAccountView = onAccountView;
-    function onOverviewView() {
-        Application.getLanguageStrings(SwiftSnapper.language, function (lang) {
-            var template = Handlebars.compile($('#template').html());
-            $('#PageContent').html(template(lang));
-            //Init Owl Carousel
-            views = $('#views');
-            views.owlCarousel({
-                loop: false,
-                nav: false,
-                dots: false,
-                video: true,
-                margin: 0,
-                startPosition: 1,
-                pullDrag: false,
-                fallbackEasing: 'easeInOutQuart',
-                responsive: {
-                    0: {
-                        items: 1
-                    },
-                    1024: {
-                        items: 3
-                    }
-                }
-            });
-            views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
-                var pos = event.item.index;
-                SwiftSnapper.currentItem = pos;
-                if (pos == 1) {
-                    SwiftSnapper.WindowManager.hideStatusBar();
-                }
-                else
-                    SwiftSnapper.WindowManager.showStatusBar();
-            });
-            SwiftSnapper.CameraManager.initialize({
-                'frontFacing': false
-            });
-            var cn = new SwiftSnapper.Backend(), snaps;
-            cn.Get({
-                endpoint: 'snaps'
-            }).then(function (res) {
-                snaps = res.data;
-                localStorage.setItem('AuthToken', res.authToken);
-                if (!snaps || snaps.length < 1)
-                    return $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
-                for (var n = 0; n < snaps.length; n++) {
-                    var snap = snaps[n], output = '<article class="item" data-id="' + snap.id + '"><div class="notify snap"><span class=";icon mdl2-checkbox-fill"></span></div><div class="details">' +
-                        '<div class="header">' + snap.sender + '</div>' +
-                        '<div class="details">Length: ' + snap.timer.toString() + '</div>' +
-                        '</div></article>';
-                    $('#SnapsView .SnapsList').append(output);
-                }
-            }).catch(function (err) {
-                SwiftSnapper.MessageManager.alert('Error: ' + err, 'Error!', null);
-                $('#SnapsView .SnapsList').append('<p class="note">' + lang.views.overview.emptyFeed + '</p>');
-            });
-            //Temp for showing snaps
-            $('body').on('click tap', '#SnapsView .SnapsList .item', function (e) {
-                var snap = $(e.currentTarget).data('id');
-                cn.Get({
-                    endpoint: 'snaps/' + snap + '/' + localStorage.getItem('AuthToken')
-                }).then(function (res) {
-                    $('#ShowSnapView').css('display', 'block');
-                    $('#ShowSnapView img').attr('src', 'data:image/*;base64,' + btoa(res));
-                }).catch(function (err) {
-                    console.log(err);
-                });
-            });
-            $('#ShowSnapView').on('click tap', function () {
-                $('#ShowSnapView').css('display', 'none');
-            });
-            $('#ViewSnapsBtn').on('click tap', function () {
-                views.trigger('prev.owl.carousel', [300]);
-            });
-            $('#ViewStoriesBtn').on('click tap', function () {
-                views.trigger('next.owl.carousel', [300]);
-            });
-            $('#CameraToggleBtn').on('click tap', function () {
-                $('#CameraPreview').toggleClass('FrontFacing');
-                if ($('#CameraPreview').hasClass('FrontFacing')) {
-                    SwiftSnapper.CameraManager.initialize({
-                        frontFacing: true
-                    });
-                }
-                else {
-                    SwiftSnapper.CameraManager.initialize({
-                        frontFacing: false
-                    });
-                }
-            });
-            $('#ShutterBtn').on('click tap', function () {
-                var IStream = SwiftSnapper.CameraManager.takePhotoAsync();
-                console.log('Picture Taken');
-                if (IStream != null) {
-                    SwiftSnapper.MessageManager.alert('Picture Taken!', 'Success', null);
-                }
-                else {
-                    SwiftSnapper.MessageManager.alert('No Camera!', 'Failure', null);
-                }
-            });
-            $('#SettingsBtn').on('click tap', function () {
-                $('body').load('views/settings/index.html');
-            });
-            if (typeof Windows !== 'undefined' && Windows.Foundation.Metadata['ApiInformation'].isTypePresent('Windows.Phone.UI.Input.HardwareButtons')) {
-                Windows['Phone'].UI.Input.HardwareButtons.addEventListener('camerapressed', function (e) {
-                    $('#ShutterBtn').click();
-                });
-            }
-        });
-    }
-    SwiftSnapper.onOverviewView = onOverviewView;
     function toCenterView(eventArgs) {
         SwiftSnapper.SystemNavigator.AppViewBackButtonVisibility = Windows.UI.Core['AppViewBackButtonVisibility'].collapsed;
         if (SwiftSnapper.currentItem != 1) {
@@ -671,6 +499,156 @@ var SwiftSnapper;
         }
         MessageManager.alertWithOptions = alertWithOptions;
     })(MessageManager = SwiftSnapper.MessageManager || (SwiftSnapper.MessageManager = {}));
+})(SwiftSnapper || (SwiftSnapper = {}));
+var SwiftSnapper;
+(function (SwiftSnapper) {
+    var Settings;
+    (function (Settings) {
+        function Get(item) {
+            return localStorage.getItem('_s_' + item);
+        }
+        Settings.Get = Get;
+        function Set(item, data) {
+            localStorage.setItem('_s_' + item, data);
+        }
+        Settings.Set = Set;
+    })(Settings = SwiftSnapper.Settings || (SwiftSnapper.Settings = {}));
+})(SwiftSnapper || (SwiftSnapper = {}));
+var SwiftSnapper;
+(function (SwiftSnapper) {
+    var WindowManager;
+    (function (WindowManager) {
+        var view = null, pi = null, theme = {
+            a: 255,
+            r: 52,
+            g: 152,
+            b: 219
+        };
+        function initialize() {
+            view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
+            view.titleBar.inactiveBackgroundColor = theme;
+            view.titleBar.buttonInactiveBackgroundColor = theme;
+            view.titleBar.backgroundColor = theme;
+            view.titleBar.buttonBackgroundColor = theme;
+            view['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
+            view['setPreferredMinSize']({
+                height: 1024,
+                width: 325
+            });
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                $('body').addClass('mobile'); //TODO: Move to initialize()
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+                statusBar.backgroundOpacity = 0;
+                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
+                statusBar.foregroundColor = Windows.UI.Colors.white;
+                //Lock portrait
+                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait;
+            }
+        }
+        WindowManager.initialize = initialize;
+        function showStatusBar() {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.showAsync();
+            }
+        }
+        WindowManager.showStatusBar = showStatusBar;
+        function hideStatusBar() {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
+                statusBar.hideAsync();
+            }
+        }
+        WindowManager.hideStatusBar = hideStatusBar;
+        function startLoading(message) {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
+                pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
+                pi.text = message;
+                pi.progressValue = null;
+                pi.showAsync();
+            }
+        }
+        WindowManager.startLoading = startLoading;
+        function stopLoading() {
+            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined' && pi !== null) {
+                pi.hideAsync();
+            }
+        }
+        WindowManager.stopLoading = stopLoading;
+    })(WindowManager = SwiftSnapper.WindowManager || (SwiftSnapper.WindowManager = {}));
+})(SwiftSnapper || (SwiftSnapper = {}));
+var SwiftSnapper;
+(function (SwiftSnapper) {
+    var Views;
+    (function (Views) {
+        var Account;
+        (function (Account) {
+            function OnView() {
+                SwiftSnapper.Application.getLanguageStrings(SwiftSnapper.language, function (lang) {
+                    var template = Handlebars.compile($('#template').html());
+                    $('#PageContent').html(template(lang));
+                    //Init Owl Carousel
+                    views = $('#views');
+                    views.owlCarousel({
+                        loop: false,
+                        nav: false,
+                        dots: false,
+                        video: true,
+                        margin: 0,
+                        startPosition: 1,
+                        mouseDrag: false,
+                        touchDrag: false,
+                        pullDrag: false,
+                        fallbackEasing: 'easeInOutQuart',
+                        items: 1,
+                    });
+                    views.on('initialized.owl.carousel changed.owl.carousel', function (event) {
+                        SwiftSnapper.currentItem = event.item.index;
+                    });
+                    $('header').on('click tap', function () {
+                        views.trigger('to.owl.carousel', [1, 300, true]);
+                    });
+                    $('#LogInBtn').on('click tap', function () {
+                        views.trigger('next.owl.carousel', [300]);
+                    });
+                    $('#SignUpBtn').on('click tap', function () {
+                        views.trigger('prev.owl.carousel', [300]);
+                    });
+                    $('#LogInForm').submit(function (e) {
+                        e.preventDefault();
+                        var credential = new Windows.Security.Credentials.PasswordCredential('SwiftSnapper', $('#LogInView form .username').val(), $('#LogInView form .password').val());
+                        logIn(credential, lang);
+                    });
+                    $(function () {
+                        var vault = new Windows.Security.Credentials.PasswordVault();
+                        var credentialList = vault.retrieveAll();
+                        if (credentialList.length > 0) {
+                            var credential = vault.retrieve('SwiftSnapper', credentialList[0].userName);
+                            logIn(credential, lang);
+                        }
+                    });
+                });
+            }
+            Account.OnView = OnView;
+            function logIn(credential, lang) {
+                SwiftSnapper.WindowManager.startLoading(lang.views.account.logInView.loggingIn);
+                $('#LogInView form .username').prop('disabled', true);
+                $('#LogInView form .password').prop('disabled', true);
+                //TODO: Actually login
+                var vault = new Windows.Security.Credentials.PasswordVault();
+                if (vault.retrieveAll().length == 0) {
+                    vault.add(credential);
+                }
+                localStorage.setItem('Authorization', btoa(credential.userName + ":" + credential.password));
+                localStorage.setItem('AuthToken', null);
+                SwiftSnapper.WindowManager.stopLoading();
+                SwiftSnapper.WindowManager.hideStatusBar();
+                $('body').load('views/overview/index.html');
+            }
+            Account.logIn = logIn;
+        })(Account = Views.Account || (Views.Account = {}));
+    })(Views = SwiftSnapper.Views || (SwiftSnapper.Views = {}));
 })(SwiftSnapper || (SwiftSnapper = {}));
 var SwiftSnapper;
 (function (SwiftSnapper) {
@@ -793,20 +771,6 @@ var SwiftSnapper;
 })(SwiftSnapper || (SwiftSnapper = {}));
 var SwiftSnapper;
 (function (SwiftSnapper) {
-    var Settings;
-    (function (Settings) {
-        function Get(item) {
-            return localStorage.getItem('_s_' + item);
-        }
-        Settings.Get = Get;
-        function Set(item, data) {
-            localStorage.setItem('_s_' + item, data);
-        }
-        Settings.Set = Set;
-    })(Settings = SwiftSnapper.Settings || (SwiftSnapper.Settings = {}));
-})(SwiftSnapper || (SwiftSnapper = {}));
-var SwiftSnapper;
-(function (SwiftSnapper) {
     var Views;
     (function (Views) {
         var Settings;
@@ -832,68 +796,4 @@ var SwiftSnapper;
             Settings.OnView = OnView;
         })(Settings = Views.Settings || (Views.Settings = {}));
     })(Views = SwiftSnapper.Views || (SwiftSnapper.Views = {}));
-})(SwiftSnapper || (SwiftSnapper = {}));
-var SwiftSnapper;
-(function (SwiftSnapper) {
-    var WindowManager;
-    (function (WindowManager) {
-        var view = null, pi = null, theme = {
-            a: 255,
-            r: 52,
-            g: 152,
-            b: 219
-        };
-        function initialize() {
-            view = Windows.UI.ViewManagement.ApplicationView.getForCurrentView();
-            view.titleBar.inactiveBackgroundColor = theme;
-            view.titleBar.buttonInactiveBackgroundColor = theme;
-            view.titleBar.backgroundColor = theme;
-            view.titleBar.buttonBackgroundColor = theme;
-            view['setDesiredBoundsMode'](Windows.UI.ViewManagement['ApplicationViewBoundsMode'].useCoreWindow);
-            view['setPreferredMinSize']({
-                height: 1024,
-                width: 325
-            });
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                $('body').addClass('mobile'); //TODO: Move to initialize()
-                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.showAsync();
-                statusBar.backgroundOpacity = 0;
-                statusBar.backgroundColor = Windows.UI.ColorHelper.fromArgb(255, 52, 152, 219);
-                statusBar.foregroundColor = Windows.UI.Colors.white;
-                //Lock portrait
-                Windows.Graphics.Display['DisplayInformation'].autoRotationPreferences = Windows.Graphics.Display.DisplayOrientations.portrait;
-            }
-        }
-        WindowManager.initialize = initialize;
-        function showStatusBar() {
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.showAsync();
-            }
-        }
-        WindowManager.showStatusBar = showStatusBar;
-        function hideStatusBar() {
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                var statusBar = Windows.UI.ViewManagement['StatusBar'].getForCurrentView();
-                statusBar.hideAsync();
-            }
-        }
-        WindowManager.hideStatusBar = hideStatusBar;
-        function startLoading(message) {
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined') {
-                pi = Windows.UI.ViewManagement['StatusBar'].getForCurrentView().progressIndicator;
-                pi.text = message;
-                pi.progressValue = null;
-                pi.showAsync();
-            }
-        }
-        WindowManager.startLoading = startLoading;
-        function stopLoading() {
-            if (typeof Windows.UI.ViewManagement['StatusBar'] !== 'undefined' && pi !== null) {
-                pi.hideAsync();
-            }
-        }
-        WindowManager.stopLoading = stopLoading;
-    })(WindowManager = SwiftSnapper.WindowManager || (SwiftSnapper.WindowManager = {}));
 })(SwiftSnapper || (SwiftSnapper = {}));
