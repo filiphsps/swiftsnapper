@@ -1,3 +1,19 @@
+/*
+
+    	 Se almighty gulp hook!
+	================================
+	   Ge can thank this hook fore
+	   brengan freod to se galaxy
+	   be handling se mierce force
+	   that is opening an terminal
+	   ac flowan se gulp command.
+	
+				^
+	That is supposeed to be old english,
+	the translator didn't work that well..
+	shhh...
+*/
+
 'use strict';
 let fs 				= require('fs'),
     path 			= require('path'),
