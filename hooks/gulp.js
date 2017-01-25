@@ -4,13 +4,14 @@ let fs 				= require('fs'),
     child_process   = require('child_process');
 
 var rootdir = process.argv[2];
+let os = process.platform;
 
 //Run gulp
 module.exports = function (context) {
 	let Q = context.requireCordovaModule("q");
 	var deferred = Q.defer();
-
-	const process = child_process.spawn('gulp', [], {
+	
+	const process = child_process.spawn(/^win/.test(os) ? 'gulp.cmd' : 'gulp', [], {
 		stdio: 'inherit',
 		shell: true
 	});
