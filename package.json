@@ -15,13 +15,14 @@
     "phone",
     "snapchat"
   ],
-  "dependencies": {},
-  "devDependencies": {
-    "autoprefixer": "^6.3.6",
-    "cssnano": "^3.7.0",
+  "dependencies": {
     "gulp": "^3.9.1",
     "gulp-typescript": "^2.13.6",
-    "node-sass": "~3.7.0",
-    "postcss": "^5.0.21"
-  }
+    "autoprefixer": "^6.3.6",
+    "gulp-autoprefixer": "^3.1.1",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-sourcemaps": "^2.4.0"
+  },
+  "devDependencies": {}
 }

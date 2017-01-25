@@ -8,17 +8,23 @@ install:
 
     npm --version
 
+    npm install -g taco
+
     npm install -g cordova
+
+    npm install -g gulp
 
     npm install
 build_script:
 - cmd: >-
-    cordova platforms add windows
+    taco platform add windows
 
-    cordova build windows --arch=arm --debug
+    taco plugin install
 
-    cordova build windows --arch=x64 --debug
+    taco build windows --arch=arm --debug
 
-    cordova build windows --arch=x86 --debug
+    taco build windows --arch=x64 --debug
+
+    taco build windows --arch=x86 --debug
 artifacts:
 - path: platforms\windows\**\*.appx

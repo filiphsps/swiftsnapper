@@ -1,13 +1,15 @@
 'use strict';
 let gulp = require('gulp'),
-    //sourcemaps = require('gulp-sourcemaps'),
-    //autoprefixer = require('gulp-autoprefixer'),
+    sourcemaps = require('gulp-sourcemaps'),
+    autoprefixer = require('gulp-autoprefixer'),
+    rename = require('gulp-rename'),
+    sass = require('gulp-sass'),
     tsc = require('gulp-typescript');
 
 var tscProj = tsc.createProject('scripts/tsconfig.json');
 const output = './www/';
 
-gulp.task('default', ['typescript']);
+gulp.task('default', ['typescript', 'scss']);
 
 gulp.task('typescript', (callback) => {
     var sourceTsFiles = ['./scripts/**/*.ts', './typings/'];
@@ -24,7 +26,6 @@ gulp.task('typescript', (callback) => {
 });
 
 gulp.task('scss', () => {
-    return null;
     return gulp
         .src('./scss/**/*.scss')
         .pipe(sourcemaps.init())
@@ -35,8 +36,5 @@ gulp.task('scss', () => {
         .pipe(autoprefixer())
         .pipe(sourcemaps.write())
         .pipe(gulp.dest(output + 'css'))
-        .pipe(rename({suffix: '.min'}))
-        .pipe(browserSync.reload({
-            stream: true
-        }));
+        .pipe(rename({suffix: '.min'}));
 });
