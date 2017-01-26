@@ -14,7 +14,8 @@ A subreddit exists for general discussion or questions about the application whi
 
 # Table Of Contents
 1. [Development](#development)
-2. [Testing](#testing)
+2. [Translation](#translation)
+3. [Testing](#testing)
 
 
 ## Development
@@ -37,6 +38,20 @@ A subreddit exists for general discussion or questions about the application whi
 An Contribution guide is currently being written, for now; just be cool, okay?
 
 
+## Translation
+### 2.1 Translate SwiftSnapper
+You can find the language defitions [here](https://github.com/filfat/swiftsnapper/tree/master/www/lang). The structure should match the ```en-US.json``` file.
+
+### 2.2 Example
+```
+{
+    "doNotTranslateTheLeftSide": "Do not translate the left side!",
+    "word": "Word",
+    "etc": "etc"
+}
+```
+
+
 ## Testing
-### 2.1 How to report an issue
+### 3.1 How to report an issue
 TODO
